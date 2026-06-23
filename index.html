@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>복사단 배정표</title>
+<style>
+  :root{
+    --bg:#f7f7f5; --card:#ffffff; --line:#e3e2dc; --line2:#cfcec6;
+    --text:#2c2c2a; --muted:#6b6a64; --hint:#9a988f;
+    --info:#185fa5; --info-bg:#e6f1fb; --info-line:#85b7eb;
+    --ok:#3b6d11; --ok-bg:#eaf3de; --warn-bg:#faeeda; --warn:#854f0b;
+    --danger:#a32d2d; --danger-bg:#fcebeb;
+    --sun:#faece7; --sat:#e6f1fb;
+    --hong:#a32d2d; --nok:#3b6d11; --baek:#5f5e5a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    background:var(--bg); color:var(--text); font-size:15px; line-height:1.5;}
+  .wrap{max-width:960px; margin:0 auto; padding:14px;}
+  header{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px;}
+  h1{font-size:20px; font-weight:600; margin:0;}
+  .sub{font-size:12px; color:var(--muted);}
+  .btn{border:1px solid var(--line2); background:#fff; border-radius:8px; padding:8px 12px; font-size:13px; cursor:pointer; color:var(--text);}
+  .btn:hover{background:#f0efe9;}
+  .btn.primary{border-color:var(--info-line); color:var(--info); background:var(--info-bg);}
+  .btn.ok{border-color:#9fc46a; color:var(--ok); background:var(--ok-bg);}
+  .btn.danger{border-color:#e0a3a3; color:var(--danger); background:var(--danger-bg);}
+  .toolbar{display:flex; gap:8px; flex-wrap:wrap;}
+  .status{font-size:12px; padding:4px 8px; border-radius:6px; background:var(--card); border:1px solid var(--line); color:var(--muted);}
+  .status.live{color:var(--ok); border-color:#9fc46a; background:var(--ok-bg);}
+  .status.off{color:var(--danger); border-color:#e0a3a3; background:var(--danger-bg);}
+
+  .seg{display:inline-flex; border:1px solid var(--line2); border-radius:8px; overflow:hidden; margin:6px 0 12px;}
+  .seg button{border:none; padding:8px 14px; font-size:13px; background:#fff; cursor:pointer;}
+  .seg button.on{background:var(--info-bg); color:var(--info); font-weight:600;}
+  .hintbar{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-size:13px; color:var(--muted); margin-bottom:12px;}
+
+  .cal{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
+  .wd{text-align:center; font-size:12px; font-weight:600; color:var(--muted); padding:5px 0;}
+  .cell{background:var(--card); border:1px solid var(--line); border-radius:7px; padding:6px; min-height:78px; font-size:11px;}
+  .cell.sun{background:var(--sun);} .cell.sat{background:var(--sat);}
+  .cell.empty{background:transparent; border:1px dashed var(--line); opacity:.5;}
+  .daynum{font-weight:600; font-size:12px; margin-bottom:2px;}
+  .svc{margin-top:4px; padding-top:3px; border-top:1px dashed var(--line2);}
+  .mlabel{color:var(--info); font-weight:600;}
+  .time{font-weight:600;}
+  .hong{color:var(--hong);} .nok{color:var(--nok);} .baek{color:var(--baek); font-weight:600;}
+  .role{margin-top:1px;}
+  .name{display:inline-block; padding:1px 5px; margin:1px; border-radius:5px; background:#f0efe9; border:1px solid transparent; cursor:pointer; white-space:nowrap;}
+  .name:hover{border-color:var(--line2); background:var(--info-bg);}
+  .name.picked{background:var(--info-bg); border-color:var(--info-line); color:var(--info); font-weight:600;}
+  .lvl{color:var(--hint); font-size:10px;}
+
+  section{margin-top:22px;}
+  section h2{font-size:16px; font-weight:600; margin:0 0 8px;}
+  .req{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin-bottom:8px; font-size:13px;}
+  .req .meta{color:var(--muted); font-size:12px;}
+  .req .badge{display:inline-block; font-size:11px; padding:2px 8px; border-radius:6px; font-weight:600; margin-right:6px;}
+  .b-wait{background:var(--warn-bg); color:var(--warn);}
+  .b-ok{background:var(--ok-bg); color:var(--ok);}
+  .b-no{background:var(--danger-bg); color:var(--danger);}
+  .req .actions{margin-top:8px; display:flex; gap:6px;}
+
+  .modal{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; padding:14px; z-index:50;}
+  .modal.show{display:flex;}
+  .sheet{background:#fff; border-radius:12px; padding:18px; width:100%; max-width:440px; max-height:90vh; overflow:auto;}
+  .sheet h3{margin:0 0 12px; font-size:16px; font-weight:600;}
+  label{font-size:13px; color:var(--muted); display:block; margin-bottom:4px;}
+  input,select{width:100%; padding:9px 10px; border:1px solid var(--line2); border-radius:8px; font-size:14px; margin-bottom:12px; font-family:inherit;}
+  .swapbox{background:#f0efe9; border-radius:8px; padding:10px; font-size:14px; margin-bottom:12px;}
+  .right{display:flex; gap:8px; justify-content:flex-end;}
+  .empty-note{font-size:12px; color:var(--hint);}
+  .footnote{margin-top:26px; font-size:11px; color:var(--hint); text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ 설정: 아래 두 곳만 본인 값으로 바꾸세요 ============ -->
+  <script>
+    // (1) Firebase 설정값 — 설치안내서 A-3에서 복사한 값으로 통째 교체
+    const firebaseConfig = {
+      apiKey: "AIzaSyBP9zHlxgLAdLG00FafXm60smaEZ46y12o",
+      authDomain: "soha-altarservers.firebaseapp.com",
+      databaseURL: "https://soha-altarservers-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "soha-altarservers",
+      storageBucket: "soha-altarservers.firebasestorage.app",
+      messagingSenderId: "249250441606",
+      appId: "1:249250441606:web:5e6f7a5657c6d9ce336407"
+    };  
+    // (2) 관리자 비밀번호 — 원하는 값으로 바꾸세요
+    const ADMIN_PW = "boksa2026";
+    // (3) 표시할 연/월
+    const YEAR = 2026, MONTH = 6;
+  </script>
+  <!-- ================================================================ -->
+
+  <header>
+    <div>
+      <h1>2026년 6월 복사 배정표</h1>
+      <div class="sub">복사자모회 · 변경신청은 관리자 승인 후 반영됩니다</div>
+    </div>
+    <div class="toolbar">
+      <span id="conn" class="status">연결 확인중…</span>
+      <button id="adminBtn" class="btn">관리자</button>
+    </div>
+  </header>
+
+  <div id="adminBar" style="display:none;" class="hintbar">
+    <b>관리자 모드</b> · 신청을 승인하면 배정표에 반영됩니다. 이름을 직접 누르면 즉시 수정(기록 남음).
+    <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+      <button id="rosterBtn" class="btn">명단 관리 / 엑셀 업로드</button>
+      <button id="adminOff" class="btn">관리자 해제</button>
+    </div>
+  </div>
+
+  <div class="seg" id="modeSeg">
+    <button id="mView" class="on">보기</button>
+    <button id="mSwap">1:1 맞교환 신청</button>
+    <button id="mSub">대타 신청</button>
+  </div>
+  <div id="hint" class="hintbar"></div>
+
+  <div class="wd-row" style="display:none"></div>
+  <div id="cal" class="cal"></div>
+
+  <section>
+    <h2>신청 현황 <span style="font-size:12px; color:var(--muted); font-weight:400;">(승인 대기 / 처리 완료 — 누구나 확인)</span></h2>
+    <div id="reqList"></div>
+  </section>
+
+  <section>
+    <h2>전체 변경 기록</h2>
+    <div id="logList"></div>
+  </section>
+
+  <div class="footnote">데이터는 Firebase에 안전하게 저장되며 모든 사용자에게 실시간 공유됩니다.</div>
+</div>
+
+<!-- 신청/수정 모달 -->
+<div id="modal" class="modal"><div class="sheet">
+  <h3 id="mTitle"></h3>
+  <div id="mBody"></div>
+</div></div>
+
+<!-- ===== Firebase SDK ===== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+/* ============================================================
+   복사단 배정 웹앱 — 단일 파일
+   데이터 구조 (Firebase Realtime DB):
+     /assign        : 배정표 (확정 명단)
+     /requests/{id} : 변경신청 (대기/승인/거절)
+     /logs/{id}     : 변경 기록
+   ============================================================ */
+
+const weekdays = ['일','월','화','수','목','금','토'];
+
+/* ---- 기본 배정 시드 (업로드된 6월 배정표 기준) ---- */
+const SEED = {
+  1:[{t:'6:30',c:'홍',대:['강시우'],소:['심다솔']}],
+  2:[{t:'19:30',c:'녹',대:['이영후'],소:['류정원']}],
+  4:[{t:'19:30',c:'녹',label:'성시간',대:['박예련'],소:['홍지아']}],
+  6:[{t:'10:00',c:'백',label:'성모신심',대:['이윤섭'],소:['김민준']},
+     {t:'17:00',c:'백',대:['성운창','강시우'],소:['이영후','이지유']}],
+  7:[{t:'9:00',c:'백',대:['김재윤','이예나'],소:['구현비','이지안4']},
+     {t:'17:00',대:['고인서','변윤서'],소:['박정서','장하늘']}],
+  8:[{t:'6:30',c:'녹',대:['이윤섭'],소:['연주환']}],
+  9:[{t:'19:30',c:'녹',대:['연주환'],소:['김아인']}],
+  11:[{t:'19:30',c:'홍',대:['이지안6'],소:['이지안4']}],
+  13:[{t:'17:00',c:'녹',label:'첫영성체',대:['이시윤','탁윤호'],소:['윤성현','조환희']}],
+  14:[{t:'9:00',c:'녹',대:['최수인'],소:['김민준']},{t:'17:00',대:['이시호'],소:['이지효']}],
+  15:[{t:'6:30',c:'녹',대:['이시윤'],소:['원준영']}],
+  16:[{t:'19:30',c:'녹',대:['이시원'],소:['구현비']}],
+  18:[{t:'19:30',c:'녹',대:['심다솔'],소:['김아인']}],
+  20:[{t:'17:00',c:'녹',대:['임해든','원준영'],소:['김서연','장하늘']}],
+  21:[{t:'9:00',c:'녹',대:['박시우','김민준'],소:['이시원','이지유']},
+      {t:'17:00',대:['신희윤','이시호'],소:['홍지아','신윤서']}],
+  22:[{t:'6:30',c:'녹',대:['김서연'],소:['임해든']}],
+  23:[{t:'19:30',c:'녹',대:['김재윤'],소:['변윤서']}],
+  25:[{t:'19:30',c:'백',label:'찬미미사',대:['고인서'],소:['신윤서']}],
+  27:[{t:'17:00',c:'녹',대:['박시우','신희윤'],소:['박정서','장하늘']}],
+  28:[{t:'9:00',c:'녹',대:['연주환','강시우'],소:['이윤섭','심다솔']},
+      {t:'17:00',대:['이지안6','이지효'],소:['류정원','김아인']}],
+  29:[{t:'6:30',c:'홍',대:['탁윤호','성운창','윤성현'],소:['박예련','최수인','조환희','이영후']}],
+  30:[{t:'19:30',c:'녹',대:['이시호'],소:['이예나']}]
+};
+
+/* ---- 복사단 명단 (업로드 엑셀 기준 / 엑셀 업로드로 갱신 가능) ---- */
+/* 각 항목: {grade 학년, name 성명, school 학교, noDD 대대제외} */
+const SEED_ROSTER = [
+  {grade:'초4',name:'류정원',school:'구름산초',noDD:true},
+  {grade:'초4',name:'이지안4',school:'빛가온초',noDD:true},
+  {grade:'초4',name:'이예나',school:'목동초',noDD:true},
+  {grade:'초4',name:'변윤서',school:'빛가온초',noDD:true},
+  {grade:'초4',name:'장하늘',school:'구름산초',noDD:true},
+  {grade:'초4',name:'김아인',school:'구름산초',noDD:true},
+  {grade:'초4',name:'신윤서',school:'안서초',noDD:true},
+  {grade:'초4',name:'김민준',school:'구름산초',noDD:true},
+  {grade:'초5',name:'심다솔',school:'충현초',noDD:false},
+  {grade:'초5',name:'이시호',school:'빛가온초',noDD:false},
+  {grade:'초5',name:'연주환',school:'소하초',noDD:false},
+  {grade:'초5',name:'이지유',school:'빛가온초',noDD:true},
+  {grade:'초5',name:'구현비',school:'구름산초',noDD:true},
+  {grade:'초6',name:'강시우',school:'소하초',noDD:false},
+  {grade:'초6',name:'이영후',school:'소하초',noDD:false},
+  {grade:'초6',name:'홍지아',school:'구름산초',noDD:false},
+  {grade:'초6',name:'이윤섭',school:'충현초',noDD:false},
+  {grade:'초6',name:'김재윤',school:'서면초',noDD:false},
+  {grade:'초6',name:'이지안6',school:'소하초',noDD:false},
+  {grade:'초6',name:'고인서',school:'서면초',noDD:false},
+  {grade:'초6',name:'박정서',school:'서면초',noDD:false},
+  {grade:'초6',name:'이시원',school:'구름산초',noDD:false},
+  {grade:'초6',name:'박시우',school:'구름산초',noDD:false},
+  {grade:'초6',name:'신희윤',school:'안서초',noDD:false},
+  {grade:'초6',name:'이지효',school:'빛가온초',noDD:true},
+  {grade:'중1',name:'최수인',school:'소하중',noDD:false},
+  {grade:'중2',name:'정현진',school:'소하중',noDD:false},
+  {grade:'중2',name:'박예련',school:'소하중',noDD:false},
+  {grade:'중2',name:'원준영',school:'소하중',noDD:false},
+  {grade:'중2',name:'조환희',school:'소하중',noDD:false},
+  {grade:'중3',name:'김서연',school:'소하중',noDD:false},
+  {grade:'중3',name:'임해든',school:'소하중',noDD:false},
+  {grade:'중3',name:'성운창',school:'충현중',noDD:false},
+  {grade:'중3',name:'윤성현',school:'',noDD:false},
+  {grade:'고',name:'이시윤',school:'',noDD:false},
+  {grade:'고',name:'탁윤호',school:'',noDD:false}
+];
+let rosterRecords = JSON.parse(JSON.stringify(SEED_ROSTER));
+// 이름 배열 (드롭다운 등에서 사용)
+function rosterNames(){ return rosterRecords.map(r=>r.name); }
+
+const firstDow = new Date(YEAR, MONTH-1, 1).getDay();
+const daysInMonth = new Date(YEAR, MONTH, 0).getDate();
+const colorCls = {'홍':'hong','녹':'nok','백':'baek'};
+
+let db=null, online=false;
+let assign = JSON.parse(JSON.stringify(SEED));
+let requests = {}, logs = {};
+let admin=false, mode='view', pick=null;
+
+/* ---------- Firebase 초기화 ---------- */
+function initFirebase(){
+  const conn=document.getElementById('conn');
+  try{
+    if(firebaseConfig.apiKey.indexOf('PASTE')===0){
+      conn.textContent='데모 모드 (Firebase 미설정)'; conn.className='status off';
+      online=false; renderAll(); return;
+    }
+    firebase.initializeApp(firebaseConfig);
+    db=firebase.database();
+    online=true;
+    conn.textContent='실시간 연결됨'; conn.className='status live';
+
+    const aRef=db.ref('assign');
+    aRef.once('value').then(s=>{ if(!s.exists()){ aRef.set(SEED); } });
+    aRef.on('value', s=>{ if(s.exists()){ assign=normalize(s.val()); renderCal(); } });
+
+    const rRef=db.ref('roster');
+    rRef.once('value').then(s=>{ if(!s.exists()){ rRef.set(SEED_ROSTER); } });
+    rRef.on('value', s=>{ if(s.exists()){ rosterRecords=(s.val()||[]).filter(Boolean); } });
+
+    db.ref('requests').on('value', s=>{ requests=s.val()||{}; renderReqs(); });
+    db.ref('logs').on('value', s=>{ logs=s.val()||{}; renderLogs(); });
+  }catch(e){
+    conn.textContent='연결 오류 — 데모 모드'; conn.className='status off';
+    online=false; renderAll();
+  }
+}
+/* Firebase는 빈 배열을 누락시키므로 정규화 */
+function normalize(a){
+  const out={};
+  Object.keys(a||{}).forEach(d=>{
+    out[d]=(a[d]||[]).map(s=>({t:s.t,c:s.c||'',label:s.label||'',대:s.대||[],소:s.소||[]}));
+  });
+  return out;
+}
+
+/* ---------- 저장 헬퍼 ---------- */
+function saveAssign(){ if(online) db.ref('assign').set(assign); else renderCal(); }
+function nowStr(){const n=new Date();return `${n.getMonth()+1}/${n.getDate()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;}
+function pushReq(obj){
+  obj.ts=nowStr(); obj.status='wait';
+  if(online){ db.ref('requests').push(obj); }
+  else { requests['demo'+Date.now()]=obj; renderReqs(); }
+}
+function pushLog(text){
+  const o={ts:nowStr(), text};
+  if(online){ db.ref('logs').push(o); }
+  else { logs['demo'+Date.now()]=o; renderLogs(); }
+}
+
+/* ---------- 달력 렌더 ---------- */
+const cal=document.getElementById('cal');
+function renderCal(){
+  cal.innerHTML='';
+  weekdays.forEach(w=>{const d=document.createElement('div');d.className='wd';d.textContent=w;cal.appendChild(d);});
+  for(let i=0;i<firstDow;i++){const e=document.createElement('div');e.className='cell empty';cal.appendChild(e);}
+  for(let day=1;day<=daysInMonth;day++){
+    const dow=(firstDow+day-1)%7;
+    const cell=document.createElement('div');
+    cell.className='cell'+(dow===0?' sun':dow===6?' sat':'');
+    let html=`<div class="daynum">${day}</div>`;
+    (assign[day]||[]).forEach((s,si)=>{
+      html+='<div class="svc">';
+      if(s.label) html+=`<div class="mlabel">${s.label}</div>`;
+      html+=`<span class="time ${colorCls[s.c]||''}">${s.t}${s.c?' ('+s.c+')':''}</span>`;
+      ['대','소'].forEach(role=>{
+        const arr=s[role]||[];
+        if(arr.length){
+          html+=`<div class="role">${role}) `;
+          arr.forEach((nm,ni)=>{
+            const on=pick&&pick.d==day&&pick.s==si&&pick.r==role&&pick.i==ni;
+            html+=`<span class="name${on?' picked':''}" data-d="${day}" data-s="${si}" data-r="${role}" data-i="${ni}">${nm}</span>`;
+          });
+          html+='</div>';
+        }
+      });
+      html+='</div>';
+    });
+    cell.innerHTML=html;
+    cal.appendChild(cell);
+  }
+  cal.querySelectorAll('.name').forEach(el=>el.onclick=()=>onName(el.dataset));
+  setHint();
+}
+
+function setHint(){
+  const h=document.getElementById('hint');
+  if(admin){ h.innerHTML='이름을 클릭하면 바로 수정합니다 (변경 기록에 남음).'; return; }
+  if(mode==='view'){ h.innerHTML='일정을 확인하세요. 변경이 필요하면 위에서 <b>맞교환</b> 또는 <b>대타</b>를 선택하세요.'; return; }
+  if(mode==='swap'){
+    h.innerHTML = pick
+      ? `<b>${pick.name}</b> 선택됨 — 맞바꿀 상대 복사를 클릭하세요. (같은 이름 다시 클릭=취소)`
+      : '1:1 맞교환: 먼저 <b>내 복사</b>를 클릭한 뒤, 바꿀 <b>상대 복사</b>를 클릭하세요.';
+  } else {
+    h.innerHTML='대타: 못 나가는 복사를 클릭한 뒤 대신 설 사람을 고르세요.';
+  }
+}
+
+/* ---------- 이름 클릭 처리 ---------- */
+function slot(d){return assign[d];}
+function label(d,s){return `${d}일 ${assign[d][s].t}`;}
+function onName(ds){
+  const d=+ds.d,s=+ds.s,r=ds.r,i=+ds.i,name=assign[d][s][r][i];
+  if(admin) return adminEdit(d,s,r,i,name);
+  if(mode==='view'){ setHint(); return; }
+  if(mode==='sub') return subReq(d,s,r,i,name);
+  // swap
+  if(!pick){ pick={d,s,r,i,name}; renderCal(); return; }
+  if(pick.d==d&&pick.s==s&&pick.r==r&&pick.i==i){ pick=null; renderCal(); return; }
+  confirmSwap(pick,{d,s,r,i,name});
+}
+
+/* ---------- 모달 ---------- */
+const modal=document.getElementById('modal'),mTitle=document.getElementById('mTitle'),mBody=document.getElementById('mBody');
+const openM=()=>modal.classList.add('show'), closeM=()=>modal.classList.remove('show');
+modal.onclick=e=>{ if(e.target===modal) closeM(); };
+
+function confirmSwap(a,b){
+  mTitle.textContent='1:1 맞교환 신청';
+  mBody.innerHTML=`
+    <div class="swapbox">
+      <b>${a.name}</b> (${label(a.d,a.s)} ${a.r})<br>
+      <span style="color:var(--info)">↕ 맞바꿈</span><br>
+      <b>${b.name}</b> (${label(b.d,b.s)} ${b.r})
+    </div>
+    <label>신청자(어머니) 이름</label>
+    <input id="reqBy" placeholder="예: 홍길동 모친">
+    <label>사유 (선택)</label>
+    <input id="reason" placeholder="예: 가족 일정">
+    <div class="right">
+      <button class="btn" onclick="closeM()">취소</button>
+      <button class="btn primary" id="ok">신청하기</button>
+    </div>`;
+  openM();
+  document.getElementById('ok').onclick=()=>{
+    const who=val('reqBy')||'(이름없음)', rs=val('reason');
+    pushReq({kind:'swap', who, reason:rs,
+      a:{d:a.d,s:a.s,r:a.r,i:a.i,name:a.name},
+      b:{d:b.d,s:b.s,r:b.r,i:b.i,name:b.name},
+      desc:`${a.name}(${label(a.d,a.s)} ${a.r}) ↔ ${b.name}(${label(b.d,b.s)} ${b.r})`});
+    pick=null; closeM(); renderCal();
+    toast('맞교환 신청이 접수되었습니다. 관리자 승인 후 반영됩니다.');
+  };
+}
+
+function subReq(d,s,r,i,name){
+  mTitle.textContent='대타 신청';
+  const opts=rosterNames().filter(n=>n!==name).map(n=>`<option>${n}</option>`).join('');
+  mBody.innerHTML=`
+    <div class="swapbox">${label(d,s)} ${r}) <b>${name}</b> 대신 설 사람</div>
+    <label>대타 복사</label>
+    <select id="newName"><option value="">— 선택 —</option>${opts}</select>
+    <label>신청자(어머니) 이름</label>
+    <input id="reqBy" placeholder="예: 홍길동 모친">
+    <label>사유 (선택)</label>
+    <input id="reason" placeholder="예: 갑작스런 사정">
+    <div class="right">
+      <button class="btn" onclick="closeM()">취소</button>
+      <button class="btn primary" id="ok">신청하기</button>
+    </div>`;
+  openM();
+  document.getElementById('ok').onclick=()=>{
+    const nn=val('newName'); if(!nn){alert('대타 복사를 선택하세요.');return;}
+    const who=val('reqBy')||'(이름없음)', rs=val('reason');
+    pushReq({kind:'sub', who, reason:rs,
+      a:{d,s,r,i,name}, newName:nn,
+      desc:`${label(d,s)} ${r}) ${name} → ${nn} (대타)`});
+    closeM();
+    toast('대타 신청이 접수되었습니다. 관리자 승인 후 반영됩니다.');
+  };
+}
+
+function adminEdit(d,s,r,i,cur){
+  mTitle.textContent='임원 직접 수정';
+  const opts=rosterNames().map(n=>`<option ${n===cur?'selected':''}>${n}</option>`).join('');
+  mBody.innerHTML=`
+    <div class="swapbox">${label(d,s)} ${r})</div>
+    <label>복사</label>
+    <select id="editName">${opts}</select>
+    <label>임원 이름</label>
+    <input id="adminName" placeholder="예: 김임원">
+    <div class="right">
+      <button class="btn" onclick="closeM()">취소</button>
+      <button class="btn primary" id="ok">저장</button>
+    </div>`;
+  openM();
+  document.getElementById('ok').onclick=()=>{
+    const nn=val('editName'), an=val('adminName')||'임원';
+    if(nn!==cur){ assign[d][s][r][i]=nn; saveAssign();
+      pushLog(`[임원수정] ${an} · ${label(d,s)} ${r}) ${cur} → ${nn}`); }
+    closeM();
+  };
+}
+function val(id){const e=document.getElementById(id);return e?e.value.trim():'';}
+
+/* ---------- 신청 현황 ---------- */
+function renderReqs(){
+  const box=document.getElementById('reqList');
+  const ids=Object.keys(requests);
+  if(!ids.length){ box.innerHTML='<div class="empty-note">접수된 신청이 없습니다.</div>'; return; }
+  ids.sort((x,y)=>x<y?1:-1); // 최신 먼저
+  box.innerHTML='';
+  ids.forEach(id=>{
+    const r=requests[id];
+    const badge = r.status==='wait'?'<span class="badge b-wait">승인 대기</span>'
+      : r.status==='ok'?'<span class="badge b-ok">승인 완료</span>'
+      : '<span class="badge b-no">거절됨</span>';
+    let actions='';
+    if(admin && r.status==='wait'){
+      actions=`<div class="actions">
+        <button class="btn ok" onclick="approve('${id}')">승인 → 반영</button>
+        <button class="btn danger" onclick="reject('${id}')">거절</button></div>`;
+    }
+    box.innerHTML+=`<div class="req">
+      ${badge}<b>${r.kind==='swap'?'1:1 맞교환':'대타'}</b>
+      <div style="margin:4px 0;">${r.desc}</div>
+      <div class="meta">신청: ${r.who} · ${r.ts}${r.reason?' · 사유: '+r.reason:''}${r.handledBy?' · 처리: '+r.handledBy+' ('+r.handledTs+')':''}</div>
+      ${actions}
+    </div>`;
+  });
+}
+
+function approve(id){
+  const r=requests[id]; if(!r) return;
+  const an=prompt('승인 처리하는 임원 이름을 입력하세요','임원'); if(an===null) return;
+  // 반영
+  if(r.kind==='swap'){
+    const a=r.a,b=r.b;
+    if(assign[a.d]&&assign[a.d][a.s]&&assign[b.d]&&assign[b.d][b.s]){
+      assign[a.d][a.s][a.r][a.i]=b.name;
+      assign[b.d][b.s][b.r][b.i]=a.name;
+      saveAssign();
+    }
+  } else {
+    const a=r.a;
+    if(assign[a.d]&&assign[a.d][a.s]) { assign[a.d][a.s][a.r][a.i]=r.newName; saveAssign(); }
+  }
+  const upd={status:'ok', handledBy:an||'임원', handledTs:nowStr()};
+  if(online) db.ref('requests/'+id).update(upd); else {Object.assign(requests[id],upd); renderReqs();}
+  pushLog(`[승인] ${an||'임원'} · ${r.desc} (신청: ${r.who})`);
+}
+function reject(id){
+  const r=requests[id]; if(!r) return;
+  const an=prompt('거절 처리하는 임원 이름을 입력하세요','임원'); if(an===null) return;
+  const upd={status:'no', handledBy:an||'임원', handledTs:nowStr()};
+  if(online) db.ref('requests/'+id).update(upd); else {Object.assign(requests[id],upd); renderReqs();}
+  pushLog(`[거절] ${an||'임원'} · ${r.desc} (신청: ${r.who})`);
+}
+
+/* ---------- 변경 기록 ---------- */
+function renderLogs(){
+  const box=document.getElementById('logList');
+  const ids=Object.keys(logs);
+  if(!ids.length){ box.innerHTML='<div class="empty-note">기록이 없습니다.</div>'; return; }
+  ids.sort((x,y)=>x<y?1:-1);
+  box.innerHTML='';
+  ids.forEach(id=>{const l=logs[id];
+    box.innerHTML+=`<div class="req"><span class="meta">${l.ts}</span> · ${l.text}</div>`;});
+}
+
+/* ---------- 모드/관리자 토글 ---------- */
+function setMode(m){
+  mode=m; pick=null;
+  document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.remove('on'));
+  document.getElementById(m==='view'?'mView':m==='swap'?'mSwap':'mSub').classList.add('on');
+  renderCal();
+}
+document.getElementById('mView').onclick=()=>setMode('view');
+document.getElementById('mSwap').onclick=()=>setMode('swap');
+document.getElementById('mSub').onclick=()=>setMode('sub');
+
+document.getElementById('adminBtn').onclick=()=>{
+  const pw=prompt('관리자 비밀번호를 입력하세요'); if(pw===null) return;
+  if(pw===ADMIN_PW){ admin=true; pick=null; mode='view';
+    document.getElementById('adminBar').style.display='block';
+    document.getElementById('modeSeg').style.display='none';
+    renderCal(); renderReqs();
+  } else alert('비밀번호가 틀렸습니다.');
+};
+document.getElementById('rosterBtn').onclick=openRoster;
+document.getElementById('adminOff').onclick=()=>{
+  admin=false;
+  document.getElementById('adminBar').style.display='none';
+  document.getElementById('modeSeg').style.display='inline-flex';
+  setMode('view'); renderReqs();
+};
+
+/* ---------- 명단 관리 / 엑셀 업로드 ---------- */
+function saveRoster(list){
+  rosterRecords=list;
+  if(online) db.ref('roster').set(list);
+}
+const GRADE_ORDER={'초신입':0,'초4':4,'초5':5,'초6':6,'중1':11,'중2':12,'중3':13,'고':20,'고1':21,'고2':22,'고3':23};
+function gradeRank(g){ return GRADE_ORDER[g]!==undefined?GRADE_ORDER[g]:99; }
+
+function openRoster(){
+  mTitle.textContent='명단 관리';
+  const rows=rosterRecords.map((r,i)=>`<tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:4px 6px;">${r.grade||''}</td>
+      <td style="padding:4px 6px;">${r.name||''}</td>
+      <td style="padding:4px 6px; color:var(--muted)">${r.school||''}</td>
+      <td style="padding:4px 6px; color:var(--muted)">${r.noDD?'대대 제외':''}</td>
+    </tr>`).join('');
+  mBody.innerHTML=`
+    <div style="font-size:13px; color:var(--muted); margin-bottom:10px;">
+      현재 <b>${rosterRecords.length}명</b>. 엑셀로 명단 전체를 갱신할 수 있습니다.
+      (열 순서: 학년 · 성명 · 학교 · 비고[대대 제외])
+    </div>
+    <div style="max-height:220px; overflow:auto; border:1px solid var(--line); border-radius:8px; margin-bottom:12px;">
+      <table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead><tr style="background:#f0efe9;">
+          <th style="text-align:left; padding:5px 6px;">학년</th>
+          <th style="text-align:left; padding:5px 6px;">성명</th>
+          <th style="text-align:left; padding:5px 6px;">학교</th>
+          <th style="text-align:left; padding:5px 6px;">비고</th>
+        </tr></thead><tbody>${rows}</tbody>
+      </table>
+    </div>
+    <label>엑셀 파일 업로드 (.xlsx)</label>
+    <input type="file" id="xlsFile" accept=".xlsx,.xls">
+    <div style="font-size:12px; color:var(--hint); margin-bottom:12px;">
+      파일을 고르면 먼저 미리보기와 변경 요약을 보여드립니다. 확인 후 반영하세요.
+    </div>
+    <div class="right">
+      <button class="btn" onclick="downloadRosterTemplate()">양식 내려받기</button>
+      <button class="btn" onclick="closeM()">닫기</button>
+    </div>`;
+  openM();
+  document.getElementById('xlsFile').onchange=handleRosterFile;
+}
+
+function handleRosterFile(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const wb=XLSX.read(ev.target.result,{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      const parsed=parseRosterRows(rows);
+      if(!parsed.length){ alert('명단을 읽지 못했습니다. 열 순서(학년·성명·학교·비고)를 확인하세요.'); return; }
+      previewRoster(parsed);
+    }catch(err){ alert('엑셀을 읽는 중 오류가 발생했습니다: '+err.message); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/* 엑셀 행 파싱: 헤더가 있든 없든, '성명'이 있는 열을 찾아 처리 */
+function parseRosterRows(rows){
+  if(!rows||!rows.length) return [];
+  // 헤더 행 탐지
+  let headerIdx=-1, col={};
+  for(let i=0;i<Math.min(rows.length,5);i++){
+    const r=rows[i].map(x=>String(x).trim());
+    const ni=r.findIndex(x=>x==='성명'||x==='이름');
+    if(ni>=0){ headerIdx=i;
+      col.name=ni;
+      col.grade=r.findIndex(x=>x==='학년');
+      col.school=r.findIndex(x=>x==='학교');
+      break;
+    }
+  }
+  const out=[];
+  const seen=new Set();
+  const start = headerIdx>=0 ? headerIdx+1 : 0;
+  // 헤더 없으면 추정: [번호, 학년, 성명, 학교, 비고]
+  const gi = headerIdx>=0?col.grade:1;
+  const ni = headerIdx>=0?col.name:2;
+  const si = headerIdx>=0?col.school:3;
+  for(let i=start;i<rows.length;i++){
+    const r=rows[i].map(x=>String(x).trim());
+    const name=(ni>=0?r[ni]:'')||'';
+    if(!name) continue;
+    if(name==='성명'||name==='이름') continue;
+    const grade=(gi>=0?r[gi]:'')||'';
+    const school=(si>=0?r[si]:'')||'';
+    const rest=r.join(' ');
+    const noDD=/대대\s*제외/.test(rest);
+    if(seen.has(name)) continue;
+    seen.add(name);
+    out.push({grade,name,school,noDD});
+  }
+  return out;
+}
+
+function previewRoster(parsed){
+  const oldNames=new Set(rosterNames());
+  const newNames=new Set(parsed.map(r=>r.name));
+  const added=parsed.filter(r=>!oldNames.has(r.name)).map(r=>r.name);
+  const removed=[...oldNames].filter(n=>!newNames.has(n));
+  mTitle.textContent='명단 갱신 미리보기';
+  const list=arr=>arr.length?arr.join(', '):'(없음)';
+  mBody.innerHTML=`
+    <div class="swapbox">
+      현재 ${oldNames.size}명 → 갱신 후 <b>${parsed.length}명</b>
+    </div>
+    <div style="font-size:13px; margin-bottom:8px;">
+      <b style="color:var(--ok)">신입 (${added.length}명):</b> ${list(added)}
+    </div>
+    <div style="font-size:13px; margin-bottom:12px;">
+      <b style="color:var(--danger)">졸업·삭제 (${removed.length}명):</b> ${list(removed)}
+    </div>
+    ${removed.some(n=>nameInAssign(n)) ? `<div style="font-size:12px; color:var(--warn); background:var(--warn-bg); padding:8px; border-radius:8px; margin-bottom:12px;">
+      ⚠️ 삭제 대상 중 <b>${removed.filter(nameInAssign).join(', ')}</b> 은(는) 현재 배정표에 들어 있습니다. 명단 갱신 후 해당 배정은 직접 교체해 주세요.
+    </div>`:''}
+    <label>처리 임원 이름</label>
+    <input id="rAdmin" placeholder="예: 김임원">
+    <div class="right">
+      <button class="btn" onclick="openRoster()">취소</button>
+      <button class="btn primary" id="rApply">이 명단으로 갱신</button>
+    </div>`;
+  openM();
+  document.getElementById('rApply').onclick=()=>{
+    const an=val('rAdmin')||'임원';
+    parsed.sort((a,b)=> gradeRank(a.grade)-gradeRank(b.grade) || a.name.localeCompare(b.name,'ko'));
+    saveRoster(parsed);
+    pushLog(`[명단갱신] ${an} · ${oldNames.size}명 → ${parsed.length}명 (신입 ${added.length}, 졸업·삭제 ${removed.length})`);
+    closeM();
+    toast(`명단을 갱신했습니다. (${parsed.length}명)`);
+  };
+}
+function nameInAssign(n){
+  for(const d in assign) for(const s of assign[d]) for(const role of ['대','소']) if((s[role]||[]).includes(n)) return true;
+  return false;
+}
+
+function downloadRosterTemplate(){
+  const data=[['학년','성명','학교','비고']];
+  rosterRecords.forEach(r=>data.push([r.grade,r.name,r.school,r.noDD?'대대 제외':'']));
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'명단');
+  XLSX.writeFile(wb,'복사단명단_양식.xlsx');
+}
+
+/* ---------- 간단 토스트 ---------- */
+function toast(msg){
+  const t=document.createElement('div');
+  t.textContent=msg;
+  t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#2c2c2a;color:#fff;padding:11px 16px;border-radius:9px;font-size:13px;z-index:99;max-width:90%;text-align:center;';
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2600);
+}
+
+function renderAll(){ renderCal(); renderReqs(); renderLogs(); }
+
+initFirebase();
+renderAll();
+</script>
+</body>
+</html>
