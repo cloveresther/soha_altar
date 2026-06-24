@@ -296,6 +296,8 @@ body.admin .bnav .admin-only{display:flex}
 .vacrow .vd{width:74px;text-align:center;padding:6px 4px;border:1px solid var(--line);border-radius:8px;font-size:13px}
 .vacrow .vdash{color:var(--sub)}
 .vdpick{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:13px;font-weight:600;color:var(--sub);min-width:58px}
+.vacswitch{display:flex;align-items:center;gap:9px;padding:11px 13px;border:1px solid var(--line);border-radius:11px;background:#f7faf9;font-weight:700;font-size:14px;cursor:pointer}
+.vacswitch input{width:18px;height:18px}
 .vdpick.set{background:var(--soft);border-color:var(--brand);color:var(--brand)}
 .vdel{width:28px;height:28px;border-radius:7px;background:#fbeaea;color:var(--danger);border:none;font-size:13px;margin-left:auto}
 .vacadd{display:flex;gap:8px;margin:8px 0 4px}
@@ -559,9 +561,9 @@ const SEED_MONTHS={"2026-01":SEED_01_2026,"2026-02":SEED_02_2026,"2026-03":SEED_
 
 /* 학년별 최소~최대 배정 횟수 기본값 (null이면 이 값 사용) */
 const DEFAULT_GRADE_LIMITS={
-  '초4':{min:2,max:6}, '초5':{min:0,max:8}, '초6':{min:0,max:8},
-  '중1':{min:0,max:10}, '중2':{min:0,max:10}, '중3':{min:0,max:10},
-  '고1':{min:0,max:12}, '고2':{min:0,max:12}, '고3':{min:0,max:12},
+  '초4':{min:2,max:4}, '초5':{min:2,max:4}, '초6':{min:2,max:3},
+  '중1':{min:2,max:2}, '중2':{min:2,max:2}, '중3':{min:2,max:2},
+  '고1':{min:0,max:1}, '고2':{min:0,max:1}, '고3':{min:0,max:1},
 };
 function gradeLimits(){ return state.gradeLimits || DEFAULT_GRADE_LIMITS; }
 function limitFor(grade){ const L=gradeLimits(); return L[grade] || {min:0,max:99}; }
@@ -584,6 +586,9 @@ const DEFAULT_VACATION={
   },
   grades:['초4','초5','초6','중1'],  // 방학 수·금 봉사 학년(기본)
   time:'10:00',
+  enabled:true,            // 방학 배정 반영 켜기/끄기(관리자 스위치)
+  applyStart:'',           // 관리자가 직접 정하는 반영 기간 시작('MM-DD', 비우면 학교별 기간 사용)
+  applyEnd:'',             // 반영 기간 종료('MM-DD')
 };
 function vacationCfg(){ return state.vacation || DEFAULT_VACATION; }
 if(state.vacation==null){ state.vacation=JSON.parse(JSON.stringify(DEFAULT_VACATION)); }
@@ -638,6 +643,10 @@ function inRangeMD(md, start, end){
 }
 function vacationSchoolsOn(yy,mm,dd){
   const cfg=vacationCfg(); const md=String(mm).padStart(2,'0')+'-'+String(dd).padStart(2,'0');
+  // 관리자 스위치가 꺼져 있으면 방학 배정을 전혀 반영하지 않음
+  if(cfg.enabled===false) return new Set();
+  // 관리자가 '반영 기간'을 직접 정했다면, 그 기간 밖의 날짜는 방학 배정 제외
+  if(cfg.applyStart && cfg.applyEnd && !inRangeMD(md, cfg.applyStart, cfg.applyEnd)) return new Set();
   const set=new Set();
   for(const sch in (cfg.schools||{})){
     const v=cfg.schools[sch]; if(!v)continue;
@@ -888,24 +897,30 @@ function buildSpecialTally(year){
   const man=(state.specialLog&&state.specialLog[year])||{};
   // 특별미사 누적표는 '수동 기록(specialLog)'을 정본으로 사용한다.
   // (정기 배정표의 성모신심 등에는 일반 복사도 다수 배정되므로, 실제 배정을 그대로 세면 명단이 폭증함)
-  // 그 달에 수동 기록이 있으면 그것만 쓰고, 기록이 전혀 없는 달에 한해 실제 배정으로 보완한다.
+  // 판단은 '미사 종류별'로 따로 한다: 그 달·그 종류에 수동 기록이 있으면 그것만 쓰고,
+  // 기록이 없는 종류만 그 달 실제 배정으로 보완한다.
   for(let m=1;m<=12;m++){
-    SPECIAL_KINDS.forEach(k=>{
-      const logged=(man[k.key]&&man[k.key][m])||null;
-      if(logged && logged.length){ tally[k.key][m]=logged.slice(); }
-    });
-    // 그 달에 어떤 종류든 수동 기록이 하나도 없고, 실제 배정이 있으면 보완
-    const anyLogged=SPECIAL_KINDS.some(k=>(man[k.key]&&man[k.key][m]&&man[k.key][m].length));
-    if(!anyLogged && monthHasRealAssign(year,m)){
+    // 실제 배정에서 종류별로 모아두기(보완용)
+    let realByKind=null;
+    if(monthHasRealAssign(year,m)){
+      realByKind={};
       const mo=state.months[ym(year,m)];
       if(mo&&mo.assign) Object.values(mo.assign).forEach(day=>{
         ((day&&day.masses)||[]).forEach(ms=>{
           const k=specialKindOf(ms.title||''); if(!k)return;
-          [...(ms.big||[]),...(ms.small||[])].forEach(n=>{ if(!n)return;
-            (tally[k.key][m]=tally[k.key][m]||[]); if(!tally[k.key][m].includes(n)) tally[k.key][m].push(n); });
+          (realByKind[k.key]=realByKind[k.key]||[]);
+          [...(ms.big||[]),...(ms.small||[])].forEach(n=>{ if(n && !realByKind[k.key].includes(n)) realByKind[k.key].push(n); });
         });
       });
     }
+    SPECIAL_KINDS.forEach(k=>{
+      const logged=(man[k.key]&&man[k.key][m])||null;
+      if(logged && logged.length){
+        tally[k.key][m]=logged.slice();                 // 수동 기록 우선(정본)
+      } else if(realByKind && realByKind[k.key] && realByKind[k.key].length){
+        tally[k.key][m]=realByKind[k.key].slice();       // 기록 없는 종류만 실제 배정으로 보완
+      }
+    });
   }
   return tally;
 }
@@ -2198,7 +2213,27 @@ window.openVacation=function(){
 };
 function renderVacation(){
   const cfg=window._vacDraft;
-  let h=`<div class="note">관리자가 설정한 <b>방학 기간(여름·겨울)</b> 동안, 그 학교의 <b>봉사 학년</b> 아이들이 <b>수·금 ${cfg.time}</b> 미사에 배정됩니다. 학교마다 기간을 다르게 정할 수 있고, 겨울방학처럼 해를 넘기는 기간(예: 1/5~2/3, 12/24~2/3)도 됩니다. 날짜가 비어 있으면 그 학교·계절은 방학 대상에서 제외됩니다.</div>`;
+  // 새 필드 기본값 보정
+  if(cfg.enabled===undefined) cfg.enabled=true;
+  if(cfg.applyStart===undefined) cfg.applyStart='';
+  if(cfg.applyEnd===undefined) cfg.applyEnd='';
+  let h=`<div class="note">방학 기간 동안 그 학교의 <b>봉사 학년</b> 아이들이 <b>수·금 ${cfg.time}</b> 미사에 배정됩니다. 아래 <b>방학 배정 반영</b>을 켠 상태에서 새 달을 만들면 적용됩니다.</div>`;
+  // 1) 방학 배정 반영 켜기/끄기 + 관리자 지정 반영 기간
+  h+='<div class="sectitle">방학 배정 반영</div>';
+  h+=`<label class="vacswitch">
+        <input type="checkbox" id="vac_enabled" ${cfg.enabled!==false?'checked':''} onchange="window._vacDraft.enabled=this.checked; renderVacation();">
+        <span>방학미사를 배정표에 반영</span>
+      </label>`;
+  if(cfg.enabled!==false){
+    h+=`<div class="help" style="margin:6px 0 8px">관리자가 <b>반영 기간</b>을 직접 정하면 그 기간 안에서만 방학미사가 생성됩니다. 비워 두면 아래 학교별 기간을 그대로 사용합니다.</div>`;
+    h+=`<div class="vacrow" style="margin-bottom:10px">
+        <span class="vseason">반영 기간</span>
+        <button class="vdpick ${cfg.applyStart?'set':''}" onclick="pickApplyDate('start')">${cfg.applyStart?fmtMD(cfg.applyStart):'시작일'}</button>
+        <span class="vdash">~</span>
+        <button class="vdpick ${cfg.applyEnd?'set':''}" onclick="pickApplyDate('end')">${cfg.applyEnd?fmtMD(cfg.applyEnd):'종료일'}</button>
+        ${(cfg.applyStart||cfg.applyEnd)?`<button class="vdel" onclick="clearApplyRange()" title="기간 비우기">🗑</button>`:''}
+      </div>`;
+  }
   // 봉사 학년 선택
   h+='<div class="sectitle">봉사 학년 (방학 수·금 담당)</div><div class="qgrid">';
   GRADES.forEach(g=>{
@@ -2297,12 +2332,60 @@ window.toggleVacGrade=function(g,on){
   if(on){ if(!arr.includes(g)) arr.push(g); }
   else { window._vacDraft.grades=arr.filter(x=>x!==g); }
 };
+// 관리자 지정 '반영 기간' 날짜 선택(학교 날짜 선택기를 재활용)
+window.pickApplyDate=function(which){
+  _pickTarget={apply:true, which};
+  const cur=window._vacDraft[which==='start'?'applyStart':'applyEnd']||'';
+  let pm = cur ? Number(cur.split('-')[0]) : (which==='end'?8:7);
+  renderApplyDatePicker(pm);
+};
+function renderApplyDatePicker(month){
+  const monthNames=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const cur=window._vacDraft[_pickTarget.which==='start'?'applyStart':'applyEnd']||'';
+  const last=new Date(2026,month,0).getDate();
+  let h=`<div class="note">방학 배정 반영 기간 · ${_pickTarget.which==='start'?'시작일':'종료일'}</div>`;
+  h+=`<div class="dpnav">
+    <button class="tnav" onclick="renderApplyDatePicker(${month>1?month-1:12})">‹</button>
+    <b>${monthNames[month-1]}</b>
+    <button class="tnav" onclick="renderApplyDatePicker(${month<12?month+1:1})">›</button></div>`;
+  h+='<div class="dpgrid">';
+  for(let d=1;d<=last;d++){
+    const md=String(month).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    h+=`<button class="dpcell ${md===cur?'cur':''}" onclick="setAppliedDate('${md}')">${d}</button>`;
+  }
+  h+='</div>';
+  h+=`<button class="btnfull ghost" onclick="setAppliedDate('')">날짜 비우기</button>
+      <button class="btnfull ghost" onclick="renderVacation()">← 방학 설정으로</button>`;
+  openSheet('반영 기간 날짜 선택',h);
+}
+window.setAppliedDate=function(md){
+  window._vacDraft[_pickTarget.which==='start'?'applyStart':'applyEnd']=md;
+  renderVacation();
+};
+window.clearApplyRange=function(){
+  window._vacDraft.applyStart=''; window._vacDraft.applyEnd='';
+  renderVacation();
+};
 window.saveVacation=function(){
-  // 빈 기간 학교는 제거
   const cfg=window._vacDraft;
+  // 여름·겨울 어느 한쪽이라도 시작·종료가 모두 채워진 학교만 유지
   const clean={};
-  for(const s in cfg.schools){ const v=cfg.schools[s]; if(v&&v.start&&v.end) clean[s]=v; }
-  state.vacation={schools:clean, grades:cfg.grades.slice(), time:cfg.time||'10:00'};
+  for(const s in cfg.schools){
+    const v=cfg.schools[s]||{}; const sm=v.summer||{}, wi=v.winter||{};
+    const hasSummer = sm.start && sm.end;
+    const hasWinter = wi.start && wi.end;
+    if(hasSummer || hasWinter){
+      clean[s]={ summer:{start:sm.start||'',end:sm.end||''}, winter:{start:wi.start||'',end:wi.end||''} };
+    }
+  }
+  state.vacation={
+    schools:clean,
+    grades:cfg.grades.slice(),
+    time:cfg.time||'10:00',
+    enabled: cfg.enabled!==false,
+    applyStart: cfg.applyStart||'',
+    applyEnd: cfg.applyEnd||''
+  };
   addAdminLog('방학 설정 변경');
   save(); closeSheet(); toast('저장되었습니다 — 새 달 만들 때 반영됩니다');
 };
