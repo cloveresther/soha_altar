@@ -50,6 +50,10 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .seg button.on{background:var(--brand);color:#fff}
 .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .toolbar .sp{flex:1}
+.pubbanner{margin:0 0 12px;padding:9px 13px;border-radius:10px;font-size:12.5px;font-weight:700;
+  background:#fff4e5;color:#9a5b00;border:1px solid #ffd9a0}
+.pubbanner.ok{background:#e7f7ee;color:#1c7a44;border-color:#aee3c4}
+.tbtn.published{background:#e7f7ee;color:#1c7a44;border-color:#aee3c4}
 .tbtn{padding:8px 13px;border-radius:10px;background:var(--card);border:1px solid var(--line);
   font-size:13.5px;font-weight:600;color:var(--ink);display:inline-flex;align-items:center;gap:5px}
 .tbtn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
@@ -71,7 +75,14 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .mass{border-radius:8px;padding:4px 6px;font-size:11px;background:#fafbfc;border:1px solid #eef0f3;line-height:1.3}
 .mass .mt{display:flex;align-items:center;gap:4px;font-weight:700;font-size:11px;flex-wrap:wrap}
 .mass .mttl{font-weight:800;color:var(--brand);font-size:10.5px;line-height:1.2;margin-bottom:1px;word-break:keep-all}
+.maintbar{margin-top:28px;padding-top:14px;border-top:1px dashed #e3e7ec;text-align:center}
+.maintlink{background:none;border:none;color:#b3bac3;font-size:11px;cursor:pointer;padding:4px 8px}
+.maintlink:hover{color:var(--danger);text-decoration:underline}
 .cdot{width:9px;height:9px;border-radius:3px;flex:none}
+.clbl{flex:none;display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;
+  border-radius:4px;font-size:10px;font-weight:800;line-height:1;color:#fff}
+.cl-hong{background:var(--hong)}.cl-nok{background:var(--nok)}.cl-bo{background:var(--bo)}
+.cl-baek{background:#fff;color:#555;border:1px solid #cfd6df}
 .c-hong{background:var(--hong)}.c-nok{background:var(--nok)}.c-baek{background:var(--baek)}.c-bo{background:var(--bo)}
 .mass .who{color:var(--sub);font-size:10.5px;margin-top:1px;word-break:keep-all}
 .mass .who.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 4px;column-gap:5px}
@@ -243,6 +254,11 @@ body.admin .bnav .admin-only{display:flex}
 .dchip.cur{background:var(--soft);border-color:var(--brand);color:var(--brand)}
 .dchip:active{transform:scale(.94)}
 .vactbl{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:8px}
+.vacschool{border-bottom:1px solid #eef0f3;padding:4px 0}
+.vacschool:last-child{border-bottom:none}
+.vshd{display:flex;align-items:center;padding:6px 12px 2px}
+.vshd .vs{flex:1;font-weight:700;font-size:14px}
+.vseason{width:54px;font-size:12.5px;font-weight:700;color:var(--sub)}
 .vacrow{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid #f1f3f5}
 .vacrow:last-child{border-bottom:none}
 .vacrow .vs{flex:1;font-weight:600;font-size:13.5px}
@@ -275,12 +291,18 @@ body.admin .bnav .admin-only{display:flex}
 #rosterTable td.ctot{background:#f7f9ff}
 #rosterTable td.ctot b{color:var(--brand-d);font-weight:800}
 #rosterTable .zc{color:#d3d8de}
+#rosterTable .mcur{font-size:10px;color:#aab2bd;margin-left:1px;font-weight:600}
 #rosterTable .csch{font-size:12px;color:var(--sub)}
 #rosterTable tr.rex{opacity:.5}
 #rosterTable .lex{font-style:normal;font-size:10px;background:#fbeaea;color:var(--danger);padding:1px 6px;border-radius:6px}
 #rosterTable .ldd{font-style:normal;font-size:10px;background:#fff3e0;color:#b06f00;padding:1px 6px;border-radius:6px}
 .lastmod{position:fixed;right:9px;bottom:62px;font-size:10px;color:#b8bec6;pointer-events:none;z-index:5;background:rgba(255,255,255,.7);padding:1px 5px;border-radius:5px}
 .mgblock{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.mgrow{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.pribtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:2px 7px;font-size:13px;
+  cursor:pointer;filter:grayscale(1);opacity:.45;line-height:1.4}
+.pribtn.on{filter:none;opacity:1;border-color:var(--warn);background:#fff7e9}
+.pribtn:disabled{opacity:.18;cursor:not-allowed}
 .mghd{font-weight:700;font-size:14px;margin-bottom:7px}
 .mghd i{font-style:normal;font-size:11px;color:var(--sub);font-weight:600;margin-left:5px}
 table{border-collapse:collapse;width:100%;font-size:13px}
@@ -362,6 +384,7 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
       <button class="nav" id="nextM">›</button>
     </div>
     <p class="updated" id="updatedAt">최종 변경: -</p>
+    <div id="pubBanner" class="pubbanner" style="display:none"></div>
 
     <div class="toolbar">
       <div class="seg">
@@ -374,10 +397,14 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
       <button class="tbtn" id="pdfBtn">🖨 PDF</button>
       <button class="tbtn admin-act" id="newMonthBtn" style="display:none">＋ 새 달</button>
       <button class="tbtn primary admin-act" id="autoBtn" style="display:none">⚡ 자동배정</button>
+      <button class="tbtn admin-act" id="publishBtn" style="display:none">📢 배정표 배포</button>
     </div>
 
     <div id="calView"></div>
     <div id="listView" class="cards" style="display:none"></div>
+    <div id="maintBar" class="maintbar" style="display:none">
+      <button class="maintlink" id="resetSeedBtn">유지보수: 이 달을 시드로 되돌리기</button>
+    </div>
   </section>
 
   <!-- VIEW: REQUESTS -->
@@ -444,7 +471,7 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
 /* ====================== EMBEDDED DATA ====================== */
 const LITCAL = {"01-01":{"t":"천주의 성모 마리아 대축일 (세계 평화의 날)","c":"백"},"01-02":{"t":"성 바실리오와 나지안조의 성 그레고리오 주교 학자 기념일","c":"백"},"01-03":{"t":"주님의 거룩한 이름 기념일","c":"백"},"01-04":{"t":"주님 공현 대축일","c":"백"},"01-05":{"t":"주님 공현 후 월요일","c":"백"},"01-06":{"t":"주님 공현 후 화요일","c":"백"},"01-07":{"t":"주님 공현 후 수요일 (성 라이문도 사제)","c":"백"},"01-08":{"t":"주님 공현 후 목요일","c":"백"},"01-09":{"t":"주님 공현 후 금요일","c":"백"},"01-10":{"t":"주님 공현 후 토요일","c":"백"},"01-11":{"t":"주님 세례 축일 (연중 시기 시작)","c":"백"},"01-12":{"t":"연중 제1주간 월요일","c":"녹"},"01-13":{"t":"연중 제1주간 화요일 (성 힐라리오 주교 학자)","c":"녹"},"01-14":{"t":"연중 제1주간 수요일","c":"녹"},"01-15":{"t":"연중 제1주간 목요일","c":"녹"},"01-16":{"t":"연중 제1주간 금요일","c":"녹"},"01-17":{"t":"성 안토니오 아바스 기념일","c":"백"},"01-18":{"t":"연중 제2주일 (일치 주간 시작)","c":"녹"},"01-19":{"t":"연중 제2주간 월요일","c":"녹"},"01-20":{"t":"연중 제2주간 화요일 (성 파비아노 교황 순교자 / 성 세바스티아노 순교자)","c":"녹"},"01-21":{"t":"성 아녜스 동정 순교자 기념일","c":"홍"},"01-22":{"t":"연중 제2주간 목요일 (성 빈첸시오 부제 순교자)","c":"녹"},"01-23":{"t":"연중 제2주간 금요일","c":"녹"},"01-24":{"t":"성 프란치스코 살레시오 주교 학자 기념일","c":"백"},"01-25":{"t":"연중 제3주일 (하느님의 말씀 주일)","c":"녹"},"01-26":{"t":"성 티모테오와 성 티토 주교 기념일","c":"백"},"01-27":{"t":"연중 제3주간 화요일 (성 안젤라 메리치 동정)","c":"녹"},"01-28":{"t":"성 토마스 아퀴나스 사제 학자 기념일","c":"백"},"01-29":{"t":"연중 제3주간 목요일","c":"녹"},"01-30":{"t":"연중 제3주간 금요일","c":"녹"},"01-31":{"t":"성 요한 보스코 사제 기념일","c":"백"},"02-01":{"t":"연중 제4주일","c":"녹"},"02-02":{"t":"주님 봉헌 축일 (축 축일 / 축원 생활의 날)","c":"백"},"02-03":{"t":"연중 제4주간 화요일 (성 블라시오 주교 순교자 / 성 안스가리오 주교)","c":"녹"},"02-04":{"t":"연중 제4주간 수요일","c":"녹"},"02-05":{"t":"성 아가타 동정 순교자 기념일","c":"홍"},"02-06":{"t":"성 바오로 미키와 동료 순교자들 기념일","c":"홍"},"02-07":{"t":"연중 제4주간 토요일","c":"녹"},"02-08":{"t":"연중 제5주일","c":"녹"},"02-09":{"t":"연중 제5주간 월요일","c":"녹"},"02-10":{"t":"성 스콜라스티카 동정 기념일","c":"백"},"02-11":{"t":"연중 제5주간 수요일 (루르드의 복되신 동정 마리아 / 세계 병자의 날)","c":"녹"},"02-12":{"t":"연중 제5주간 목요일","c":"녹"},"02-13":{"t":"연중 제5주간 금요일","c":"녹"},"02-14":{"t":"성 치릴로 주교와 성 메토디오 주교 기념일","c":"백"},"02-15":{"t":"연중 제6주일","c":"녹"},"02-16":{"t":"연중 제6주간 월요일","c":"녹"},"02-17":{"t":"연중 제6주간 화요일 (성모 마리아의 종 수도회의 일곱 성인 창설자)","c":"녹"},"02-18":{"t":"재의 수요일 (사순 시기 시작)","c":"자"},"02-19":{"t":"재의 수요일 후 목요일","c":"자"},"02-20":{"t":"재의 수요일 후 금요일","c":"자"},"02-21":{"t":"재의 수요일 후 토요일 (성 베드로 다미아노 주교 학자)","c":"자"},"02-22":{"t":"사순 제1주일 (성 베드로 사도 좌 축일은 주일 전례로 생략)","c":"자"},"02-23":{"t":"사순 제1주간 월요일 (성 폴리카르포 주교 순교자)","c":"자"},"02-24":{"t":"사순 제1주간 화요일","c":"자"},"02-25":{"t":"사순 제1주간 수요일","c":"자"},"02-26":{"t":"사순 제1주간 목요일","c":"자"},"02-27":{"t":"사순 제1주간 금요일 (성 그레고리오 나레카치 주교 학자)","c":"자"},"02-28":{"t":"사순 제1주간 토요일","c":"자"},"03-01":{"t":"사순 제2주일","c":"자"},"03-02":{"t":"사순 제2주간 월요일","c":"자"},"03-03":{"t":"사순 제2주간 화요일","c":"자"},"03-04":{"t":"사순 제2주간 수요일 (성 카시미로)","c":"자"},"03-05":{"t":"사순 제2주간 목요일","c":"자"},"03-06":{"t":"사순 제2주간 금요일","c":"자"},"03-07":{"t":"사순 제2주간 토요일 (성녀 페르페투아와 성녀 펠리치타 순교자)","c":"자"},"03-08":{"t":"사순 제3주일 (성 요한 보조자 사제는 주일로 생략)","c":"자"},"03-09":{"t":"사순 제3주간 월요일 (성녀 프란치스카 로마나 수도자)","c":"자"},"03-10":{"t":"사순 제3주간 화요일","c":"자"},"03-11":{"t":"사순 제3주간 수요일","c":"자"},"03-12":{"t":"사순 제3주간 목요일","c":"자"},"03-13":{"t":"사순 제3주간 금요일","c":"자"},"03-14":{"t":"사순 제3주간 토요일","c":"자"},"03-15":{"t":"사순 제4주일","c":"자"},"03-16":{"t":"사순 제4주간 월요일","c":"자"},"03-17":{"t":"사순 제4주간 화요일 (성 패트릭 주교)","c":"자"},"03-18":{"t":"사순 제4주간 수요일 (성 치릴로 예루살렘 주교 학자)","c":"자"},"03-19":{"t":"복되신 동정 마리아의 배필 성 요셉 대축일","c":"백"},"03-20":{"t":"사순 제4주간 금요일","c":"자"},"03-21":{"t":"사순 제4주간 토요일","c":"자"},"03-22":{"t":"사순 제5주일","c":"자"},"03-23":{"t":"사순 제5주간 월요일 (성 투리비오 데 모그로베호 주교)","c":"자"},"03-24":{"t":"사순 제5주간 화요일","c":"자"},"03-25":{"t":"주님 탄생 예고 대축일","c":"백"},"03-26":{"t":"사순 제5주간 목요일","c":"자"},"03-27":{"t":"사순 제5주간 금요일","c":"자"},"03-28":{"t":"사순 제5주간 토요일","c":"자"},"03-29":{"t":"주님 수난 성지 주일","c":"홍"},"03-30":{"t":"성주간 월요일","c":"자"},"03-31":{"t":"성주간 화요일","c":"자"},"04-01":{"t":"성주간 수요일","c":"자"},"04-02":{"t":"성목요일 (주님 만찬 미사 전까지는 자색 / 만찬 미사는 백색)","c":"백"},"04-03":{"t":"주님 수난 금요일 (성금요일)","c":"홍"},"04-04":{"t":"성토요일 (부활 성야 미사 전까지는 전례 없음)","c":"백"},"04-05":{"t":"예수 부활 대축일","c":"백"},"04-06":{"t":"부활 팔일 축제 월요일","c":"백"},"04-07":{"t":"부활 팔일 축제 화요일 (성 요한 바티스타 드 라 살 사제 기념일은 생략)","c":"백"},"04-08":{"t":"부활 팔일 축제 수요일","c":"백"},"04-09":{"t":"부활 팔일 축제 목요일","c":"백"},"04-10":{"t":"부활 팔일 축제 금요일","c":"백"},"04-11":{"t":"부활 팔일 축제 토요일 (성 스타니스라오 주교 순교자 기념일은 생략)","c":"백"},"04-12":{"t":"부활 제2주일 (하느님의 자비 주일)","c":"백"},"04-13":{"t":"부활 제2주간 월요일 (성 마르티노 1세 교황 순교자)","c":"백"},"04-14":{"t":"부활 제2주간 화요일","c":"백"},"04-15":{"t":"부활 제2주간 수요일","c":"백"},"04-16":{"t":"부활 제2주간 목요일","c":"백"},"04-17":{"t":"부활 제2주간 금요일","c":"백"},"04-18":{"t":"부활 제2주간 토요일","c":"백"},"04-19":{"t":"부활 제3주일","c":"백"},"04-20":{"t":"부활 제3주간 월요일","c":"백"},"04-21":{"t":"부활 제3주간 화요일 (성 안셀모 주교 학자)","c":"백"},"04-22":{"t":"부활 제3주간 수요일","c":"백"},"04-23":{"t":"부활 제3주간 목요일 (성 조지 순교자 / 성 아달베르토 주교 순교자)","c":"백"},"04-24":{"t":"부활 제3주간 금요일 (성 피델리스 사제 순교자)","c":"백"},"04-25":{"t":"성 마르코 복음사가 축일","c":"홍"},"04-26":{"t":"부활 제4주일 (성소 주일)","c":"백"},"04-27":{"t":"부활 제4주간 월요일","c":"백"},"04-28":{"t":"부활 제4주간 화요일 (성 베드로 샤넬 사제 순교자 / 성 루도비코 마리아 그리뇽 드 몽포르 사제)","c":"백"},"04-29":{"t":"성녀 카타리나 시에나 동정 학자 기념일","c":"백"},"04-30":{"t":"부활 제4주간 목요일 (성 비오 5세 교황)","c":"백"},"05-01":{"t":"부활 제4주간 금요일 (성 요셉 노동자 동정 배필)","c":"백"},"05-02":{"t":"성 아타나시오 주교 학자 기념일","c":"백"},"05-03":{"t":"주님 승천 대축일 (성 필립보와 성 야고보 사도 축일은 생략)","c":"백"},"05-04":{"t":"부활 제6주간 월요일","c":"백"},"05-05":{"t":"부활 제6주간 화요일","c":"백"},"05-06":{"t":"부활 제6주간 수요일","c":"백"},"05-07":{"t":"부활 제6주간 목요일","c":"백"},"05-08":{"t":"부활 제6주간 금요일","c":"백"},"05-09":{"t":"부활 제6주간 토요일","c":"백"},"05-10":{"t":"부활 제6주일","c":"백"},"05-11":{"t":"부활 제6주간 월요일","c":"백"},"05-12":{"t":"부활 제6주간 화요일 (성 네레오와 성 아킬레오 순교자 / 성 판크라시오 순교자)","c":"백"},"05-13":{"t":"부활 제6주간 수요일 (파티마의 복되신 동정 마리아)","c":"백"},"05-14":{"t":"성 마티아 사도 축일","c":"홍"},"05-15":{"t":"부활 제6주간 금요일","c":"백"},"05-16":{"t":"부활 제6주간 토요일","c":"백"},"05-17":{"t":"부활 제7주일","c":"백"},"05-18":{"t":"부활 제7주간 월요일 (성 요한 1세 교황 순교자)","c":"백"},"05-19":{"t":"부활 제7주간 화요일","c":"백"},"05-20":{"t":"부활 제7주간 수요일 (성 베르나르디노 사제)","c":"백"},"05-21":{"t":"부활 제7주간 목요일 (성 크리스토포로 마가야네스 사제와 동료 순교자들)","c":"백"},"05-22":{"t":"부활 제7주간 금요일 (성녀 리타 수도자)","c":"백"},"05-23":{"t":"부활 제7주간 토요일","c":"백"},"05-24":{"t":"성령 강림 대축일","c":"홍"},"05-25":{"t":"복되신 동정 마리아 교회의 어머니 기념일 (연중 제8주간 시작)","c":"백"},"05-26":{"t":"성 필립보 네리 사제 기념일","c":"백"},"05-27":{"t":"연중 제8주간 수요일 (캔터베리의 성 아우구스티노 주교)","c":"녹"},"05-28":{"t":"연중 제8주간 목요일","c":"녹"},"05-29":{"t":"연중 제8주간 금요일 (성 바오로 6세 교황)","c":"녹"},"05-30":{"t":"연중 제8주간 토요일","c":"녹"},"05-31":{"t":"삼위일체 대축일 (복되신 동정 마리아 방문 축일은 생략)","c":"백"},"06-01":{"t":"성 유스티노 순교자 기념일 (연중 제9주간 월요일)","c":"홍"},"06-02":{"t":"연중 제9주간 화요일 (성 마르첼리노와 성 베드로 순교자)","c":"녹"},"06-03":{"t":"성 찰스 르왕가와 동료 순교자들 기념일","c":"홍"},"06-04":{"t":"연중 제9주간 목요일","c":"녹"},"06-05":{"t":"성 보니파시오 주교 순교자 기념일","c":"홍"},"06-06":{"t":"연중 제9주간 토요일 (성 노르베르토 주교)","c":"녹"},"06-07":{"t":"그리스도의 성체 성혈 대축일","c":"백"},"06-08":{"t":"연중 제10주간 월요일","c":"녹"},"06-09":{"t":"연중 제10주간 화요일 (성 에프렘 부제 학자)","c":"녹"},"06-10":{"t":"연중 제10주간 수요일","c":"녹"},"06-11":{"t":"성 바르나바 사도 기념일","c":"홍"},"06-12":{"t":"지극히 거룩하신 예수 성심 대축일","c":"백"},"06-13":{"t":"티없으신 복되신 동정 마리아 기념일 (성 안토니오 사제 기념일은 생략)","c":"백"},"06-14":{"t":"연중 제11주일","c":"녹"},"06-15":{"t":"연중 제11주간 월요일","c":"녹"},"06-16":{"t":"연중 제11주간 화요일","c":"녹"},"06-17":{"t":"연중 제11주간 수요일","c":"녹"},"06-18":{"t":"연중 제11주간 목요일","c":"녹"},"06-19":{"t":"연중 제11주간 금요일 (성 로무알도 아바스)","c":"녹"},"06-20":{"t":"연중 제11주간 토요일","c":"녹"},"06-21":{"t":"연중 제12주일 (성 알로이시오 곤자가 수도자는 생략)","c":"녹"},"06-22":{"t":"연중 제12주간 월요일 (성 파울리노 주교 / 성 존 피셔 주교와 성 토마스 모어 순교자)","c":"녹"},"06-23":{"t":"연중 제12주간 화요일","c":"녹"},"06-24":{"t":"성 요한 세례자 탄생 대축일","c":"백"},"06-25":{"t":"연중 제12주간 목요일 (민족의 화해와 일치를 위한 기도의 날)","c":"녹"},"06-26":{"t":"연중 제12주간 금요일","c":"녹"},"06-27":{"t":"연중 제12주간 토요일 (알렉산드리아의 성 치릴로 주교 학자)","c":"녹"},"06-28":{"t":"연중 제13주일 (성 이레네오 주교 순교자는 생략 / 교황 자선 주일)","c":"녹"},"06-29":{"t":"성 베드로와 성 바오로 사도 대축일","c":"홍"},"06-30":{"t":"연중 제13주간 화요일 (로마 교회의 첫 순교자들이여)","c":"녹"},"07-01":{"t":"연중 제13주간 수요일","c":"녹"},"07-02":{"t":"연중 제13주간 목요일","c":"녹"},"07-03":{"t":"성 토마스 사도 축일","c":"홍"},"07-04":{"t":"연중 제13주간 토요일 (성 엘리사벳 포르투갈 동정)","c":"녹"},"07-05":{"t":"한국 성직자들의 수호자 성 김대건 안드레아 사제 순교자 대축일","c":"홍"},"07-06":{"t":"연중 제14주간 월요일 (성녀 마리아 고레티 동정 순교자)","c":"녹"},"07-07":{"t":"연중 제14주간 화요일","c":"녹"},"07-08":{"t":"연중 제14주간 수요일","c":"녹"},"07-09":{"t":"연중 제14주간 목요일 (성 아우구스티노 자오룽 사제와 동료 순교자들)","c":"녹"},"07-10":{"t":"연중 제14주간 금요일","c":"녹"},"07-11":{"t":"유럽의 수호자 성 베네딕토 아바스 기념일","c":"백"},"07-12":{"t":"연중 제15주일","c":"녹"},"07-13":{"t":"연중 제15주간 월요일 (성 헨리코)","c":"녹"},"07-14":{"t":"연중 제15주간 화요일 (성 카밀로 데 렐리스 사제)","c":"녹"},"07-15":{"t":"성 보나벤투라 주교 학자 기념일","c":"백"},"07-16":{"t":"연중 제15주간 수요일 (카르멜 산의 복되신 동정 마리아)","c":"녹"},"07-17":{"t":"연중 제15주간 목요일","c":"녹"},"07-18":{"t":"연중 제15주간 금요일","c":"녹"},"07-19":{"t":"연중 제15주간 토요일","c":"녹"},"07-20":{"t":"연중 제16주일 (성 아폴리나레 주교 순교자는 생략)","c":"녹"},"07-21":{"t":"연중 제16주간 월요일 (성 로렌조 브린디시 사제 학자)","c":"녹"},"07-22":{"t":"성녀 마리아 막달레나 축일","c":"백"},"07-23":{"t":"연중 제16주간 수요일 (성녀 브리지다 수도자)","c":"녹"},"07-24":{"t":"연중 제16주간 목요일 (성 샤르벨 마클루프 사제)","c":"녹"},"07-25":{"t":"성 야고보 사도 축일","c":"홍"},"07-26":{"t":"성 요아킴과 성녀 안나 동정 마리아의 부모 기념일","c":"백"},"07-27":{"t":"연중 제16주간 토요일","c":"녹"},"07-28":{"t":"연중 제17주일","c":"녹"},"07-29":{"t":"성녀 마르타와 성녀 마리아와 성 라자로 기념일","c":"백"},"07-30":{"t":"연중 제17주간 수요일 (성 피에트로 크리솔로고 주교 학자)","c":"녹"},"07-31":{"t":"성 이냐시오 데 로욜라 사제 기념일","c":"백"},"08-01":{"t":"성 알폰소 마리아 데 리구오리 주교 학자 기념일","c":"백"},"08-02":{"t":"연중 제18주일 (성 에우세비오 베르첼리 주교 / 성 피에트로 줄리아노 에이마르 사제는 생략)","c":"녹"},"08-03":{"t":"연중 제18주간 월요일","c":"녹"},"08-04":{"t":"성 장 마리 비안네 사제 기념일","c":"백"},"08-05":{"t":"연중 제18주간 수요일 (성모 대성전 봉헌)","c":"녹"},"08-06":{"t":"주님의 거룩한 변모 축일","c":"백"},"08-07":{"t":"연중 제18주간 금요일 (성 식스토 2세 교황과 동료 순교자들 / 성 가예타노 사제)","c":"녹"},"08-08":{"t":"성 도미니코 사제 기념일","c":"백"},"08-09":{"t":"연중 제19주일 (십자가의 성녀 테레사 베네딕타 동정 순교자는 생략)","c":"녹"},"08-10":{"t":"성 라우렌시오 부제 순교자 축일","c":"홍"},"08-11":{"t":"성녀 클라라 동정 기념일","c":"백"},"08-12":{"t":"연중 제19주간 수요일 (성녀 요안나 프란치스카 드 샹탈 수도자)","c":"녹"},"08-13":{"t":"연중 제19주간 목요일 (성 폰시아노 교황과 성 히폴리토 사제 순교자들)","c":"녹"},"08-14":{"t":"성 맥시밀리아노 마리아 콜베 사제 순교자 기념일","c":"홍"},"08-15":{"t":"성모 승천 대축일","c":"백"},"08-17":{"t":"연중 제20주간 월요일","c":"녹"},"08-18":{"t":"연중 제20주간 화요일","c":"녹"},"08-19":{"t":"연중 제20주간 수요일 (성 요한 에드 사제)","c":"녹"},"08-20":{"t":"성 베르나르도 아바스 학자 기념일","c":"백"},"08-21":{"t":"성 비오 10세 교황 기념일","c":"백"},"08-22":{"t":"복되신 동정 마리아 여왕 기념일","c":"백"},"08-23":{"t":"연중 제21주일 (리마의 성 로사 동정은 생략)","c":"녹"},"08-24":{"t":"성 바르톨로메오 사도 축일","c":"홍"},"08-25":{"t":"연중 제21주간 화요일 (성 루도비코 / 성 요셉 칼라산스 사제)","c":"녹"},"08-26":{"t":"연중 제21주간 수요일","c":"녹"},"08-27":{"t":"성녀 모니카 기념일","c":"백"},"08-28":{"t":"성 아우구스티노 주교 학자 기념일","c":"백"},"08-29":{"t":"성 요한 세례자의 수난 기념일","c":"홍"},"08-30":{"t":"연중 제22주일","c":"녹"},"08-31":{"t":"연중 제22주간 월요일","c":"녹"},"09-01":{"t":"연중 제22주간 화요일","c":"녹"},"09-02":{"t":"연중 제22주간 수요일","c":"녹"},"09-03":{"t":"성 대그레고리오 교황 학자 기념일","c":"백"},"09-04":{"t":"연중 제22주간 금요일","c":"녹"},"09-05":{"t":"연중 제22주간 토요일","c":"녹"},"09-06":{"t":"연중 제23주일","c":"녹"},"09-07":{"t":"연중 제23주간 월요일","c":"녹"},"09-08":{"t":"복되신 동정 마리아 탄생 축일","c":"백"},"09-09":{"t":"연중 제23주간 수요일 (성 베드로 클라베르 사제)","c":"녹"},"09-10":{"t":"연중 제23주간 목요일","c":"녹"},"09-11":{"t":"연중 제23주간 금요일","c":"녹"},"09-12":{"t":"연중 제23주간 토요일 (가장 거룩하신 마리아의 이름)","c":"녹"},"09-13":{"t":"연중 제24주일 (성 요한 크리소스토모 주교 학자는 생략)","c":"녹"},"09-14":{"t":"성 십자가 현양 축일","c":"홍"},"09-15":{"t":"고통의 성모 마리아 기념일","c":"백"},"09-16":{"t":"성 코르넬리오 교황과 성 치프리아노 주교 순교자 기념일","c":"홍"},"09-17":{"t":"연중 제24주간 목요일 (성 로베르토 벨라르미노 주교 학자 / 성 힐데가르트 폰 빙엔 동정 학자)","c":"녹"},"09-18":{"t":"연중 제24주간 금요일","c":"녹"},"09-19":{"t":"연중 제24주간 토요일 (성 얀누아리오 주교 순교자)","c":"녹"},"09-20":{"t":"성 안드레아 김대건과 성 바오로 정하상과 동료 순교자들 대축일","c":"홍"},"09-21":{"t":"성 마태오 사도 복음사가 축일","c":"홍"},"09-22":{"t":"연중 제25주간 화요일","c":"녹"},"09-23":{"t":"피에트렐치나의 성 피오 사제 기념일","c":"백"},"09-24":{"t":"연중 제25주간 목요일","c":"녹"},"09-25":{"t":"연중 제25주간 금요일","c":"녹"},"09-26":{"t":"연중 제25주간 토요일 (성 고스마와 성 다미아노 순교자들)","c":"녹"},"09-27":{"t":"연중 제26주일 (성 빈첸시오 데 폴 사제는 생략)","c":"녹"},"09-28":{"t":"연중 제26주간 월요일 (성 벤첼슬라오 순교자 / 성 로렌조 루이즈와 동료 순교자들)","c":"녹"},"09-29":{"t":"성 미카엘, 성 가브리엘, 성 라파엘 대천사 축일","c":"백"},"09-30":{"t":"성 예로니모 사제 학자 기념일","c":"백"},"10-01":{"t":"아기 예수의 성 테레사 동정 학자 기념일 (전교 지방의 수호자)","c":"백"},"10-02":{"t":"거룩한 수호천사들 기념일","c":"백"},"10-03":{"t":"연중 제26주간 토요일","c":"녹"},"10-04":{"t":"연중 제27주일 (아시시의 성 프란치스코는 생략)","c":"녹"},"10-05":{"t":"연중 제27주간 월요일 (성녀 파우스티나 코발스카 동정)","c":"녹"},"10-06":{"t":"연중 제27주간 화요일 (성 브루노 사제)","c":"녹"},"10-07":{"t":"묵주기도의 복되신 동정 마리아 기념일","c":"백"},"10-08":{"t":"연중 제27주간 목요일","c":"녹"},"10-09":{"t":"연중 제27주간 금요일 (성 디오니시오 주교와 동료 순교자들 / 성 요한 레오나르디 사제)","c":"녹"},"10-10":{"t":"연중 제27주간 토요일","c":"녹"},"10-11":{"t":"연중 제28주일 (성 요한 23세 교황은 생략)","c":"녹"},"10-12":{"t":"연중 제28주간 월요일","c":"녹"},"10-13":{"t":"연중 제28주간 화요일","c":"녹"},"10-14":{"t":"연중 제28주간 수요일 (성 칼리스토 1세 교황 순교자)","c":"녹"},"10-15":{"t":"예수의 성녀 테레사 동정 학자 기념일","c":"백"},"10-16":{"t":"연중 제28주간 금요일 (성녀 헤드비기 수도자 / 성녀 마르가리타 마리아 알라코크 동정)","c":"녹"},"10-17":{"t":"안티오키아의 성 이냐시오 주교 순교자 기념일","c":"홍"},"10-18":{"t":"연중 제29주일 (전교 주일 / 성 루카 복음사가 축일은 생략)","c":"녹"},"10-19":{"t":"연중 제29주간 월요일 (성 장 드 브레뵈프 사제, 성 이삭 조그 사제와 동료 순교자들 / 십자가의 성 바오로 사제)","c":"녹"},"10-20":{"t":"연중 제29주간 화요일","c":"녹"},"10-21":{"t":"연중 제29주간 수요일","c":"녹"},"10-22":{"t":"연중 제29주간 목요일 (성 요한 바오로 2세 교황)","c":"녹"},"10-23":{"t":"연중 제29주간 금요일 (성 요한 가피스트라노 사제)","c":"녹"},"10-24":{"t":"연중 제29주간 토요일 (성 안토니오 마리아 클라렛 주교)","c":"녹"},"10-25":{"t":"연중 제30주일","c":"녹"},"10-26":{"t":"연중 제30주간 월요일","c":"녹"},"10-27":{"t":"연중 제30주간 화요일","c":"녹"},"10-28":{"t":"성 시몬과 성 유다 사도 축일","c":"홍"},"10-29":{"t":"연중 제30주간 목요일","c":"녹"},"10-30":{"t":"연중 제30주간 금요일","c":"녹"},"10-31":{"t":"연중 제30주간 토요일","c":"녹"},"11-01":{"t":"모든 성인 대축일","c":"백"},"11-02":{"t":"죽은 모든 이를 기억하는 위령의 날","c":"자"},"11-03":{"t":"연중 제31주간 화요일 (성 마르티노 데 포레스 수도자)","c":"녹"},"11-04":{"t":"성 카를로 보로메오 주교 기념일","c":"백"},"11-05":{"t":"연중 제31주간 목요일","c":"녹"},"11-06":{"t":"연중 제31주간 금요일","c":"녹"},"11-07":{"t":"연중 제31주간 토요일","c":"녹"},"11-08":{"t":"연중 제32주일","c":"녹"},"11-09":{"t":"라테라노 대성전 봉헌 축일","c":"백"},"11-10":{"t":"성 대레오 교황 학자 기념일","c":"백"},"11-11":{"t":"투르의 성 마르티노 주교 기념일","c":"백"},"11-12":{"t":"성 요사팟 주교 순교자 기념일","c":"홍"},"11-13":{"t":"연중 제32주간 금요일","c":"녹"},"11-14":{"t":"연중 제32주간 토요일","c":"녹"},"11-15":{"t":"연중 제33주일 (세계 가난한 이의 날 / 성 알베르토 주교 학자는 생략)","c":"녹"},"11-16":{"t":"연중 제33주간 월요일 (스코틀랜드의 성녀 마르가리타 / 성녀 겔트루다 동정)","c":"녹"},"11-17":{"t":"헝가리의 성녀 엘리사벳 수도자 기념일","c":"백"},"11-18":{"t":"연중 제33주간 수요일 (성 베드로와 성 바오로 대성전 봉헌)","c":"녹"},"11-19":{"t":"연중 제33주간 목요일","c":"녹"},"11-20":{"t":"연중 제33주간 금요일","c":"녹"},"11-21":{"t":"복되신 동정 마리아의 봉헌 기념일","c":"백"},"11-22":{"t":"온 누리의 임금이신 우리 주 예수 그리스도 왕 대축일","c":"백"},"11-23":{"t":"대림 전 월요일 (성 클레멘스 1세 교황 순교자 / 성 콜룸바노 아바스)","c":"녹"},"11-24":{"t":"성 안드레아 둥락 사제와 동료 순교자들 기념일","c":"홍"},"11-25":{"t":"대림 전 수요일 (알렉산드리아의 성녀 카타리나 동정 순교자)","c":"녹"},"11-26":{"t":"대림 전 목요일","c":"녹"},"11-27":{"t":"대림 전 금요일","c":"녹"},"11-28":{"t":"대림 전 토요일","c":"녹"},"11-29":{"t":"대림 제1주일 (새해 전례해 전례 시기 시작)","c":"자"},"11-30":{"t":"성 안드레아 사도 축일","c":"홍"},"12-01":{"t":"대림 제1주간 화요일","c":"자"},"12-02":{"t":"대림 제1주간 수요일","c":"자"},"12-03":{"t":"성 프란치스코 하비에르 사제 기념일","c":"백"},"12-04":{"t":"대림 제1주간 금요일 (성 요한 다마스체노 사제 학자)","c":"자"},"12-05":{"t":"대림 제1주간 토요일","c":"자"},"12-06":{"t":"대림 제2주일 (성 니콜라오 주교는 생략)","c":"자"},"12-07":{"t":"성 암브로시오 주교 학자 기념일","c":"백"},"12-08":{"t":"한국 교회의 수호자, 원죄 없이 잉태되신 복되신 동정 마리아 대축일","c":"백"},"12-09":{"t":"대림 제2주간 수요일 (성 후안 디에고 쿠아우틀라토아치인)","c":"자"},"12-10":{"t":"대림 제2주간 목요일 (로레토의 복되신 동정 마리아)","c":"자"},"12-11":{"t":"대림 제2주간 금요일 (성 다마소 1세 교황)","c":"자"},"12-12":{"t":"과달루페의 복되신 동정 마리아 기념일","c":"백"},"12-13":{"t":"대림 제3주일 (자선 주일 / 성녀 루치아 동정 순교자는 생략)","c":"자"},"12-14":{"t":"십자가의 성 요한 사제 학자 기념일","c":"백"},"12-15":{"t":"대림 제3주간 화요일","c":"자"},"12-16":{"t":"대림 제3주간 수요일","c":"자"},"12-17":{"t":"대림 제3주간 목요일 (12월 17일의 특별 대림 평일)","c":"자"},"12-18":{"t":"대림 제3주간 금요일 (12월 18일의 특별 대림 평일)","c":"자"},"12-19":{"t":"대림 제3주간 토요일 (12월 19일의 특별 대림 평일)","c":"자"},"12-20":{"t":"대림 제4주일","c":"자"},"12-21":{"t":"대림 제4주간 월요일 (12월 21일의 특별 대림 평일 / 성 베드로 카니시오 사제 학자)","c":"자"},"12-22":{"t":"대림 제4주간 화요일 (12월 22일의 특별 대림 평일)","c":"자"},"12-23":{"t":"대림 제4주간 수요일 (12월 23일의 특별 대림 평일 / 성 요한 켄티 사제)","c":"자"},"12-24":{"t":"대림 제4주간 목요일 (예수 탄생 예고 밤 기도 전까지)","c":"자"},"12-25":{"t":"예수 탄생 대축일 (성탄)","c":"백"},"12-26":{"t":"성 스테파노 첫 순교자 축일","c":"홍"},"12-27":{"t":"예수, 마리아, 요셉의 성가정 축일 (성 요한 사도 복음사가 축일은 생략)","c":"백"},"12-28":{"t":"죄 없는 아기 순교자들 축일","c":"홍"},"12-29":{"t":"성탄 팔일 축제 제5일 (성 토마스 베케트 주교 순교자)","c":"백"},"12-30":{"t":"성탄 팔일 축제 제6일","c":"백"},"12-31":{"t":"성탄 팔일 축제 제7일 (성 실베스테르 1세 교황)","c":"백"}};
 const SEED_ROSTER = [{"grade":"초4","name":"류정원","school":"구름산초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":true,"excluded":false,"bigo":"대, 대대 제외"},{"grade":"초4","name":"이지안4","school":"빛가온초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":true,"excluded":false,"bigo":"대, 대대 제외"},{"grade":"초4","name":"이예나","school":"목동초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":true,"excluded":false,"bigo":"대, 대대 제외"},{"grade":"초4","name":"변윤서","school":"빛가온초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":true,"excluded":false,"bigo":"대, 대대 제외"},{"grade":"초4","name":"장하늘","school":"구름산초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":true,"excluded":false,"bigo":"대, 대대 제외"},{"grade":"초4","name":"김아인","school":"구름산초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":true,"excluded":false,"bigo":"대, 대대 제외"},{"grade":"초4","name":"신윤서","school":"안서초","q":{"seongsigan":0,"sinsim":0,"chanyang":1,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":true,"excluded":false,"bigo":"대, 대대 제외"},{"grade":"초4","name":"김민준","school":"구름산초","q":{"seongsigan":0,"sinsim":1,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":true,"excluded":false,"bigo":"대, 대대 제외"},{"grade":"초5","name":"이지유","school":"빛가온초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":true,"excluded":false,"bigo":"대, 대대 제외"},{"grade":"초5","name":"구현비","school":"구름산초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":true,"excluded":false,"bigo":"대, 대대 제외"},{"grade":"초6","name":"이지효","school":"빛가온초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":true,"excluded":false,"bigo":"대, 대대 제외"},{"grade":"초5","name":"심다솔","school":"충현초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초5","name":"이시호","school":"빛가온초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초5","name":"연주환","school":"소하초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"강시우","school":"소하초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"이영후","school":"소하초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"홍지아","school":"구름산초","q":{"seongsigan":1,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"이윤섭","school":"충현초","q":{"seongsigan":0,"sinsim":1,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"김재윤","school":"서면초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"이지안6","school":"소하초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"고인서","school":"서면초","q":{"seongsigan":0,"sinsim":0,"chanyang":1,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"박정서","school":"서면초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"이시원","school":"구름산초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"박시우","school":"구름산초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"신희윤","school":"안서초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"초6","name":"김어진","school":"소하초","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":true,"bigo":"배정 제외"},{"grade":"중1","name":"최수인","school":"소하중","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"중2","name":"정현진","school":"소하중","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":true,"bigo":"배정제외"},{"grade":"중2","name":"박예련","school":"소하중","q":{"seongsigan":1,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"중2","name":"원준영","school":"빛가온중","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"중2","name":"조환희","school":"소하중","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"중3","name":"김서연","school":"소하중","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"중3","name":"임해든","school":"소하중","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"중3","name":"성운창","school":"충현중","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"중3","name":"윤성현","school":"소하중","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"중3","name":"탁윤호","school":"소하중","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"고1","name":"이시윤","school":"","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"고1","name":"박진우","school":"","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":true,"bigo":"배정제외"},{"grade":"고2","name":"홍정민","school":"광휘고","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":false,"bigo":""},{"grade":"고3","name":"김용재","school":"광휘고","q":{"seongsigan":0,"sinsim":0,"chanyang":0,"saebyeok":0,"pyeongil":0,"children":0,"weekend":0,"vacation":0},"noDaedae":false,"excluded":true,"bigo":"배정제외"}];
-const COLOR_NAME={ '홍':{cls:'c-hong',k:'홍'},'녹':{cls:'c-nok',k:'녹'},'백':{cls:'c-baek',k:'백'},'자':{cls:'c-bo',k:'보'},'보':{cls:'c-bo',k:'보'} };
+const COLOR_NAME={ '홍':{cls:'c-hong',k:'홍',lbl:'홍',lblcls:'cl-hong'},'녹':{cls:'c-nok',k:'녹',lbl:'녹',lblcls:'cl-nok'},'백':{cls:'c-baek',k:'백',lbl:'백',lblcls:'cl-baek'},'자':{cls:'c-bo',k:'보',lbl:'자',lblcls:'cl-bo'},'보':{cls:'c-bo',k:'보',lbl:'자',lblcls:'cl-bo'} };
 const WD=['일','월','화','수','목','금','토'];
 
 /* ====================== CONFIG ======================
@@ -476,6 +503,7 @@ let state={
   gradeLimits: load('asn_gradelimits', null),  // 학년별 {grade:{min,max}} (null이면 기본값)
   vacation: load('asn_vacation', null),  // {schools:{학교명:{start:'MM-DD',end:'MM-DD'}}, grades:[봉사학년], time:'10:00'}
   massGrades: load('asn_massgrades', null),  // 정기미사별 배정 학년 {dawn:[학년], weekday:[], vigil:[], sunday:[]}
+  massPriority: load('asn_masspriority', null),  // 정기미사별 우선 배정 학년 {dawn:[], weekday:[], vigil:[], sunday:[]}
   lastModified: (function(){ const v=localStorage.getItem('asn_lastmod'); return v?Number(v):null; })(),
 };
 /* 특별미사 월 누적 시드(2026년 1~6월, 기존 수기 기록). 저장된 값이 없을 때만 초기값으로 사용 */
@@ -484,8 +512,18 @@ const SEED_SPECIAL_LOG={"2026":{"seongsigan":{"1":["김서연","김재윤"],"2":
 const SEED_ASSIGN_COUNT={"2026":{"김용재":{"dawn":{"1":1,"3":1}},"양태원":{"dawn":{"1":1}},"이세훈":{"dawn":{"1":1}},"홍정민":{"dawn":{"1":1,"2":1,"3":1,"5":1},"sunday":{"4":1}},"박진우":{"dawn":{"1":1},"sunday":{"1":1,"2":1}},"이시윤":{"dawn":{"1":1,"5":1,"6":1},"sunday":{"1":1,"2":1,"4":1,"5":1,"6":1}},"김서연":{"dawn":{"3":1,"4":1,"5":1,"6":1},"weekday":{"2":1,"3":1,"4":1},"sunday":{"1":1,"3":2,"6":1,"2":1,"5":1}},"성운창":{"dawn":{"2":1,"3":1,"4":1,"6":1},"weekday":{"3":1},"sunday":{"1":2,"3":2,"4":1,"5":2,"6":1}},"윤성현":{"dawn":{"1":1,"5":1,"6":1},"weekday":{"4":1},"sunday":{"1":1,"2":2,"4":1,"5":1,"6":1}},"임해든":{"dawn":{"3":1,"4":1,"5":1,"6":1},"weekday":{"2":1,"3":1},"sunday":{"1":1,"2":2,"4":1,"6":1,"3":2,"5":1}},"탁윤호":{"dawn":{"1":1,"2":1,"5":1,"6":1},"weekday":{"2":1,"3":1,"4":1},"sunday":{"1":1,"3":2,"4":1,"5":1,"6":1,"2":1}},"원준영":{"dawn":{"3":1,"4":1,"6":1},"weekday":{"2":1,"3":1,"4":1,"5":1},"sunday":{"1":2,"2":1,"6":1,"5":1}},"정현진":{"dawn":{"3":1,"4":1},"weekday":{"3":1,"4":2},"sunday":{"2":3,"1":1,"3":1,"5":2}},"조환희":{"dawn":{"2":1,"4":1,"6":1},"weekday":{"3":1,"4":2},"sunday":{"1":2,"2":2,"3":2,"6":1}},"박예련":{"dawn":{"3":1,"4":1,"5":1,"6":1},"weekday":{"2":2,"3":1,"4":2,"6":1},"sunday":{"1":2,"3":1,"5":1}},"최수인":{"dawn":{"3":1,"4":1,"5":1,"6":1},"weekday":{"4":1},"sunday":{"1":1,"3":2,"2":1,"5":1,"6":1}},"고인서":{"weekday":{"1":1,"3":1,"5":1,"6":1},"sunday":{"2":3,"3":2,"5":2,"1":2,"6":1}},"김어진":{"weekday":{"1":1,"2":2},"sunday":{"1":1,"2":1}},"김재윤":{"weekday":{"3":1,"4":1,"6":1},"sunday":{"4":2,"5":3,"1":2,"2":2,"3":2,"6":1}},"박시우":{"dawn":{"3":1},"weekday":{"1":1,"2":1,"3":1,"5":1},"sunday":{"1":2,"3":2,"4":2,"5":2,"6":2,"2":2}},"박정서":{"weekday":{"1":1,"3":1,"4":1,"5":1},"sunday":{"2":2,"4":2,"5":2,"6":2,"1":2,"3":2}},"신희윤":{"weekday":{"1":1,"2":1,"3":1,"5":1},"sunday":{"2":2,"3":3,"4":2,"6":2,"1":1,"5":1}},"이시원":{"weekday":{"1":1,"2":1,"4":2,"6":1},"sunday":{"2":3,"3":3,"5":2,"1":2,"4":1,"6":1}},"이영후":{"weekday":{"1":1,"2":2,"3":1,"6":1},"sunday":{"2":1,"3":3,"4":2,"5":3,"6":1,"1":2}},"이지안6":{"weekday":{"1":1,"2":1,"3":1,"4":1,"6":1},"sunday":{"2":2,"5":3,"1":2,"3":2,"4":1,"6":1}},"홍지아":{"weekday":{"1":1,"2":2,"3":1,"6":1},"sunday":{"1":2,"3":2,"4":3,"5":3,"2":1,"6":1}},"강시우":{"dawn":{"6":1},"weekday":{"1":1,"2":1,"4":1,"5":2},"sunday":{"1":2,"2":2,"3":2,"6":2,"4":1,"5":1}},"이윤섭":{"dawn":{"6":1},"weekday":{"1":2,"4":1,"5":1},"sunday":{"1":2,"2":3,"3":2,"4":1,"5":2,"6":1}},"심다솔":{"dawn":{"6":1},"weekday":{"1":1,"2":1,"3":1,"6":1},"sunday":{"1":2,"3":2,"5":3,"2":2,"4":1,"6":1}},"연주환":{"dawn":{"6":1},"weekday":{"1":1,"2":2,"3":1,"6":1},"sunday":{"1":2,"3":2,"4":3,"2":1,"5":3,"6":1}},"이시호":{"weekday":{"1":1,"2":1,"4":1,"5":1,"6":1},"sunday":{"1":2,"3":3,"2":2,"5":2,"6":2}},"이지효":{"weekday":{"1":3,"2":2,"3":1},"sunday":{"4":3,"5":3,"3":2,"6":2}},"구현비":{"weekday":{"1":2,"2":1,"3":1,"4":1,"6":1},"sunday":{"4":1,"2":1,"3":2,"5":3,"6":1}},"이지유":{"weekday":{"1":2,"2":1,"3":1},"sunday":{"4":2,"6":2,"1":1,"2":1,"3":2,"5":1}},"김민준":{"weekday":{"1":1,"2":1,"3":1,"4":1,"5":1},"sunday":{"1":1,"2":1,"3":1,"4":1,"5":2,"6":2}},"김아인":{"weekday":{"1":1,"2":1,"3":1,"4":1,"5":1,"6":2},"sunday":{"5":2,"1":1,"3":1,"4":2,"6":1}},"류정원":{"weekday":{"1":1,"2":1,"4":2,"6":1},"sunday":{"5":3,"1":1,"2":1,"3":1,"4":1,"6":1}},"변윤서":{"weekday":{"1":1,"2":1,"3":1,"4":1,"5":2,"6":1},"sunday":{"1":1,"2":1,"3":1,"4":1,"5":1,"6":1}},"신윤서":{"weekday":{"1":1,"2":2,"5":1,"6":1},"sunday":{"4":3,"1":1,"3":2,"5":2,"6":1}},"이예나":{"weekday":{"1":1,"2":1,"3":1,"4":1,"5":1,"6":1},"sunday":{"5":2,"2":1,"3":1,"4":2,"6":1}},"이지안4":{"weekday":{"1":1,"2":1,"3":1,"4":1,"6":1},"sunday":{"5":3,"1":1,"2":1,"3":2,"4":1,"6":1}},"장하늘":{"weekday":{"1":1,"2":1,"3":1,"5":1},"sunday":{"4":2,"5":1,"6":3,"1":1,"2":1,"3":2}}}};
 if(state.specialLog==null){ state.specialLog=JSON.parse(JSON.stringify(SEED_SPECIAL_LOG)); }
 /* 2026년 6월 배정표 시드(업로드 이미지 기준). state.months에 6월이 없을 때만 주입 */
-const SEED_JUN_2026={"assign":{"1":{"masses":[{"time":"06:30","title":"새벽미사","color":"홍","big":["강시우"],"small":["심다솔"],"id":"x1l0k74b"}]},"2":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이영후"],"small":["류정원"],"id":"puhn4tha"}]},"4":{"masses":[{"time":"19:30","title":"성시간","color":"녹","big":["박예련"],"small":["홍지아"],"id":"v5zqxcsq"}]},"6":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":["박시우"],"small":["김민준"],"id":"wv3biu1n"},{"time":"17:00","title":"주일 전야미사","color":"백","big":["성운창","강시우"],"small":["이영후","이지유"],"id":"67islmv2"}]},"7":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["김재윤","이예나"],"small":["구현비","이지안4"],"id":"14cxzj42"},{"time":"17:00","title":"주일미사","color":"백","big":["고인서","변윤서"],"small":["신희윤","장하늘"],"id":"ugulx8kc"}]},"8":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["이윤섭"],"small":["연주환"],"id":"bbkddsk8"}]},"9":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["연주환"],"small":["김아인"],"id":"vmpvteou"}]},"11":{"masses":[{"time":"19:30","title":"평일미사","color":"홍","big":["이지안6"],"small":["이지안4"],"id":"wdbv14yn"}]},"13":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["이시윤","탁윤호"],"small":["윤성현","조환희"],"id":"hsw4pt4n"}]},"14":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["최수인"],"small":["김민준"],"id":"821aspv8"},{"time":"17:00","title":"주일미사","color":"녹","big":["이시원"],"small":["이지효"],"id":"vcqtctfo"}]},"15":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["이시윤"],"small":["원준영"],"id":"mm094uqb"}]},"16":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이시호"],"small":["구현비"],"id":"6lsk8d3k"}]},"18":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["심다솔"],"small":["김아인"],"id":"bjdmxgqv"}]},"20":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["임해든","원준영"],"small":["김서연","장하늘"],"id":"8k10ajog"}]},"21":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["이윤섭","변윤서"],"small":["이시원","이지유"],"id":"rpsu0qur"},{"time":"17:00","title":"주일미사","color":"녹","big":["박정서","이시호"],"small":["홍지아","신윤서"],"id":"zl6zwmdl"}]},"22":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["김서연"],"small":["임해든"],"id":"xk4q5rks"}]},"23":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["김재윤"],"small":["김민준"],"id":"x0xrjw7h"}]},"25":{"masses":[{"time":"19:30","title":"찬미미사","color":"백","big":["고인서"],"small":["신윤서"],"id":"7jv12sag"}]},"27":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["박시우","신희윤"],"small":["박정서","장하늘"],"id":"5pfwy4he"}]},"28":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["연주환","강시우"],"small":["이윤섭","심다솔"],"id":"nw0m27ww"},{"time":"17:00","title":"주일미사","color":"녹","big":["이지안6","이지효"],"small":["류정원","김아인"],"id":"nncs6w7i"}]},"29":{"masses":[{"time":"06:30","title":"새벽미사","color":"홍","big":["탁윤호","박예련","이영후"],"small":["성운창","최수인","조환희","윤성현"],"id":"pz8r7y9c"}]},"30":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이시호"],"small":["이예나"],"id":"d6a7o59f"}]}},"updated":0,"requests":[],"logs":[],"adminlogs":[]};
-if(!state.months["2026-06"]){ state.months["2026-06"]=JSON.parse(JSON.stringify(SEED_JUN_2026)); }
+const SEED_JUN_2026={"assign":{"1":{"masses":[{"time":"06:30","title":"새벽미사","color":"홍","big":["강시우"],"small":["심다솔"],"id":"spc6hxpe"}]},"2":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이영후"],"small":["류정원"],"id":"tudkfwux"}]},"4":{"masses":[{"time":"19:30","title":"성시간","color":"녹","big":["박예련"],"small":["홍지아"],"id":"w3pwrxn0"}]},"6":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":["박시우"],"small":["김민준"],"id":"ysxezzqg"},{"time":"17:00","title":"주일 전야미사","color":"백","big":["성운창","강시우"],"small":["이영후","이지유"],"id":"joa0kw09"}]},"7":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["김재윤","이예나"],"small":["구현비","이지안4"],"id":"ce5buhsd"},{"time":"17:00","title":"주일미사","color":"백","big":["고인서","변윤서"],"small":["신희윤","장하늘"],"id":"6j1l8grm"}]},"8":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["이윤섭"],"small":["연주환"],"id":"boo6pv96"}]},"9":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["연주환"],"small":["김아인"],"id":"x7ksnydz"}]},"11":{"masses":[{"time":"19:30","title":"평일미사","color":"홍","big":["이지안6"],"small":["이지안4"],"id":"82a60jn8"}]},"13":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["이시윤","탁윤호"],"small":["윤성현","조환희"],"id":"942ntn8q"}]},"14":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["최수인"],"small":["김민준"],"id":"wmg4n53q"},{"time":"17:00","title":"주일미사","color":"녹","big":["이시원"],"small":["이지효"],"id":"g1cud1rw"}]},"15":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["이시윤"],"small":["원준영"],"id":"mfo3mzrt"}]},"16":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이시호"],"small":["구현비"],"id":"5rgw4szl"}]},"18":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["심다솔"],"small":["김아인"],"id":"wp3ggtdu"}]},"20":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["임해든","원준영"],"small":["김서연","장하늘"],"id":"l03pyiih"}]},"21":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["이윤섭","변윤서"],"small":["이시원","이지유"],"id":"9ws2xiiz"},{"time":"17:00","title":"주일미사","color":"녹","big":["박정서","이시호"],"small":["홍지아","신윤서"],"id":"2ypra5dv"}]},"22":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["김서연"],"small":["임해든"],"id":"khuweiic"}]},"23":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["김재윤"],"small":["김민준"],"id":"39fdbuxq"}]},"25":{"masses":[{"time":"19:30","title":"찬미미사","color":"백","big":["고인서"],"small":["신윤서"],"id":"vn43h5k4"}]},"27":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["박시우","신희윤"],"small":["박정서","장하늘"],"id":"xld8rwg3"}]},"28":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["연주환","강시우"],"small":["이윤섭","심다솔"],"id":"dr8t26jr"},{"time":"17:00","title":"주일미사","color":"녹","big":["이지안6","이지효"],"small":["류정원","김아인"],"id":"d5r46ftf"}]},"29":{"masses":[{"time":"06:30","title":"새벽미사","color":"홍","big":["탁윤호","성운창","윤성현"],"small":["박예련","최수인","조환희","이영후"],"id":"8yu6k45s"}]},"30":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이시호"],"small":["이예나"],"id":"9qnlt8y0"}]}},"updated":0,"requests":[],"logs":[],"adminlogs":[],"published":true};
+if(!state.months["2026-06"]){ state.months["2026-06"]=JSON.parse(JSON.stringify(SEED_JUN_2026)); state.months["2026-06"].published=true; }
+/* 2026년 1~5월 배정표 시드(첨부 엑셀 기준, 1~6월 배포완료) */
+const SEED_01_2026={"assign":{"1":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":[],"small":[],"id":"4g2se207"},{"time":"17:00","title":"주일미사","color":"백","big":["강시우"],"small":["이지안4"],"id":"x10qf4cj"}]},"3":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":["신희윤"],"small":["이예나"],"id":"aciz9ys2"},{"time":"17:00","title":"주일 전야미사","color":"백","big":["탁윤호","윤성현"],"small":["원준영","강시우"],"id":"08sg40uu"}]},"4":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["이시원","원준영"],"small":["홍지아","신윤서"],"id":"odc65pcq"},{"time":"17:00","title":"주일미사","color":"백","big":["정현진","조환희"],"small":["김재윤","김아인"],"id":"0iw81dtp"}]},"5":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["김용재"],"small":["홍정민"],"id":"59xqd57c"}]},"6":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["이윤섭"],"small":["구현비"],"id":"wpfbu6kk"}]},"8":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["박시우"],"small":["이지유"],"id":"073aa582"}]},"10":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"백","big":["최수인","홍지아"],"small":["박예련","이시호"],"id":"elwcv7wx"}]},"11":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["박시우","이영후"],"small":["이지안6","류정원"],"id":"6euw85of"},{"time":"17:00","title":"주일미사","color":"백","big":["연주환","박정서"],"small":["고인서","변윤서"],"id":"7qvy873c"}]},"12":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["이시윤"],"small":["박진우"],"id":"9gmyw7qa"}]},"13":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["김어진"],"small":["김민준"],"id":"je3ub64r"}]},"14":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["신희윤"],"small":["신윤서"],"id":"1q1g6ean"}]},"15":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["연주환"],"small":["이지유"],"id":"jeucpgkv"}]},"16":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["심다솔"],"small":["류정원"],"id":"seolf2fo"}]},"17":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["김서연","임해든"],"small":["성운창","연주환"],"id":"3d75hv9p"}]},"18":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["심다솔","신희윤"],"small":["김재윤","장하늘"],"id":"v05dauxn"},{"time":"17:00","title":"주일미사","color":"녹","big":["이윤섭","이시원"],"small":["이시호","이지유"],"id":"zzdgg2ge"}]},"19":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":[],"small":[],"id":"q9mnx6m6"}]},"20":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["고인서"],"small":["이지효"],"id":"zauf8viw"}]},"21":{"masses":[{"time":"10:00","title":"성모신심","color":"홍","big":["이영후"],"small":["김아인"],"id":"8paadns0"}]},"22":{"masses":[{"time":"19:30","title":"찬미미사","color":"녹","big":["김재윤"],"small":["이예나"],"id":"kijbvxzp"}]},"23":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["이시원"],"small":["이지효"],"id":"9bo42t4o"}]},"24":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["이시윤","박시우"],"small":["박진우","심다솔"],"id":"sgoxo09x"}]},"25":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["고인서","김어진"],"small":["이지안6","이지안4"],"id":"c5bheqrq"},{"time":"17:00","title":"주일미사","color":"녹","big":["박예련","강시우"],"small":["박정서","김민준"],"id":"kdkxtcrp"}]},"26":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["윤성현"],"small":["탁윤호"],"id":"ci1o7cmm"}]},"27":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이지안6"],"small":["장하늘"],"id":"gcwl16wo"}]},"28":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":["박정서"],"small":["구현비"],"id":"pl2aenld"}]},"29":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["홍지아"],"small":["이지효"],"id":"s2punnw9"}]},"30":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["이시호"],"small":["변윤서"],"id":"ym12fykt"}]},"31":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"백","big":["정현진","김어진"],"small":["조환희","이윤섭"],"id":"oktpyt14"}]}},"updated":0,"requests":[],"logs":[],"adminlogs":[],"published":true};
+const SEED_02_2026={"assign":{"1":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["신희윤","탁윤호"],"small":["박정서","이지안4"],"id":"qamxjefe"},{"time":"17:00","title":"주일미사","color":"녹","big":["박시우","윤성현"],"small":["고인서","이예나"],"id":"bfkeyrp5"}]},"2":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["심다솔"],"small":["이지효"],"id":"ydqphokv"}]},"3":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이시원"],"small":["이지효"],"id":"q12tu3nu"}]},"4":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["연주환"],"small":["구현비"],"id":"6f3vqvff"}]},"5":{"masses":[{"time":"19:30","title":"성시간","color":"홍","big":["임해든"],"small":["이지안6"],"id":"6xhlp3dx"}]},"6":{"masses":[{"time":"10:00","title":"성모신심","color":"홍","big":["김어진"],"small":["신윤서"],"id":"szxggio4"}]},"7":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":["김재윤"],"small":["이지유"],"id":"4q4anse0"},{"time":"17:00","title":"주일 전야미사","color":"녹","big":["강시우","이시원"],"small":["이윤섭","고인서"],"id":"14xhxak5"}]},"8":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["심다솔","최수인"],"small":["홍지아","변윤서"],"id":"vmhs5fc1"},{"time":"17:00","title":"주일미사","color":"녹","big":["조환희","정현진"],"small":["김재윤","김민준"],"id":"0r2poit1"}]},"9":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["홍정민"],"small":["성운창"],"id":"clodcga2"}]},"10":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["홍지아"],"small":["이예나"],"id":"89z38kc8"}]},"11":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["이영후"],"small":["김민준"],"id":"y4eop3sc"}]},"12":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["박예련"],"small":["이지유"],"id":"94ib3dvm"}]},"13":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["이시호"],"small":["신윤서"],"id":"g43v9cv3"}]},"14":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["박정서","이지안6"],"small":["신희윤","이영후"],"id":"mqadq9h7"}]},"15":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["임해든","심다솔"],"small":["이윤섭","류정원"],"id":"d39bmx6c"},{"time":"17:00","title":"주일미사","color":"녹","big":["이시호","고인서"],"small":["박시우","구현비"],"id":"6kpu0ajh"}]},"16":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["강시우","이윤섭"],"small":["이시원","김재윤"],"id":"88wkdcq9"}]},"18":{"masses":[{"time":"10:00","title":"성모신심","color":"보","big":[],"small":[],"id":"7i5odh7i"},{"time":"19:30","title":"평일미사","color":"보","big":["김서연","탁윤호"],"small":["박예련"],"id":"xyf7jfe3"}]},"19":{"masses":[{"time":"19:30","title":"평일미사","color":"보","big":["강시우"],"small":["이지안4"],"id":"5valjp8d"}]},"20":{"masses":[{"time":"10:00","title":"성모신심","color":"보","big":["원준영"],"small":["류정원"],"id":"n2mavrm8"}]},"21":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"보","big":["박진우","이시윤"],"small":["정현진","윤성현"],"id":"xkvldp5l"}]},"22":{"masses":[{"time":"09:00","title":"주일미사","color":"보","big":["연주환","김어진"],"small":["이시원","이지유"],"id":"vi4zyjy8"},{"time":"17:00","title":"주일미사","color":"보","big":["김서연","이시호"],"small":["이지안6","장하늘"],"id":"bzwayljh"}]},"23":{"masses":[{"time":"06:30","title":"새벽미사","color":"보","big":["탁윤호"],"small":["조환희"],"id":"sfi2xscb"}]},"24":{"masses":[{"time":"19:30","title":"평일미사","color":"보","big":["연주환","이예나"],"small":["장하늘"],"id":"m9wh6w09"}]},"25":{"masses":[{"time":"10:00","title":"성모신심","color":"보","big":["홍지아"],"small":["변윤서"],"id":"zlxjle9x"}]},"26":{"masses":[{"time":"19:30","title":"찬미미사","color":"보","big":["박시우","신윤서"],"small":["김아인","이지유"],"id":"gdrc85c6"}]},"27":{"masses":[{"time":"10:00","title":"성모신심","color":"보","big":["신희윤","김어진"],"small":["이영후"],"id":"lwubf368"}]},"28":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"보","big":["임해든","조환희"],"small":["원준영","정현진"],"id":"1rmhh3f0"}]}},"updated":0,"requests":[],"logs":[],"adminlogs":[],"published":true};
+const SEED_03_2026={"assign":{"1":{"masses":[{"time":"09:00","title":"주일미사","color":"보","big":["이시원","박정서"],"small":["이지안6","이지효"],"id":"9hgnlqh8"},{"time":"17:00","title":"주일미사","color":"보","big":["최수인","신희윤"],"small":["이윤섭","신윤서"],"id":"pv5hbpjs"}]},"2":{"masses":[{"time":"06:30","title":"새벽미사","color":"보","big":["김용재"],"small":["김서연"],"id":"hgxv40sm"}]},"3":{"masses":[{"time":"19:30","title":"평일미사","color":"보","big":["고인서"],"small":["변윤서"],"id":"2h2kotkd"}]},"5":{"masses":[{"time":"19:30","title":"성시간","color":"보","big":["탁윤호"],"small":["박정서"],"id":"3inss539"}]},"7":{"masses":[{"time":"10:00","title":"성모신심","color":"보","big":["강시우"],"small":["류정원"],"id":"ikbp4nq5"},{"time":"17:00","title":"주일 전야미사","color":"보","big":["김서연","최수인"],"small":["고인서","홍지아"],"id":"4e995fr2"}]},"8":{"masses":[{"time":"09:00","title":"주일미사","color":"보","big":["신희윤","심다솔"],"small":["이시호","변윤서"],"id":"zmuuit4m"},{"time":"17:00","title":"주일미사","color":"보","big":["김재윤","장하늘"],"small":["이영후","김민준"],"id":"17bvz0bi"}]},"9":{"masses":[{"time":"06:30","title":"새벽미사","color":"보","big":["정현진"],"small":["성운창"],"id":"5c4xtmls"}]},"10":{"masses":[{"time":"19:30","title":"평일미사","color":"보","big":["이영후"],"small":["이예나"],"id":"h68o4ija"}]},"12":{"masses":[{"time":"19:30","title":"평일미사","color":"보","big":["김재윤"],"small":["이지유"],"id":"az249s6z"}]},"14":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"보","big":["신희윤","조환희"],"small":["이시원","박시우"],"id":"er2yvies"}]},"15":{"masses":[{"time":"09:00","title":"주일미사","color":"보","big":["임해든","이지효"],"small":["이시호","구현비"],"id":"mj2t83yd"},{"time":"17:00","title":"주일미사","color":"보","big":["이영후","이지안4"],"small":["연주환","이지유"],"id":"9blz8rfb"}]},"16":{"masses":[{"time":"06:30","title":"새벽미사","color":"보","big":["박시우"],"small":["홍정민"],"id":"jz28jjvx"}]},"17":{"masses":[{"time":"19:30","title":"평일미사","color":"보","big":["신희윤"],"small":["김아인"],"id":"qf5wf4z8"}]},"19":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["김서연","성운창","임해든","원준영"],"small":["정현진","조환희","박예련"],"id":"g7ey85ef"}]},"21":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"보","big":["탁윤호","이영후"],"small":["이윤섭","성운창"],"id":"ic6svb3s"}]},"22":{"masses":[{"time":"09:00","title":"주일미사","color":"보","big":["이시원","신윤서"],"small":["강시우","김아인"],"id":"sfyyn8fb"},{"time":"17:00","title":"주일미사","color":"보","big":["고인서","이예나"],"small":["박시우","류정원"],"id":"w99hv873"}]},"23":{"masses":[{"time":"06:30","title":"새벽미사","color":"보","big":["박예련"],"small":["최수인"],"id":"xyeibhve"}]},"24":{"masses":[{"time":"19:00","title":"평일미사","color":"보","big":["연주환"],"small":["구현비"],"id":"e1ufzrqc"}]},"25":{"masses":[{"time":"19:00","title":"평일미사","color":"백","big":["심다솔"],"small":["이지안4"],"id":"o6rhuy3u"}]},"26":{"masses":[{"time":"19:00","title":"찬미미사","color":"보","big":["홍지아"],"small":["이지효"],"id":"u4v0ywa0"}]},"27":{"masses":[{"time":"19:00","title":"평일미사","color":"보","big":["이지안6"],"small":["장하늘"],"id":"ao4w1lhg"}]},"28":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"홍","big":["강시우","심다솔"],"small":["연주환","이시호"],"id":"jwu8yuer"}]},"29":{"masses":[{"time":"09:00","title":"주일미사","color":"홍","big":["홍지아","이지유"],"small":["박정서","이지안4"],"id":"xj1uaaeb"},{"time":"11:00","title":"주일미사","color":"홍","big":["탁윤호","김서연","성운창","임해든"],"small":["조환희","정현진","박예련"],"id":"chw6dawi"},{"time":"17:00","title":"주일미사","color":"홍","big":["김재윤","구현비"],"small":["이지안6","장하늘"],"id":"3rxaewjx"}]},"30":{"masses":[{"time":"06:30","title":"새벽미사","color":"보","big":["임해든"],"small":["원준영"],"id":"0ruqvbe9"}]},"31":{"masses":[{"time":"19:30","title":"평일미사","color":"보","big":["박시우","이예나"],"small":["김민준"],"id":"xne37wls"}]}},"updated":0,"requests":[],"logs":[],"adminlogs":[],"published":true};
+const SEED_04_2026={"assign":{"2":{"masses":[{"time":"19:30","title":"평일미사","color":"보","big":["탁윤호","윤성현","박예련","최수인"],"small":["원준영","정현진","조환희"],"id":"ykzwpyk2"}]},"3":{"masses":[{"time":"15:00","title":"평일미사","color":"홍","big":["김서연","박예련"],"small":["조환희","정현진"],"id":"5yrrexzd"}]},"4":{"masses":[{"time":"20:00","title":"주일 전야미사","color":"백","big":["홍정민","이시윤","임해든"],"small":["성운창","윤성현","탁윤호"],"id":"yv3q79nz"}]},"5":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["이지안6","이예나"],"small":["박정서","이지효"],"id":"ennub38g"},{"time":"17:00","title":"주일미사","color":"백","big":["김재윤","이지안4"],"small":["연주환","이지유"],"id":"gfq84w91"}]},"6":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["박예련"],"small":["최수인"],"id":"1ozy6rke"}]},"7":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["박정서"],"small":["구현비"],"id":"a6isu0ji"}]},"9":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["김재윤"],"small":["김민준"],"id":"b0otbdon"}]},"11":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"백","big":["연주환","박정서"],"small":["홍지아","이지효"],"id":"cmzuzl8p"}]},"12":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["이시원","신윤서"],"small":["신희윤","장하늘"],"id":"zf3368xa"}]},"13":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["원준영"],"small":["성운창"],"id":"76gnfr2v"}]},"14":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["강시우"],"small":["김아인"],"id":"qgjr4x6a"}]},"16":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["이윤섭"],"small":["류정원"],"id":"rltp2o0s"}]},"18":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"백","big":["박시우","신윤서"],"small":["신희윤","이지유"],"id":"2clyxh1h"}]},"19":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["이영후","류정원"],"small":["이윤섭","김민준"],"id":"h0sr78hx"},{"time":"17:00","title":"주일미사","color":"백","big":["홍지아","이예나"],"small":["강시우","김아인"],"id":"ebkztpwp"}]},"20":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["임해든"],"small":["김서연"],"id":"x1cbeheh"}]},"21":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["이시호"],"small":["변윤서"],"id":"qdq502ie"}]},"23":{"masses":[{"time":"19:30","title":"찬미미사","color":"백","big":["이지안6"],"small":["류정원"],"id":"fdbquvk8"}]},"25":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"백","big":["김재윤","구현비"],"small":["이영후","장하늘"],"id":"7d6qlqay"}]},"26":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["연주환","김아인"],"small":["심다솔","신윤서"],"id":"k2ukp5gn"},{"time":"17:00","title":"주일미사","color":"백","big":["홍지아","이지효"],"small":["박시우","변윤서"],"id":"sylvpl2s"}]},"27":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["정현진"],"small":["조환희"],"id":"hk6fyhep"}]},"28":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["이시원","이예나"],"small":[],"id":"ynfngbof"}]},"30":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["이시원","신윤서"],"small":["이지안4","이지유"],"id":"eba18kvp"}]}},"updated":0,"requests":[],"logs":[],"adminlogs":[],"published":true};
+const SEED_05_2026={"assign":{"2":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"백","big":["박시우","장하늘"],"small":["이영후","김아인"],"id":"ts6ctt0e"}]},"3":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["고인서","이윤섭"],"small":["이지안6","이시호"],"id":"1zbha51y"},{"time":"17:00","title":"주일미사","color":"백","big":["강시우","류정원"],"small":["이시원","정현진"],"id":"l5by85hy"}]},"4":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["탁윤호"],"small":["윤성현"],"id":"rnouoos2"}]},"5":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["강시우"],"small":["김민준"],"id":"71ag0xaa"}]},"7":{"masses":[{"time":"19:30","title":"성시간","color":"백","big":["원준영"],"small":["박시우"],"id":"seb3vcl8"}]},"9":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"백","big":["김재윤","류정원"],"small":["홍지아","이예나"],"id":"unt01t00"}]},"10":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["박정서","이지안4"],"small":["연주환","류정원"],"id":"cov0i4k3"},{"time":"17:00","title":"주일미사","color":"백","big":["이영후","이지유"],"small":["심다솔","구현비"],"id":"isf7wyre"}]},"11":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["김서연"],"small":["박예련"],"id":"nsi7w832"}]},"12":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["신희윤"],"small":["김아인"],"id":"zib9yxzq"}]},"14":{"masses":[{"time":"19:30","title":"평일미사","color":"홍","big":["박정서"],"small":["신윤서"],"id":"2gth91ch"}]},"16":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"백","big":["이지안6","고인서"],"small":["박정서","이시원"],"id":"kvfntl3i"}]},"17":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["홍지아","신윤서"],"small":["이윤섭","김민준"],"id":"qw4qhhkr"},{"time":"17:00","title":"주일미사","color":"백","big":["연주환","김아인"],"small":["김재윤","이지효"],"id":"wdgq6ntm"}]},"18":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["임해든"],"small":["최수인"],"id":"m9ex187o"}]},"19":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["고인서"],"small":["변윤서"],"id":"olwjmj4d"}]},"21":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["이윤섭"],"small":["장하늘"],"id":"020urp57"}]},"23":{"masses":[{"time":"20:00","title":"주일 전야미사","color":"백","big":["이시윤","탁윤호"],"small":["성운창","윤성현"],"id":"x8fvb5df"}]},"24":{"masses":[{"time":"09:00","title":"주일미사","color":"홍","big":["신희윤","이지안4"],"small":["박시우","신윤서"],"id":"tc1nv7t1"},{"time":"11:00","title":"주일미사","color":"홍","big":["김서연","임해든","정현진","성운창"],"small":["박예련","최수인","원준영"],"id":"2p5fnlq2"},{"time":"17:00","title":"주일미사","color":"홍","big":["심다솔","구현비"],"small":["이예나","변윤서"],"id":"k55rswh1"}]},"25":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["홍정민"],"small":["이시윤"],"id":"n5psysug"}]},"26":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["이시호"],"small":["이예나"],"id":"rfu6hgx4"}]},"28":{"masses":[{"time":"19:30","title":"찬미미사","color":"녹","big":["강시우"],"small":["변윤서"],"id":"czbdtu75"}]},"30":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"백","big":["이영후","심다솔"],"small":["이지효","이지안4"],"id":"woungyi1"}]},"31":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["홍지아","구현비"],"small":["이지안6","이시호"],"id":"kz70tffq"},{"time":"17:00","title":"주일미사","color":"백","big":["김재윤","김민준"],"small":["연주환","이지효"],"id":"vi0333do"}]}},"updated":0,"requests":[],"logs":[],"adminlogs":[],"published":true};
+;[["2026-01",SEED_01_2026],["2026-02",SEED_02_2026],["2026-03",SEED_03_2026],["2026-04",SEED_04_2026],["2026-05",SEED_05_2026]].forEach(([k,seed])=>{ const [sy,sm]=k.split('-').map(Number); const cur=state.months[k]; const empty=!cur||!cur.assign||!Object.keys(cur.assign).length||!monthHasRealAssign(sy,sm); if(empty){ state.months[k]=JSON.parse(JSON.stringify(seed)); } });
+/* 시드 맵(관리자 '시드로 되돌리기'에서 재사용) */
+const SEED_MONTHS={"2026-01":SEED_01_2026,"2026-02":SEED_02_2026,"2026-03":SEED_03_2026,"2026-04":SEED_04_2026,"2026-05":SEED_05_2026,"2026-06":SEED_JUN_2026};
+
 /* 학년별 최소~최대 배정 횟수 기본값 (null이면 이 값 사용) */
 const DEFAULT_GRADE_LIMITS={
   '초4':{min:2,max:6}, '초5':{min:0,max:8}, '초6':{min:0,max:8},
@@ -494,21 +532,44 @@ const DEFAULT_GRADE_LIMITS={
 };
 function gradeLimits(){ return state.gradeLimits || DEFAULT_GRADE_LIMITS; }
 function limitFor(grade){ const L=gradeLimits(); return L[grade] || {min:0,max:99}; }
-/* 방학 기본 설정(학교별 기간 + 봉사 학년). 저장값 없으면 이 시드 사용 */
+/* 방학 기본 설정(학교별 여름·겨울 기간 + 봉사 학년). 저장값 없으면 이 시드 사용.
+   각 학교: {summer:{start:'MM-DD',end:'MM-DD'}, winter:{start,end}} (겨울은 해를 넘길 수 있음) */
 const DEFAULT_VACATION={
   schools:{
-    '구름산초':{start:'07-25',end:'08-20'}, '소하초':{start:'07-25',end:'08-20'},
-    '서면초':{start:'07-25',end:'08-20'}, '안서초':{start:'07-25',end:'08-20'},
-    '빛가온초':{start:'07-25',end:'08-20'}, '충현초':{start:'07-25',end:'08-20'},
-    '목동초':{start:'07-25',end:'08-20'},
-    '소하중':{start:'07-20',end:'08-17'}, '빛가온중':{start:'07-25',end:'08-20'}, '충현중':{start:'07-20',end:'08-17'},
-    '광휘고':{start:'07-20',end:'08-20'}, '광명북':{start:'07-20',end:'08-20'},
+    '구름산초':{summer:{start:'07-25',end:'08-20'}, winter:{start:'01-05',end:'02-03'}},
+    '소하초':{summer:{start:'07-25',end:'08-20'}, winter:{start:'01-05',end:'02-03'}},
+    '서면초':{summer:{start:'07-25',end:'08-20'}, winter:{start:'01-05',end:'02-03'}},
+    '안서초':{summer:{start:'07-25',end:'08-20'}, winter:{start:'01-05',end:'02-03'}},
+    '빛가온초':{summer:{start:'07-25',end:'08-20'}, winter:{start:'01-05',end:'02-03'}},
+    '충현초':{summer:{start:'07-25',end:'08-20'}, winter:{start:'01-05',end:'02-03'}},
+    '목동초':{summer:{start:'07-25',end:'08-20'}, winter:{start:'01-05',end:'02-03'}},
+    '소하중':{summer:{start:'07-20',end:'08-17'}, winter:{start:'01-02',end:'02-01'}},
+    '빛가온중':{summer:{start:'07-25',end:'08-20'}, winter:{start:'01-05',end:'02-03'}},
+    '충현중':{summer:{start:'07-20',end:'08-17'}, winter:{start:'01-02',end:'02-01'}},
+    '광휘고':{summer:{start:'07-20',end:'08-20'}, winter:{start:'01-02',end:'02-01'}},
+    '광명북':{summer:{start:'07-20',end:'08-20'}, winter:{start:'01-02',end:'02-01'}},
   },
   grades:['초4','초5','초6','중1'],  // 방학 수·금 봉사 학년(기본)
   time:'10:00',
 };
 function vacationCfg(){ return state.vacation || DEFAULT_VACATION; }
 if(state.vacation==null){ state.vacation=JSON.parse(JSON.stringify(DEFAULT_VACATION)); }
+/* 구버전({start,end}) → 신버전({summer,winter}) 자동 이전 */
+(function migrateVacation(){
+  const v=state.vacation; if(!v||!v.schools) return;
+  let changed=false;
+  for(const s in v.schools){
+    const sc=v.schools[s];
+    if(sc && ('start' in sc || 'end' in sc) && !sc.summer && !sc.winter){
+      v.schools[s]={summer:{start:sc.start||'',end:sc.end||''}, winter:{start:'',end:''}};
+      changed=true;
+    } else {
+      sc.summer=sc.summer||{start:'',end:''};
+      sc.winter=sc.winter||{start:'',end:''};
+    }
+  }
+  if(changed){ try{ localStorage.setItem('asn_vacation',JSON.stringify(v)); }catch(e){} }
+})();
 /* 정기미사별 배정 가능 학년 기본값(기존 고정 규칙과 동일) */
 const DEFAULT_MASS_GRADES={
   dawn:   ['중1','중2','중3','고1'],            // 새벽: 중1~고1
@@ -516,7 +577,17 @@ const DEFAULT_MASS_GRADES={
   vigil:  ['중1','중2','중3','고1','고2'],       // 주일 전야(토): 중1~고2
   sunday: ['초4','초5','초6','중1'],            // 주일(일): 초4~중1
 };
+/* 정기미사별 '우선 배정' 학년 기본값(비어있으면 우선순위 없음=모두 동일).
+   우선 학년을 먼저 채우고, 부족하면 나머지(후순위) 학년으로 넘어감. */
+const DEFAULT_MASS_PRIORITY={ dawn:[], weekday:[], vigil:[], sunday:[] };
 function massGrades(){ return state.massGrades || DEFAULT_MASS_GRADES; }
+function massPriority(){ return state.massPriority || DEFAULT_MASS_PRIORITY; }
+/* 그 미사 종류에서 해당 학년이 후순위인지: 우선 학년이 하나라도 지정돼 있고, 그 학년이 우선에 없으면 후순위 */
+function isLowerPriorityGrade(kind, grade){
+  if(!kind) return false;
+  const pri=massPriority()[kind]||[];
+  return pri.length>0 && !pri.includes(grade);
+}
 /* 미사 제목 → 정기미사 종류 키(학년 설정용). 없으면 null */
 function routineKindOf(title){
   const t=title||'';
@@ -526,14 +597,19 @@ function routineKindOf(title){
   if(t.includes('평일')) return 'weekday';
   return null;
 }
-/* 특정 날짜(yy,mm,dd)에 방학 중인지: 어느 학교든 방학 기간이면 true. 학교별 집합 반환 */
+/* 특정 날짜(yy,mm,dd)에 방학 중인지: 어느 학교든 여름·겨울 기간이면 true. 학교별 집합 반환 */
+function inRangeMD(md, start, end){
+  if(!start||!end) return false;
+  if(start<=end) return md>=start && md<=end;       // 같은 해 안(여름)
+  return md>=start || md<=end;                       // 해를 넘김(겨울: 12월~2월)
+}
 function vacationSchoolsOn(yy,mm,dd){
   const cfg=vacationCfg(); const md=String(mm).padStart(2,'0')+'-'+String(dd).padStart(2,'0');
   const set=new Set();
   for(const sch in (cfg.schools||{})){
-    const v=cfg.schools[sch]; if(!v||!v.start||!v.end)continue;
-    // 연도 무관 MM-DD 비교(같은 해 방학 가정)
-    if(md>=v.start && md<=v.end) set.add(sch);
+    const v=cfg.schools[sch]; if(!v)continue;
+    const sm=v.summer||{}, wi=v.winter||{};
+    if(inRangeMD(md, sm.start, sm.end) || inRangeMD(md, wi.start, wi.end)) set.add(sch);
   }
   return set;
 }
@@ -555,6 +631,7 @@ function save(){
   localStorage.setItem('asn_gradelimits',JSON.stringify(state.gradeLimits||null));
   localStorage.setItem('asn_vacation',JSON.stringify(state.vacation||null));
   localStorage.setItem('asn_massgrades',JSON.stringify(state.massGrades||null));
+  localStorage.setItem('asn_masspriority',JSON.stringify(state.massPriority||null));
   localStorage.setItem('asn_lastmod',String(state.lastModified));
   updateLastMod();
   if(fb) syncPush();
@@ -594,7 +671,7 @@ function nthWeekdayOfMonth(yy,mm,d){
   return Math.floor((d-1)/7)+1;
 }
 /* 정기 미사(새벽·평일·주일·주일전야)는 제목을 달력에 숨기고, 그 외(성시간·성모신심·찬미·관리자 지정)만 표시 */
-const ROUTINE_TITLES=['새벽미사','평일미사','주일미사','주일 전야미사'];
+const ROUTINE_TITLES=['새벽미사','평일미사','주일미사','주일 전야미사','방학미사'];
 function isSpecialMass(title){ return !!title && !ROUTINE_TITLES.includes(title); }
 function genMonth(yy,mm){
   const days={};
@@ -633,7 +710,7 @@ function genMonth(yy,mm){
     }
     if(masses.length) days[d]={masses,lit:lit};
   }
-  return {assign:days, updated:Date.now(), requests:[], logs:[], adminlogs:[]};
+  return {assign:days, updated:Date.now(), requests:[], logs:[], adminlogs:[], published:false};
 }
 function getMonth(){
   if(!state.months[state.ym]){
@@ -643,6 +720,21 @@ function getMonth(){
   }
   return state.months[state.ym];
 }
+/* ===== 배정표 배포(공개) 상태 ===== */
+/* 각 달 mo.published===true 면 일반 사용자에게 공개. 관리자는 항상 모두 볼 수 있음.
+   ※ 기존 데이터 호환: published 플래그가 아예 없던(undefined) 달은 '이미 공개'로 간주(과거 운영 상태 유지).
+      명시적으로 false인 달만 미공개. */
+function isPublished(ymKey){
+  const mo=state.months[ymKey];
+  if(!mo) return false;
+  return mo.published!==false;   // undefined(레거시)→공개, true→공개, false→미공개
+}
+/* 공개된 달 'YYYY-MM' 목록(정렬) */
+function publishedYms(){
+  return Object.keys(state.months).filter(k=>isPublished(k)).sort();
+}
+/* 일반 사용자에게 보여줄 기본(가장 최근 공개) 달. 없으면 null */
+function latestPublishedYm(){ const a=publishedYms(); return a.length? a[a.length-1] : null; }
 
 /* ====================== AUTO-ASSIGN ====================== */
 function gradeRank(g){const o=['초4','초5','초6','중1','중2','중3','고1','고2','고3'];return o.indexOf(g);}
@@ -691,6 +783,18 @@ function massCategory(title){
   for(const c of MASS_CATEGORIES){ if(c.match(t)) return c.key; }
   return 'etc';
 }
+/* 그 연·월에 실제 배정된 이름이 하나라도 있는지(assign 키만 있고 이름이 없으면 false) */
+function monthHasRealAssign(year, month){
+  const mo=state.months[ym(year,month)];
+  if(!mo||!mo.assign) return false;
+  for(const d in mo.assign){
+    const masses=(mo.assign[d]&&mo.assign[d].masses)||[];
+    for(const ms of masses){
+      if((ms.big&&ms.big.length)||(ms.small&&ms.small.length)) return true;
+    }
+  }
+  return false;
+}
 /* 연도별 학생 배정 집계.
    반환: { total:{name:{1:n,...,12:n, sum:n}}, byCat:{cat:{name:{month:n,sum}}} } */
 function buildAssignTally(year){
@@ -719,10 +823,9 @@ function buildAssignTally(year){
         const months=rec[cat];
         for(const mk in months){
           const m=Number(mk); const cnt=months[mk]||0; if(!cnt)continue;
-          // 그 달에 실제 배정이 존재하면 시드 건너뜀(시스템 배정으로 대체된 것으로 간주)
-          const monthKey=ym(year,m); const mo=state.months[monthKey];
-          const hasReal = mo && mo.assign && Object.keys(mo.assign).length;
-          if(hasReal) continue;
+          // 그 달에 실제 배정(이름)이 존재하면 시드 건너뜀(시스템 배정으로 대체된 것으로 간주).
+          // assign 키만 있고 이름이 하나도 없으면 '실제 배정 없음'으로 보고 시드를 사용한다.
+          if(monthHasRealAssign(year,m)) continue;
           add(total,name,m,cnt);
           if(byCat[cat]) add(byCat[cat],name,m,cnt);
         }
@@ -821,8 +924,10 @@ function autoAssign(opts){
   const weekKey=d=>{ const dt=new Date(yy,mm-1,d); const dow=dt.getDay(); const sun=d-dow; return sun; }; // 그 주 일요일의 '일'(음수 가능)
   const days=Object.keys(mo.assign).map(Number).sort((a,b)=>a-b);
 
-  function scoreOf(p,d,isDawn,isSpecial){
+  function scoreOf(p,d,isDawn,isSpecial,kind){
     let c=counts[p.name];
+    // 후순위 학년: 우선 학년이 다 찼을 때만 뽑히도록 큰 패널티(다른 패널티보다 우선)
+    if(isLowerPriorityGrade(kind, p.grade)) c += 1000;
     // 특별미사(성시간·성모신심·찬미·어린이): 자격자끼리 '균등 분배'만 적용. 간격/주차 패널티 면제.
     if(isSpecial) return c;
     // 목표 횟수 초과자는 후순위(소프트). 목표 도달할수록 점수↑
@@ -839,15 +944,14 @@ function autoAssign(opts){
   function assignOne(arr,i,d,mass,kind,isDawn,isVigil,relax){
     const isSpecial = !!specialCap(mass.title);   // 성시간·성모신심·찬미(균등분배만)
     const isVacation = (mass.title||'').includes('방학'); // 방학미사: 자격상위지만 간격은 유의
-    const capFree = isSpecial || isVacation;       // 학년상한만 면제(대대제외는 면제 안 함)
     const base=(p,ignoreMax)=>{
       if(exclude.has(p.name)) return false;
       if(usedTodayRef.has(p.name)) return false;
       // 대대제외: '대대' 자리(대 줄 첫 칸)만 불가. 대소·소 자리는 가능 (연말 대복사 수업 전까지 대대만 금지)
       if(isDaedaeSlot(kind,i) && p.noDaedae) return false;
       if(isDawn){ if((dawnCount[p.name]||0)>=1) return false; }
-      // 학년별 최대 상한(자격상위 미사·완화 시 제외)
-      if(!capFree && !ignoreMax){
+      // 학년별 최대 상한 — 방학·특별미사 포함 모든 미사에 적용(전체 횟수가 max 초과 금지)
+      if(!ignoreMax){
         const mx=limitFor(p.grade).max;
         if(counts[p.name] >= mx) return false;
       }
@@ -859,7 +963,8 @@ function autoAssign(opts){
     if(!cands.length&&isVigil) cands=state.roster.filter(p=>base(p,false)&&!p.excluded&&inRange(p.grade,'초4','고3'));
     if(!cands.length) return '';
     // 방학미사는 간격 분산을 적용(scoreOf 일반 경로), 특별미사만 균등분배-only
-    let scored=cands.map(p=>({p,s:scoreOf(p,d,isDawn,isSpecial)}));
+    const rkind=routineKindOf(mass.title);
+    let scored=cands.map(p=>({p,s:scoreOf(p,d,isDawn,isSpecial,rkind)}));
     const min=Math.min(...scored.map(x=>x.s));
     const pool=scored.filter(x=>x.s===min).map(x=>x.p);
     const pick=pool[Math.floor(Math.random()*pool.length)];
@@ -1012,7 +1117,7 @@ async function initFirebase(){
     const rootRef=db.ref(fbdb,'/');
     const snap=await db.get(rootRef);
     if(!snap.exists()){
-      await db.set(rootRef,{roster:state.roster, months:state.months, specialLog:state.specialLog||{}, gradeLimits:state.gradeLimits||null, vacation:state.vacation||null, massGrades:state.massGrades||null, lastModified:state.lastModified||null});
+      await db.set(rootRef,{roster:state.roster, months:state.months, specialLog:state.specialLog||{}, gradeLimits:state.gradeLimits||null, vacation:state.vacation||null, massGrades:state.massGrades||null, massPriority:state.massPriority||null, lastModified:state.lastModified||null});
     }
 
     // 실시간 수신: 다른 기기/사용자의 변경을 즉시 반영
@@ -1022,20 +1127,30 @@ async function initFirebase(){
       _applyingRemote=true;
       if(v.roster) state.roster=v.roster;
       state.months = v.months || {};
-      // 6월 배정 시드: DB에 6월이 없으면 시드 유지하고 곧바로 올림
-      let junNeedsPush=false;
-      if(!state.months['2026-06'] && typeof SEED_JUN_2026!=='undefined'){
-        state.months['2026-06']=JSON.parse(JSON.stringify(SEED_JUN_2026)); junNeedsPush=true;
+      // 시드 달(1~6월) 보충: DB에 없거나 비어 있으면 시드로 채우고 곧바로 올림
+      let seedMonthsPushed=false;
+      if(typeof SEED_MONTHS!=='undefined'){
+        for(const k in SEED_MONTHS){
+          const [sy,sm]=k.split('-').map(Number);
+          const cur=state.months[k];
+          const empty = !cur || !cur.assign || !Object.keys(cur.assign).length || !monthHasRealAssign(sy,sm);
+          if(empty){
+            state.months[k]=JSON.parse(JSON.stringify(SEED_MONTHS[k]));
+            if(state.months[k].published===undefined) state.months[k].published=true;
+            seedMonthsPushed=true;
+          }
+        }
       }
       // 누적 기록: DB에 있으면 사용, 없으면 기존 시드(1~6월) 유지하고 곧바로 올림
       if(v.specialLog){ state.specialLog = v.specialLog; }
       else if(!state.specialLog || !Object.keys(state.specialLog).length){
         state.specialLog = JSON.parse(JSON.stringify(SEED_SPECIAL_LOG));
       }
-      const seedNeedsPush = junNeedsPush || (!v.specialLog && state.specialLog && Object.keys(state.specialLog).length);
+      const seedNeedsPush = seedMonthsPushed || (!v.specialLog && state.specialLog && Object.keys(state.specialLog).length);
       state.gradeLimits = v.gradeLimits || null;
       if(v.vacation) state.vacation = v.vacation;
       if(v.massGrades) state.massGrades = v.massGrades;
+      if(v.massPriority) state.massPriority = v.massPriority;
       if(v.lastModified) state.lastModified = v.lastModified;
       updateLastMod();
       // 로컬 캐시도 갱신(오프라인 대비)
@@ -1044,6 +1159,7 @@ async function initFirebase(){
            localStorage.setItem('asn_speciallog',JSON.stringify(state.specialLog||{}));
            localStorage.setItem('asn_gradelimits',JSON.stringify(state.gradeLimits||null)); }catch(e){}
       _applyingRemote=false;
+      ensureViewableMonth();
       render();
       if(seedNeedsPush) syncPush(); // DB에 누적 시드가 없던 경우 한 번 업로드
     });
@@ -1063,7 +1179,7 @@ function syncPush(){
   const db=window._fbdb;
   clearTimeout(_pushTimer);
   _pushTimer=setTimeout(()=>{
-    db.set(db.ref(fbdb,'/'),{roster:state.roster,months:state.months,specialLog:state.specialLog||{},gradeLimits:state.gradeLimits||null,vacation:state.vacation||null,massGrades:state.massGrades||null,lastModified:state.lastModified||null}).catch(e=>console.warn('sync push failed',e));
+    db.set(db.ref(fbdb,'/'),{roster:state.roster,months:state.months,specialLog:state.specialLog||{},gradeLimits:state.gradeLimits||null,vacation:state.vacation||null,massGrades:state.massGrades||null,massPriority:state.massPriority||null,lastModified:state.lastModified||null}).catch(e=>console.warn('sync push failed',e));
   },250); // 짧은 디바운스로 연속 저장 합치기
 }
 
@@ -1084,6 +1200,7 @@ function setView(v){
 function render(){
   document.body.classList.toggle('admin',state.isAdmin);
   document.querySelectorAll('.admin-act').forEach(b=>b.style.display=state.isAdmin?'inline-flex':'none');
+  const mb=document.getElementById('maintBar'); if(mb) mb.style.display=state.isAdmin?'block':'none';
   if(state.view==='schedule') renderSchedule();
   else setView(state.view);
 }
@@ -1095,6 +1212,29 @@ function renderSchedule(){
   $('#monthTitle').textContent=`${y}년 ${m}월`;
   const mo=getMonth();
   $('#updatedAt').textContent='최종 변경: '+fmtUpdated(mo.updated);
+  // 배포 버튼 라벨/상태(관리자만 보임)
+  const published=isPublished(state.ym);
+  const pubBtn=document.getElementById('publishBtn');
+  if(pubBtn){
+    if(published){ pubBtn.textContent='✅ 배포됨 (취소)'; pubBtn.classList.add('published'); }
+    else { pubBtn.textContent='📢 배정표 배포'; pubBtn.classList.remove('published'); }
+  }
+  // 관리자에게 배포 상태 안내 표시
+  const banner=document.getElementById('pubBanner');
+  if(banner){
+    if(state.isAdmin && !published){
+      banner.style.display='block';
+      banner.classList.remove('ok');
+      banner.textContent=`⚠ 이 달은 아직 배포 전입니다. 일반 사용자에게는 보이지 않습니다.`;
+    } else if(state.isAdmin && published){
+      banner.style.display='block';
+      banner.classList.add('ok');
+      banner.textContent=`✅ 배포됨 — 일반 사용자가 이 달을 볼 수 있습니다.`;
+    } else {
+      banner.style.display='none';
+      banner.classList.remove('ok');
+    }
+  }
   $('#segCal').classList.toggle('on',state.mode==='cal');
   $('#segList').classList.toggle('on',state.mode==='list');
   if(state.mode==='cal'){ $('#calView').style.display='block'; $('#listView').style.display='none'; renderCal(y,m,mo);}
@@ -1118,7 +1258,7 @@ function renderCal(y,m,mo){
       const massClick = pickMode? '' : `onclick="openMass(${d},'${ms.id}')"`;
       const ttl = isSpecialMass(ms.title)? `<div class="mttl">${ms.title}</div>`:'';
       h+=`<div class="mass" ${massClick}>
-        ${ttl}<div class="mt"><span class="cdot ${c.cls}"></span>${ms.time}</div>
+        ${ttl}<div class="mt"><span class="clbl ${c.lblcls}">${c.lbl}</span>${ms.time}</div>
         ${slotGrid(ms,d)}</div>`;
     });
     if(state.isAdmin && !pickMode) h+=`<button class="addmass" onclick="addMass(${d})">＋ 미사</button>`;
@@ -1173,9 +1313,9 @@ function renderList(y,m,mo){
     if(hasMass) day.masses.forEach(ms=>{
       const c=COLOR_NAME[ms.color]||COLOR_NAME['녹'];
       h+=`<div class="massrow"><div class="top">
-          <span class="cdot ${c.cls}"></span>
+          <span class="clbl ${c.lblcls}">${c.lbl}</span>
           <span class="time">${ms.time}</span>
-          <span class="ttl">${ms.title} <span class="tag">${c.k}</span></span>
+          <span class="ttl">${ms.title}</span>
           ${state.isAdmin && !pickMode?`<button class="editbtn" onclick="openMass(${d},'${ms.id}')">편집</button>`:''}</div>
           <div class="roles">`;
       const slot=(n,lbl,k,i)=>{ const chg=isChanged(d,ms.id,n);
@@ -1631,29 +1771,59 @@ function monthCounts(ykey){
   }
   return res;
 }
+/* 1월~지정한 달(upToMonth)까지의 누적 횟수(시드 포함). buildAssignTally를 그 달까지 합산.
+   total = dawn+weekday+sunday+special+etc 가 항상 성립하도록 같은 출처(byCat)에서만 계산.
+   반환: {이름:{total,dawn,weekday,sunday,special,etc}} */
+function cumulativeCounts(year, upToMonth){
+  const t=buildAssignTally(year); // {total:{name:{m:n,sum}}, byCat:{cat:{name:{m:n,sum}}}}
+  const res={};
+  const ensure=n=>res[n]=res[n]||{total:0,dawn:0,weekday:0,sunday:0,special:0,etc:0};
+  const sumUpTo=(rec)=>{ let s=0; if(!rec)return 0; for(let m=1;m<=upToMonth;m++) s+=rec[m]||0; return s; };
+  // 카테고리별 합(같은 출처) → 계는 카테고리 합으로 산출(불일치 원천 차단)
+  const cats=['dawn','weekday','sunday','special','etc'];
+  cats.forEach(cat=>{
+    const src=t.byCat[cat]||{};
+    for(const n in src){ ensure(n); const v=sumUpTo(src[n]); res[n][cat]=v; res[n].total+=v; }
+  });
+  return res;
+}
 function renderRoster(){
   const yk=rosterYMget();
   const [yy,mm]=yk.split('-').map(Number);
   $('#rosterTitle').textContent=`${mm}월 명단·현황`;
   $('#rosterCount').textContent=`총 ${state.roster.length}명 · 행을 누르면 편집 · 숫자는 ${mm}월 배정 횟수`;
-  const cnt=monthCounts(yk);
-  // 학년 순 정렬
+  const cnt=monthCountsCat(yk);  // 그 달만(dawn/weekday/sunday/special/etc)
   const idxOrder=state.roster.map((p,i)=>i).sort((a,b)=>gradeRank(state.roster[a].grade)-gradeRank(state.roster[b].grade));
   let h='<tr><th>학년</th><th>성명</th><th>학교</th><th class="cnum">계</th><th class="cnum">새벽</th><th class="cnum">평일</th><th class="cnum">주일</th><th class="cnum">특별</th><th>제한</th><th></th></tr>';
   idxOrder.forEach(idx=>{
     const p=state.roster[idx];
-    const c=cnt[p.name]||{total:0,dawn:0,weekday:0,sunday:0,special:0};
+    const c=cnt[p.name]||{total:0,dawn:0,weekday:0,sunday:0,special:0,etc:0};
+    const special=(c.special||0)+(c.etc||0); // 방학·기타는 특별로 합산 → 계=새벽+평일+주일+특별
     const lim=p.excluded?'<i class="lex">제외</i>':(p.noDaedae?'<i class="ldd">대대제외</i>':'');
     const z=v=>v?`<b>${v}</b>`:'<span class="zc">·</span>';
     h+=`<tr class="rrow ${p.excluded?'rex':''}" onclick="editStudent(${idx})">
       <td>${p.grade}</td><td><b>${p.name}</b></td><td class="csch">${p.school||''}</td>
       <td class="cnum ctot">${z(c.total)}</td>
       <td class="cnum">${z(c.dawn)}</td><td class="cnum">${z(c.weekday)}</td>
-      <td class="cnum">${z(c.sunday)}</td><td class="cnum">${z(c.special)}</td>
+      <td class="cnum">${z(c.sunday)}</td><td class="cnum">${z(special)}</td>
       <td>${lim}</td>
       <td><button class="delrow" onclick="event.stopPropagation();deleteStudent(${idx})">🗑</button></td></tr>`;
   });
   $('#rosterTable').innerHTML=h;
+}
+/* 그 달(year-month) 한 달의 카테고리별 횟수.
+   buildAssignTally를 사용하므로, 그 달 실제 배정이 있으면 실제값, 없으면 시드(SEED_ASSIGN_COUNT) 값이 반영된다.
+   반환: {이름:{total,dawn,weekday,sunday,special,etc}} */
+function monthCountsCat(ykey){
+  const [yy,mm]=ykey.split('-').map(Number);
+  const t=buildAssignTally(yy);  // {total:{name:{m:n,sum}}, byCat:{cat:{name:{m:n,sum}}}}
+  const res={};
+  const ensure=n=>res[n]=res[n]||{total:0,dawn:0,weekday:0,sunday:0,special:0,etc:0};
+  ['dawn','weekday','sunday','special','etc'].forEach(cat=>{
+    const src=t.byCat[cat]||{};
+    for(const n in src){ const v=src[n][mm]||0; if(!v)continue; ensure(n); res[n][cat]=v; res[n].total+=v; }
+  });
+  return res;
 }
 window.rosterPrevMonth=function(){ const [y,m]=rosterYMget().split('-').map(Number); rosterYM=ym(m===1?y-1:y, m===1?12:m-1); renderRoster(); };
 window.rosterNextMonth=function(){ const [y,m]=rosterYMget().split('-').map(Number); rosterYM=ym(m===12?y+1:y, m===12?1:m+1); renderRoster(); };
@@ -1827,16 +1997,21 @@ $('#vacBtn').onclick=()=>openVacation();
 window.openVacation=function(){
   const cfg=JSON.parse(JSON.stringify(vacationCfg()));
   cfg.schools=cfg.schools||{}; cfg.grades=cfg.grades||[]; cfg.time=cfg.time||'10:00';
-  // 설정에 학교가 하나도 없을 때만 명단 학교를 빈 기간으로 채움(이후엔 사용자가 추가·삭제로 관리)
+  // 각 학교에 summer/winter 보장
+  for(const s in cfg.schools){
+    const sc=cfg.schools[s]||{};
+    if(('start' in sc || 'end' in sc) && !sc.summer){ cfg.schools[s]={summer:{start:sc.start||'',end:sc.end||''},winter:{start:'',end:''}}; }
+    else { cfg.schools[s]={summer:sc.summer||{start:'',end:''}, winter:sc.winter||{start:'',end:''}}; }
+  }
   if(!Object.keys(cfg.schools).length){
-    [...new Set(state.roster.map(p=>p.school).filter(Boolean))].forEach(s=>{ cfg.schools[s]={start:'',end:''}; });
+    [...new Set(state.roster.map(p=>p.school).filter(Boolean))].forEach(s=>{ cfg.schools[s]={summer:{start:'',end:''},winter:{start:'',end:''}}; });
   }
   window._vacDraft=cfg;
   renderVacation();
 };
 function renderVacation(){
   const cfg=window._vacDraft;
-  let h=`<div class="note">방학 기간에는 <b>수·금 ${cfg.time}</b> 미사에 복사를 배정합니다. 대상은 <b>방학 중인 학교 학생</b> 중 <b>봉사 학년</b>인 아이들입니다.</div>`;
+  let h=`<div class="note">관리자가 설정한 <b>방학 기간(여름·겨울)</b> 동안, 그 학교의 <b>봉사 학년</b> 아이들이 <b>수·금 ${cfg.time}</b> 미사에 배정됩니다. 학교마다 기간을 다르게 정할 수 있고, 겨울방학처럼 해를 넘기는 기간(예: 1/5~2/3, 12/24~2/3)도 됩니다. 날짜가 비어 있으면 그 학교·계절은 방학 대상에서 제외됩니다.</div>`;
   // 봉사 학년 선택
   h+='<div class="sectitle">봉사 학년 (방학 수·금 담당)</div><div class="qgrid">';
   GRADES.forEach(g=>{
@@ -1846,19 +2021,27 @@ function renderVacation(){
   h+='</div>';
   // 미사 시간
   h+=`<div class="field"><label>방학 미사 시간</label><input id="vac_time" value="${cfg.time}" onchange="window._vacDraft.time=this.value" placeholder="예: 10:00"></div>`;
-  // 학교별 기간
-  h+='<div class="sectitle">학교별 방학 기간</div>';
+  // 학교별 기간(여름·겨울)
+  h+='<div class="sectitle">학교별 방학 기간 (여름·겨울)</div>';
   h+='<div class="vactbl">';
   const schools=Object.keys(cfg.schools).sort();
   if(!schools.length) h+='<div class="vacrow"><span class="help" style="margin:4px 0">아직 학교가 없습니다. 아래에서 추가하세요.</span></div>';
   schools.forEach(s=>{
-    const v=cfg.schools[s]||{start:'',end:''};
-    h+=`<div class="vacrow">
-      <span class="vs">${s}</span>
-      <button class="vdpick ${v.start?'set':''}" onclick="pickVacDate('${s}','start')">${v.start?fmtMD(v.start):'시작일'}</button>
-      <span class="vdash">~</span>
-      <button class="vdpick ${v.end?'set':''}" onclick="pickVacDate('${s}','end')">${v.end?fmtMD(v.end):'종료일'}</button>
-      <button class="vdel" onclick="removeVacSchool('${s}')">🗑</button>
+    const sc=cfg.schools[s]||{}; const sm=sc.summer||{start:'',end:''}; const wi=sc.winter||{start:'',end:''};
+    h+=`<div class="vacschool">
+      <div class="vshd"><span class="vs">${s}</span><button class="vdel" onclick="removeVacSchool('${s}')">🗑</button></div>
+      <div class="vacrow">
+        <span class="vseason">☀ 여름</span>
+        <button class="vdpick ${sm.start?'set':''}" onclick="pickVacDate('${s}','summer','start')">${sm.start?fmtMD(sm.start):'시작일'}</button>
+        <span class="vdash">~</span>
+        <button class="vdpick ${sm.end?'set':''}" onclick="pickVacDate('${s}','summer','end')">${sm.end?fmtMD(sm.end):'종료일'}</button>
+      </div>
+      <div class="vacrow">
+        <span class="vseason">❄ 겨울</span>
+        <button class="vdpick ${wi.start?'set':''}" onclick="pickVacDate('${s}','winter','start')">${wi.start?fmtMD(wi.start):'시작일'}</button>
+        <span class="vdash">~</span>
+        <button class="vdpick ${wi.end?'set':''}" onclick="pickVacDate('${s}','winter','end')">${wi.end?fmtMD(wi.end):'종료일'}</button>
+      </div>
     </div>`;
   });
   h+='</div>';
@@ -1878,7 +2061,7 @@ window.addVacSchool=function(){
   const inp=$('#vac_newschool'); const name=(inp.value||'').trim();
   if(!name){ toast('학교 이름을 입력하세요'); return; }
   if(window._vacDraft.schools[name]){ toast('이미 있는 학교입니다'); return; }
-  window._vacDraft.schools[name]={start:'',end:''};
+  window._vacDraft.schools[name]={summer:{start:'',end:''},winter:{start:'',end:''}};
   renderVacation();
 };
 window.removeVacSchool=function(s){
@@ -1888,19 +2071,19 @@ window.removeVacSchool=function(s){
 };
 // 작은 달력 팝업으로 날짜 선택 (월·일만)
 let _pickTarget=null;
-window.pickVacDate=function(school,which){
-  _pickTarget={school,which};
-  const cur=(window._vacDraft.schools[school]||{})[which]||'';
-  let pm = cur ? Number(cur.split('-')[0]) : (which==='end'?8:7); // 기본 7~8월
+window.pickVacDate=function(school,season,which){
+  _pickTarget={school,season,which};
+  const cur=((window._vacDraft.schools[school]||{})[season]||{})[which]||'';
+  let pm = cur ? Number(cur.split('-')[0]) : (season==='winter' ? (which==='end'?2:1) : (which==='end'?8:7));
   renderDatePicker(pm);
 };
 function renderDatePicker(month){
   const monthNames=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-  const cur=(window._vacDraft.schools[_pickTarget.school]||{})[_pickTarget.which]||'';
+  const cur=((window._vacDraft.schools[_pickTarget.school]||{})[_pickTarget.season]||{})[_pickTarget.which]||'';
   const curMD = cur||'';
-  // 해당 월의 날짜 그리드(요일 무시, 1~말일)
+  const seasonLbl=_pickTarget.season==='winter'?'❄ 겨울':'☀ 여름';
   const last=new Date(2026,month,0).getDate();
-  let h=`<div class="note">${_pickTarget.school} · ${_pickTarget.which==='start'?'시작일':'종료일'}</div>`;
+  let h=`<div class="note">${_pickTarget.school} · ${seasonLbl} · ${_pickTarget.which==='start'?'시작일':'종료일'}</div>`;
   h+=`<div class="dpnav">
     <button class="tnav" onclick="renderDatePicker(${month>1?month-1:12})">‹</button>
     <b>${monthNames[month-1]}</b>
@@ -1916,9 +2099,10 @@ function renderDatePicker(month){
   openSheet('날짜 선택',h);
 }
 window.setPickedDate=function(md){
-  const {school,which}=_pickTarget;
-  window._vacDraft.schools[school]=window._vacDraft.schools[school]||{start:'',end:''};
-  window._vacDraft.schools[school][which]=md;
+  const {school,season,which}=_pickTarget;
+  const sc=window._vacDraft.schools[school]=window._vacDraft.schools[school]||{summer:{start:'',end:''},winter:{start:'',end:''}};
+  sc[season]=sc[season]||{start:'',end:''};
+  sc[season][which]=md;
   renderVacation();
 };
 window.toggleVacGrade=function(g,on){
@@ -1952,17 +2136,25 @@ const MASS_GRADE_DEFS=[
 window.openMassGrades=function(){
   const cur = state.massGrades ? JSON.parse(JSON.stringify(state.massGrades)) : JSON.parse(JSON.stringify(DEFAULT_MASS_GRADES));
   MASS_GRADE_DEFS.forEach(d=>{ if(!cur[d.key]) cur[d.key]=(DEFAULT_MASS_GRADES[d.key]||[]).slice(); });
+  const pri = state.massPriority ? JSON.parse(JSON.stringify(state.massPriority)) : JSON.parse(JSON.stringify(DEFAULT_MASS_PRIORITY));
+  MASS_GRADE_DEFS.forEach(d=>{ if(!pri[d.key]) pri[d.key]=[]; });
   window._mgDraft=cur;
+  window._mgPri=pri;
   renderMassGrades();
 };
 function renderMassGrades(){
   const cur=window._mgDraft;
-  let h=`<div class="note">각 정기미사에 배정할 <b>학년을 체크</b>하세요. 체크한 학년 학생만 그 미사에 배정됩니다. (성시간·성모신심·찬미는 자격 기준이라 여기서 제외)</div>`;
+  const pri=window._mgPri;
+  let h=`<div class="note">각 정기미사에 배정할 <b>학년을 체크</b>하세요. 체크한 학년 중 <b>⭐우선</b>으로 표시한 학년을 먼저 배정하고, 자리가 부족하면 나머지(후순위) 학년으로 넘어갑니다. 우선 표시가 없으면 모두 같은 순위입니다. (성시간·성모신심·찬미는 자격 기준이라 제외)</div>`;
   MASS_GRADE_DEFS.forEach(d=>{
     h+=`<div class="mgblock"><div class="mghd">${d.label} <i>${d.desc}</i></div><div class="qgrid">`;
     GRADES.forEach(g=>{
       const on=(cur[d.key]||[]).includes(g);
-      h+=`<label class="qchk"><input type="checkbox" ${on?'checked':''} onchange="toggleMassGrade('${d.key}','${g}',this.checked)"> ${g}</label>`;
+      const isPri=(pri[d.key]||[]).includes(g);
+      h+=`<div class="mgrow">
+        <label class="qchk"><input type="checkbox" ${on?'checked':''} onchange="toggleMassGrade('${d.key}','${g}',this.checked)"> ${g}</label>
+        <button class="pribtn ${isPri?'on':''}" ${on?'':'disabled'} onclick="toggleMassPriority('${d.key}','${g}')" title="우선 배정">⭐</button>
+      </div>`;
     });
     h+='</div></div>';
   });
@@ -1973,19 +2165,34 @@ function renderMassGrades(){
 window.toggleMassGrade=function(key,g,on){
   const arr=window._mgDraft[key]=window._mgDraft[key]||[];
   if(on){ if(!arr.includes(g)) arr.push(g); }
-  else { window._mgDraft[key]=arr.filter(x=>x!==g); }
+  else {
+    window._mgDraft[key]=arr.filter(x=>x!==g);
+    // 체크 해제 시 우선 표시도 제거
+    window._mgPri[key]=(window._mgPri[key]||[]).filter(x=>x!==g);
+  }
+  renderMassGrades();
+};
+window.toggleMassPriority=function(key,g){
+  // 체크된 학년만 우선 지정 가능
+  if(!(window._mgDraft[key]||[]).includes(g)) return;
+  const arr=window._mgPri[key]=window._mgPri[key]||[];
+  if(arr.includes(g)) window._mgPri[key]=arr.filter(x=>x!==g);
+  else arr.push(g);
+  renderMassGrades();
 };
 window.saveMassGrades=function(){
   // 빈 학년 미사 경고(아무도 배정 못 함)
   const empty=MASS_GRADE_DEFS.filter(d=>!(window._mgDraft[d.key]||[]).length).map(d=>d.label);
   if(empty.length && !confirm(`${empty.join(', ')}에 학년이 하나도 선택되지 않았습니다. 그 미사는 배정이 비게 됩니다. 계속할까요?`)) return;
   state.massGrades=window._mgDraft;
-  addAdminLog('미사별 배정 학년 설정 변경');
+  state.massPriority=window._mgPri;
+  addAdminLog('미사별 배정 학년·우선순위 설정 변경');
   save(); closeSheet(); toast('저장되었습니다');
 };
 window.resetMassGrades=function(){
-  if(!confirm('미사별 학년을 기본값으로 되돌릴까요?'))return;
+  if(!confirm('미사별 학년·우선순위를 기본값으로 되돌릴까요?'))return;
   state.massGrades=null;
+  state.massPriority=null;
   save(); closeSheet(); toast('기본값으로 초기화했습니다');
 };
 
@@ -2028,7 +2235,16 @@ window.editTallyCell=function(key,m){
   const year=tallyYear;
   const label=SPECIAL_KINDS.find(k=>k.key===key).label;
   const yk=ym(year,m);
-  const monthExists = !!(state.months[yk] && state.months[yk].assign && Object.keys(state.months[yk].assign).length);
+  let monthExists = !!(state.months[yk] && state.months[yk].assign && Object.keys(state.months[yk].assign).length);
+  // 틀이 없으면 자동 생성 → 미사 틀과 상관없이 특별미사 자리에 바로 배정 가능하게 함
+  if(!monthExists){
+    state.months[yk]=genMonth(year,m);
+    state.ym=yk;                       // 화면 현재 달도 맞춰 이후 자동배정 대상 일치
+    addAdminLog(`새 달 만들기 — ${year}/${m} 미사 틀 자동생성(특별미사 설정 진입)`);
+    save(); renderSchedule();
+    monthExists=true;
+    toast(`${m}월 미사 틀을 자동으로 만들었습니다`);
+  }
   const masses=findSpecialMasses(year,m,key);
   const man=manualNames(year,key,m);
   let h=`<div class="note">${year}년 ${m}월 · ${label}</div>`;
@@ -2048,12 +2264,8 @@ window.editTallyCell=function(key,m){
       h+='</div>';
     });
     h+=`<div class="help">자리를 누르면 자격 있는 학생을 골라 바로 배정합니다. 누적표에는 자동으로 파란색으로 반영됩니다.</div>`;
-  } else if(!monthExists){
-    // 그 달 미사 틀 자체가 없음 → 만들기 버튼
-    h+=`<div class="help" style="color:var(--danger)">${m}월 미사 틀이 아직 없습니다. 먼저 ${m}월 미사 틀을 만들어야 특별미사 자리에 배정할 수 있습니다.</div>`;
-    h+=`<button class="btnfull" onclick="genMonthFromTally(${m})">${m}월 미사 틀 만들기</button>`;
   } else {
-    h+=`<div class="help" style="color:var(--danger)">이 달에 '${label}' 미사가 없습니다. 달력에서 그 미사를 추가하거나(＋ 미사 → 유형 '${label}'), 아래 '수동 기록'으로 누적만 남길 수 있습니다.</div>`;
+    h+=`<div class="help" style="color:var(--danger)">이 달에 '${label}' 미사 날짜가 없습니다. 달력에서 그 미사를 추가하거나(＋ 미사 → 유형 '${label}'), 아래 '수동 기록'으로 누적만 남길 수 있습니다.</div>`;
   }
 
   // 수동 누적 기록(미사 없이 기록만 남기고 싶을 때)
@@ -2083,31 +2295,51 @@ window.genMonthFromTally=function(m){
   editTallyCell('seongsigan',m);
   toast(`${m}월 미사 틀을 만들었습니다`);
 };
-// 미사 자리 클릭 → 자격자 선택 목록
+// 미사 자리 클릭 → 학생 선택(임시) 후 하단 '저장'으로 확정·닫기
+let _specialPick=null; // {key,m,mi,kind,si,name}
 window.pickSpecialSlot=function(key,m,mi,kind,si){
   const year=tallyYear;
   const label=SPECIAL_KINDS.find(k=>k.key===key).label;
   const masses=findSpecialMasses(year,m,key);
   const mm=masses[mi]; if(!mm){ editTallyCell(key,m); return; }
   const cur=(mm.mass[kind]||[])[si]||'';
-  // 자격자(그 미사에 eligible). 대대 자리(대 줄 첫 칸)만 대대제외 빼기
-  let cand=state.roster.filter(p=>!p.excluded && eligible(p,mm.mass) && !(isDaedaeSlot(kind,si)&&p.noDaedae));
+  // 선택 상태 초기화: 현재 자리값을 기본 선택으로
+  _specialPick={key,m,mi,kind,si,name:cur};
+  // 특별미사 자리는 관리자가 명단에서 누구든 직접 등록(자격·대대제외·제외 제한 없음)
+  let cand=state.roster.slice();
   // 같은 미사에 이미 들어간 사람은 제외(중복 방지), 단 현재 자리값은 허용
   const usedHere=new Set([...(mm.mass.big||[]),...(mm.mass.small||[])].filter(Boolean));
   const slotLabel = kind==='big' ? (si===0?'대대':'대소') : (si===0?'소대':'소소');
   let h=`<div class="note">${year}년 ${m}/${mm.day} · ${label} · ${slotLabel} 자리</div>`;
   h+='<div class="tpick">';
-  h+=`<button class="tpk" onclick="setSpecialSlot('${key}',${m},${mi},'${kind}',${si},'')">— 비움 —</button>`;
+  h+=`<button class="tpk ${cur===''?'sel':''}" data-pick="" onclick="selectSpecialName('')">— 비움 —</button>`;
   cand.forEach(p=>{
     const dup = usedHere.has(p.name) && p.name!==cur;
-    h+=`<button class="tpk q ${p.name===cur?'sel':''}" ${dup?'disabled style="opacity:.4"':''} onclick="setSpecialSlot('${key}',${m},${mi},'${kind}',${si},'${p.name.replace(/'/g,"\\'")}')">${p.name}<i>${p.grade}</i></button>`;
+    const nm=p.name.replace(/'/g,"\\'");
+    h+=`<button class="tpk q ${p.name===cur?'sel':''}" data-pick="${p.name.replace(/"/g,'&quot;')}" ${dup?'disabled style="opacity:.4"':''} onclick="selectSpecialName('${nm}')">${p.name}<i>${p.grade}</i></button>`;
   });
-  if(!cand.length) h+='<span class="help">자격 있는 학생이 없습니다. 명단에서 ${label} 자격을 체크하세요.</span>';
+  if(!cand.length) h+=`<span class="help">명단에 학생이 없습니다.</span>`;
   h+='</div>';
-  h+=`<button class="btnfull ghost" onclick="editTallyCell('${key}',${m})">← 뒤로</button>`;
+  h+=`<div class="popbtns">
+        <button class="btnfull ghost" onclick="editTallyCell('${key}',${m})">← 뒤로</button>
+        <button class="btnfull" id="specialSaveBtn" onclick="saveSpecialSlot()">저장</button>
+      </div>`;
   openSheet('자리 배정',h);
 };
-window.setSpecialSlot=function(key,m,mi,kind,si,name){
+// 학생 버튼 클릭: 선택 표시만(저장은 '저장' 버튼)
+window.selectSpecialName=function(name){
+  if(_specialPick) _specialPick.name=name;
+  document.querySelectorAll('.tpick .tpk').forEach(b=>{
+    b.classList.toggle('sel', (b.getAttribute('data-pick')||'')===name);
+  });
+};
+// '저장' 클릭: 확정 후 시트 닫기
+window.saveSpecialSlot=function(){
+  if(!_specialPick){ closeSheet(); return; }
+  const {key,m,mi,kind,si,name}=_specialPick;
+  setSpecialSlot(key,m,mi,kind,si,name,true); // close=true → 저장 후 시트 닫기
+};
+window.setSpecialSlot=function(key,m,mi,kind,si,name,close){
   const year=tallyYear;
   const mo=state.months[ym(year,m)]; if(!mo){ editTallyCell(key,m); return; }
   const masses=findSpecialMasses(year,m,key);
@@ -2116,7 +2348,11 @@ window.setSpecialSlot=function(key,m,mi,kind,si,name){
   mo.updated=Date.now();
   state.ym=ym(year,m);  // 특별미사 편집 중인 달을 화면 현재 달로 맞춤(이후 자동배정 대상 일치)
   addAdminLog(`특별미사 배정 — ${year}/${m}/${mm.day} ${SPECIAL_KINDS.find(k=>k.key===key).label} ${kind==='big'?'대':'소'}${si+1}: ${name||'(비움)'}`);
-  save(); editTallyCell(key,m); toast(name?`${name} 배정`:'비웠습니다');
+  save(); renderSchedule();
+  _specialPick=null;
+  if(close){ renderTally(); }     // '저장' 버튼 흐름: 누적표 화면으로 돌아가기
+  else { editTallyCell(key,m); }  // 기타 호출: 이전 화면 유지
+  toast(name?`${name} 배정`:'비웠습니다');
 };
 function ensureLogPath(year,key){
   state.specialLog=state.specialLog||{};
@@ -2217,7 +2453,7 @@ window.loginAdmin=function(){
   if($('#adm_pw').value===ADMIN_PASSWORD){state.isAdmin=true;closeSheet();render();toast('관리자 모드 활성화');}
   else toast('비밀번호가 틀립니다');
 };
-window.logoutAdmin=function(){state.isAdmin=false;closeSheet();setView('schedule');render();toast('관리자 모드 종료');};
+window.logoutAdmin=function(){state.isAdmin=false;closeSheet();setView('schedule');ensureViewableMonth();render();toast('관리자 모드 종료');};
 
 document.querySelectorAll('.bnav button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
 $('#segCal').onclick=()=>{state.mode='cal';renderSchedule();};
@@ -2229,14 +2465,51 @@ $('#nextM').onclick=()=>shiftMonth(1);
 function shiftMonth(n){
   if(_autoPending && !confirm('저장하지 않은 자동배정 결과가 있습니다. 다른 달로 이동하면 저장되지 않은 변경은 그대로 남지만 화면에서 벗어납니다. 계속할까요?')) return;
   let[y,m]=state.ym.split('-').map(Number);m+=n;if(m<1){m=12;y--;}if(m>12){m=1;y++;}
+  const targetYm=ym(y,m);
+  // 일반 사용자는 공개(배포)된 달만 이동 가능
+  if(!state.isAdmin && !isPublished(targetYm)){
+    toast(n>0?'아직 배포되지 않은 달입니다':'더 이전 배포된 달이 없습니다');
+    return;
+  }
   if(pickMode){pickMode=null;pickFirst=null;hidePickBanner();}
-  state.ym=ym(y,m);renderSchedule();}
+  state.ym=targetYm;renderSchedule();}
+window.publishMonth=function(){
+  const mo=getMonth();
+  const [y,m]=state.ym.split('-').map(Number);
+  if(isPublished(state.ym)){
+    if(!confirm(`${y}년 ${m}월 배정표 배포를 취소할까요? 일반 사용자는 이 달을 볼 수 없게 됩니다.`)) return;
+    mo.published=false;
+    addAdminLog(`배정표 배포 취소 — ${y}/${m}`);
+    save(); renderSchedule(); toast('배포를 취소했습니다');
+  } else {
+    if(_autoPending){ toast('먼저 자동배정 결과를 저장하세요'); return; }
+    if(!confirm(`${y}년 ${m}월 배정표를 배포할까요? 지금부터 어머니(일반 사용자)들이 이 달을 볼 수 있습니다.`)) return;
+    mo.published=true;
+    mo.publishedAt=Date.now();
+    addAdminLog(`배정표 배포 — ${y}/${m}`);
+    save(); renderSchedule(); toast('배포했습니다. 일반 사용자에게 공개됩니다');
+  }
+};
 $('#newMonthBtn').onclick=()=>{
   let[y,m]=state.ym.split('-').map(Number);
   if(state.months[state.ym]&&Object.keys(state.months[state.ym].assign).length){
     if(!confirm('이 달의 미사 틀을 다시 생성할까요? (배정 내용 초기화)'))return;}
   state.months[state.ym]=genMonth(y,m); addAdminLog('새 달 만들기 — 미사 틀 생성');
   save(); renderSchedule(); toast('미사 틀을 생성했습니다');
+};
+$('#publishBtn').onclick=()=>publishMonth();
+$('#resetSeedBtn').onclick=()=>{
+  const k=state.ym;
+  const seed=(typeof SEED_MONTHS!=='undefined') && SEED_MONTHS[k];
+  if(!seed){ toast('이 달은 시드 데이터가 없습니다'); return; }
+  const [y,m]=k.split('-').map(Number);
+  if(!confirm(`${y}년 ${m}월 배정을 첨부 시드(엑셀) 내용으로 덮어쓸까요? 현재 ${m}월의 변경 내용은 사라지고 동기화에도 반영됩니다.`)) return;
+  state.months[k]=JSON.parse(JSON.stringify(seed));
+  if(state.months[k].published===undefined) state.months[k].published=true;
+  state.months[k].updated=Date.now();
+  _autoPending=false; _autoBackup=null;
+  addAdminLog(`시드로 되돌리기 — ${y}/${m} 배정을 엑셀 시드로 교체`);
+  save(); renderSchedule(); toast(`${m}월을 시드 내용으로 교체했습니다`);
 };
 let autoDraft=null; // {targets:{}, exclude:Set, minGap, weekUnique}
 $('#autoBtn').onclick=()=>{
@@ -2258,7 +2531,14 @@ function renderAutoPreview(){
       <div class="optgap">최소 간격 <select id="ao_gap" onchange="autoDraft.minGap=+this.value">
         ${[0,2,3,4,5].map(g=>`<option value="${g}" ${autoDraft.minGap===g?'selected':''}>${g===0?'제한 없음':g+'일'}</option>`).join('')}
       </select></div></div>`;
-  h+=`<div class="help" style="margin-bottom:6px">총 배정 자리 <b>${totalSlots}</b>개 · 현재 목표 합계 <b id="ao_sum">${targetSum}</b>개 (초4는 최소 2회로 설정됨)</div>`;
+  _autoTotalSlots = totalSlots;  // recalcSum에서 자리수와 비교하기 위해 저장
+  const lack = totalSlots - targetSum;
+  const warnStyle = targetSum < totalSlots ? 'color:var(--danger);font-weight:700' : 'color:var(--sub)';
+  h+=`<div class="help" id="ao_sumline" style="margin-bottom:6px;${warnStyle}">
+        총 배정 자리 <b>${totalSlots}</b>개 · 현재 목표 합계 <b id="ao_sum">${targetSum}</b>개
+        <span id="ao_lack">${lack>0?` · ⚠ 목표가 ${lack}개 부족 → 빈자리 발생`:(lack<0?` · 목표가 ${-lack}개 많음`:' · 자리수와 일치')}</span>
+        <br><span style="font-weight:400;color:var(--sub)">(방학미사 포함 · 초4는 최소 2회로 설정됨)</span>
+      </div>`;
 
   // 학년별 그룹 표
   const grades=['초4','초5','초6','중1','중2','중3','고1','고2','고3'];
@@ -2300,9 +2580,22 @@ window.bumpTarget=function(name,delta,minV){
   const el=document.getElementById('tgt_'+cssId(name)); if(el) el.textContent=v;
   recalcSum();
 };
+let _autoTotalSlots = 0;  // 자동배정 미리보기의 총 자리수(방학 포함)
 function recalcSum(){
   let s=0; state.roster.forEach(p=>{ if(!autoDraft.exclude.has(p.name)) s+=(autoDraft.targets[p.name]||0); });
   const el=$('#ao_sum'); if(el) el.textContent=s;
+  // 자리수 대비 목표 합계 비교 → 부족하면 빨간색 경고
+  const line=document.getElementById('ao_sumline');
+  const lackEl=document.getElementById('ao_lack');
+  if(line){
+    const lack=_autoTotalSlots - s;
+    if(s < _autoTotalSlots){ line.style.color='var(--danger)'; line.style.fontWeight='700'; }
+    else { line.style.color='var(--sub)'; line.style.fontWeight='400'; }
+    if(lackEl){
+      lackEl.textContent = lack>0 ? ` · ⚠ 목표가 ${lack}개 부족 → 빈자리 발생`
+                          : (lack<0 ? ` · 목표가 ${-lack}개 많음` : ' · 자리수와 일치');
+    }
+  }
 }
 let _autoBackup=null;   // 자동배정 직전 해당 월 스냅샷
 let _autoPending=false;  // 저장 대기(미확정) 상태
@@ -2378,7 +2671,16 @@ window.reshuffle=function(){
 $('#pdfBtn').onclick=()=>{const wasMode=state.mode;state.mode='cal';renderSchedule();setTimeout(()=>{window.print();state.mode=wasMode;renderSchedule();},200);};
 
 /* ====================== INIT ====================== */
+/* 일반 사용자는 공개(배포)된 달만 볼 수 있으므로, 현재 달이 미공개면 가장 최근 공개 달로 이동 */
+function ensureViewableMonth(){
+  if(state.isAdmin) return;                 // 관리자는 제한 없음
+  if(isPublished(state.ym)) return;         // 이미 공개된 달이면 그대로
+  const latest=latestPublishedYm();
+  if(latest) state.ym=latest;               // 최신 공개 달로
+  // 공개된 달이 하나도 없으면 그대로 두되, 화면은 '배포 전' 상태로 표시됨
+}
 initFirebase();
+ensureViewableMonth();
 render();
 updateLastMod();
 </script>
