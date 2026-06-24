@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -104,6 +105,27 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .addmass:active{transform:scale(.97)}
 .addmass.list{font-size:13px;padding:9px 0}
 .massrow.addrow{border-bottom:none;padding-top:8px;padding-bottom:12px}
+.autoopts{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.optchk{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600}
+.optchk input{width:auto}
+.optgap{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.optgap select{padding:5px 8px;border:1px solid var(--line);border-radius:8px}
+.ttable{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.trow{display:flex;align-items:center;padding:7px 10px;border-bottom:1px solid #f1f3f5;font-size:13.5px;gap:6px}
+.trow:last-child{border-bottom:none}
+.trow.th{background:#fbfcfd;font-weight:700;color:var(--sub);font-size:12px}
+.trow.exrow{opacity:.45}
+.trow .tn{flex:1;font-weight:600;display:flex;align-items:center;gap:5px}
+.trow .tn .dd{font-size:9.5px;font-style:normal;background:#fbeaea;color:#b32a2a;border-radius:5px;padding:0 5px;font-weight:700}
+.trow .tg{width:38px;color:var(--sub);font-size:12px}
+.trow .tx{width:34px;text-align:center}
+.trow .tx input{width:auto}
+.trow .tc{display:flex;align-items:center;gap:8px;width:96px;justify-content:flex-end}
+.trow .tc b{min-width:18px;text-align:center;font-size:14px}
+.trow .tc2{width:50px;text-align:right;font-weight:700;color:var(--brand-d)}
+.trow .stp{width:26px;height:26px;border-radius:7px;border:1px solid var(--line);background:#f7f9ff;
+  font-size:15px;font-weight:700;color:var(--brand);display:grid;place-items:center}
+.trow .stp:active{transform:scale(.9)}
 
 /* FAB & request */
 .reqbtn{font-size:12px;color:var(--brand-d);font-weight:700;align-self:flex-start;
@@ -298,7 +320,15 @@ const WD=['일','월','화','수','목','금','토'];
 /* ====================== CONFIG ======================
    Firebase 사용 시 아래 값을 채우고 관리자 비밀번호를 변경하세요.
    비워두면 이 브라우저에만 저장되는 '로컬 모드'로 동작합니다. */
-const FIREBASE_CONFIG = null; /* { apiKey:"", databaseURL:"https://...firebaseio.com", projectId:"" } */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBP9zHlxgLAdLG00FafXm60smaEZ46y12o",
+  authDomain: "soha-altarservers.firebaseapp.com",
+  databaseURL: "https://soha-altarservers-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "soha-altarservers",
+  storageBucket: "soha-altarservers.firebasestorage.app",
+  messagingSenderId: "249250441606",
+  appId: "1:249250441606:web:5e6f7a5657c6d9ce336407"
+};
 const ADMIN_PASSWORD = "1234"; /* 운영 시 반드시 변경 */
 /* ========================================================== */
 
@@ -398,50 +428,119 @@ function eligible(person, mass){
   if(t.includes('찬미')||t.includes('찬양')){ if(!person.q.chanyang) return false; }
   return true;
 }
-function autoAssign(){
+/* 자동배정.
+   opts = { targets:{name:목표횟수}, exclude:Set(이름), minGapDays, weekUnique }
+   - 간격 분산: 같은 주(일~토) 중복 회피 + 최소 간격(minGapDays) 확보
+   - 초4 최소 2회 보장(2차 패스)
+   - targets 초과자는 후순위(소프트 상한) */
+function autoAssign(opts){
+  opts = opts||{};
+  const minGap = opts.minGapDays!=null ? opts.minGapDays : 3;   // 최소 간격(일)
+  const weekUnique = opts.weekUnique!==false;                    // 같은 주 1회 우선
+  const targets = opts.targets||{};
+  const exclude = opts.exclude||new Set();
   const mo=getMonth();
   const counts={}; state.roster.forEach(p=>counts[p.name]=0);
-  const dawnCount={}; // 새벽 monthly cap
+  const lastDay={};   // 이름→마지막 배정 날짜
+  const weekSet={};   // 이름→배정된 주차 Set
+  const dawnCount={};
   const prevDawn=loadPrevDawnSet();
+  const [yy,mm]=state.ym.split('-').map(Number);
+  const weekOf=d=>{ const dow=new Date(yy,mm-1,d).getDay(); return Math.floor((d - (dow))/7); }; // 같은 일요일주 묶음
+  const weekKey=d=>{ const dt=new Date(yy,mm-1,d); const dow=dt.getDay(); const sun=d-dow; return sun; }; // 그 주 일요일의 '일'(음수 가능)
   const days=Object.keys(mo.assign).map(Number).sort((a,b)=>a-b);
+
+  function scoreOf(p,d,isDawn){
+    let c=counts[p.name];
+    // 목표 횟수 초과자는 후순위(소프트). 목표 도달할수록 점수↑
+    const tg=targets[p.name];
+    if(tg!=null && counts[p.name]>=tg) c += 100 + (counts[p.name]-tg);
+    if(isDawn && prevDawn.has(p.name)) c += 0.5;
+    // 같은 주 이미 배정 → 큰 패널티(다른 후보 없을 때만 선택되게)
+    if(weekUnique && weekSet[p.name] && weekSet[p.name].has(weekKey(d))) c += 50;
+    // 최소 간격 미달 → 패널티(간격이 가까울수록 큼)
+    if(lastDay[p.name]!=null){ const gap=d-lastDay[p.name];
+      if(gap < minGap) c += (minGap-gap)*10; }
+    return c;
+  }
+  function assignOne(arr,i,d,mass,kind,isDawn,isVigil,relax){
+    const base=p=>{
+      if(exclude.has(p.name)) return false;
+      if(usedTodayRef.has(p.name)) return false;
+      if(kind==='big'&&p.noDaedae) return false;
+      if(isDawn){ if((dawnCount[p.name]||0)>=1) return false; }
+      return true;
+    };
+    let cands=state.roster.filter(p=>base(p)&&eligible(p,mass));
+    if(!cands.length&&isVigil) cands=state.roster.filter(p=>base(p)&&!p.excluded&&inRange(p.grade,'초4','고3'));
+    if(!cands.length) return '';
+    let scored=cands.map(p=>({p,s:scoreOf(p,d,isDawn)}));
+    const min=Math.min(...scored.map(x=>x.s));
+    const pool=scored.filter(x=>x.s===min).map(x=>x.p);
+    const pick=pool[Math.floor(Math.random()*pool.length)];
+    counts[pick.name]++; lastDay[pick.name]=d;
+    (weekSet[pick.name]=weekSet[pick.name]||new Set()).add(weekKey(d));
+    if(isDawn) dawnCount[pick.name]=(dawnCount[pick.name]||0)+1;
+    return pick.name;
+  }
+  let usedTodayRef=new Set();
   for(const d of days){
-    const usedToday=new Set();
+    usedTodayRef=new Set();
     for(const mass of mo.assign[d].masses){
       const isDawn=mass.title.includes('새벽');
-      fillSlots(mass.big,'big');
-      fillSlots(mass.small,'small');
       const isVigil=mass.title.includes('전야');
-      function fillSlots(arr,kind){
-        for(let i=0;i<arr.length;i++){
-          const base=p=>{
-            if(usedToday.has(p.name)) return false;
-            if(kind==='big'&&p.noDaedae) return false; // 대 자리: 대대 제외 배제
-            if(isDawn){ if((dawnCount[p.name]||0)>=1) return false; }
-            return true;
-          };
-          // 1차: 자격 규칙을 만족하는 후보(토 전야는 중1~고2 우선)
-          let cands=state.roster.filter(p=>base(p)&&eligible(p,mass));
-          // 토요일 전야미사 폴백: 우선 학년이 부족하면 초4~고3으로 확장
-          if(!cands.length&&isVigil){
-            cands=state.roster.filter(p=>base(p)&&!p.excluded&&inRange(p.grade,'초4','고3'));
-          }
-          if(!cands.length){arr[i]='';continue;}
-          let min=Math.min(...cands.map(p=>{
-            let c=counts[p.name];
-            if(isDawn && prevDawn.has(p.name)) c+=0.5; // 전달 미배정자 우선(전달 배정자 후순위)
-            return c;
-          }));
-          let pool=cands.filter(p=>{
-            let c=counts[p.name]; if(isDawn&&prevDawn.has(p.name)) c+=0.5; return c===min;});
-          const pick=pool[Math.floor(Math.random()*pool.length)];
-          arr[i]=pick.name; usedToday.add(pick.name); counts[pick.name]++;
-          if(isDawn) dawnCount[pick.name]=(dawnCount[pick.name]||0)+1;
-        }
-      }
+      for(let i=0;i<mass.big.length;i++){ const nm=assignOne(mass.big,i,d,mass,'big',isDawn,isVigil); mass.big[i]=nm; if(nm)usedTodayRef.add(nm); }
+      for(let i=0;i<mass.small.length;i++){ const nm=assignOne(mass.small,i,d,mass,'small',isDawn,isVigil); mass.small[i]=nm; if(nm)usedTodayRef.add(nm); }
     }
   }
+  // 초4 최소 2회 보장: 부족한 초4를 가장 적합한 자리에 추가 투입(같은날 중복·자격·대대제외 지킴)
+  enforceMinCounts(counts, lastDay, weekSet, weekKey);
   mo.updated=Date.now();
   return counts;
+}
+/* 초4 최소 2회 보장 패스 */
+function enforceMinCounts(counts, lastDay, weekSet, weekKey){
+  const mo=getMonth();
+  const need = state.roster.filter(p=>p.grade==='초4' && !p.excluded && (counts[p.name]||0) < 2);
+  if(!need.length) return;
+  const days=Object.keys(mo.assign).map(Number).sort((a,b)=>a-b);
+  for(const p of need){
+    let guard=0;
+    while((counts[p.name]||0) < 2 && guard++ < 50){
+      // 초4가 들어갈 수 있는 자리 후보 수집: 자격 충족 + 같은날 미사용 + 대대제외면 소 자리
+      let best=null;
+      for(const d of days){
+        const usedToday=new Set();
+        mo.assign[d].masses.forEach(x=>[...x.big,...x.small].forEach(n=>n&&usedToday.add(n)));
+        if(usedToday.has(p.name)) continue;
+        for(const mass of mo.assign[d].masses){
+          if(!eligible(p,mass)) continue;
+          const kinds = p.noDaedae ? ['small'] : ['small','big'];
+          for(const kind of kinds){
+            const arr=mass[kind];
+            for(let i=0;i<arr.length;i++){
+              const cur=arr[i];
+              // 빈자리거나, 현재 점유자가 목표보다 많이 배정된 경우 교체 대상
+              const replaceable = !cur || (counts[cur]||0) > 2;
+              if(!replaceable) continue;
+              // 같은 주 회피 우선
+              const wk=weekKey(d);
+              const sameWeek = weekSet[p.name] && weekSet[p.name].has(wk);
+              const score = (cur?1:0) + (sameWeek?5:0) + (lastDay[p.name]!=null?Math.max(0,3-(Math.abs(d-lastDay[p.name]))):0);
+              if(!best || score < best.score){ best={d,mass,kind,i,cur,score,wk}; }
+            }
+          }
+        }
+      }
+      if(!best) break;
+      // 적용
+      if(best.cur){ counts[best.cur]=(counts[best.cur]||0)-1; }
+      best.mass[best.kind][best.i]=p.name;
+      counts[p.name]=(counts[p.name]||0)+1;
+      lastDay[p.name]=best.d;
+      (weekSet[p.name]=weekSet[p.name]||new Set()).add(best.wk);
+    }
+  }
 }
 function loadPrevDawnSet(){
   const [y,m]=state.ym.split('-').map(Number);
@@ -453,28 +552,86 @@ function loadPrevDawnSet(){
   }));
   return set;
 }
+/* 규칙 기반 목표 횟수 추정: 각 미사 자리를 자격자 수로 나눠 1/n씩 기대치를 누적 → 반올림.
+   초4는 최소 2회로 보정. 배정제외는 0. */
+function estimateTargets(){
+  const mo=getMonth();
+  const exp={}; state.roster.forEach(p=>exp[p.name]=0);
+  const days=Object.keys(mo.assign).map(Number);
+  for(const d of days){
+    for(const mass of mo.assign[d].masses){
+      const isDawn=mass.title.includes('새벽');
+      ['big','small'].forEach(kind=>{
+        const slots=mass[kind].length; if(!slots)return;
+        let cand=state.roster.filter(p=>!p.excluded && eligible(p,mass) && !(kind==='big'&&p.noDaedae));
+        if(!cand.length)return;
+        const share=slots/cand.length;
+        cand.forEach(p=>exp[p.name]+=share);
+      });
+    }
+  }
+  const targets={};
+  state.roster.forEach(p=>{
+    if(p.excluded){ targets[p.name]=0; return; }
+    let t=Math.round(exp[p.name]);
+    if(p.grade==='초4') t=Math.max(2,t);   // 초4 최소 2회
+    targets[p.name]=t;
+  });
+  return targets;
+}
 
 /* ====================== FIREBASE (optional) ====================== */
 let fb=null,fbdb=null;
+let _applyingRemote=false;   // 원격 수신 반영 중 플래그(에코 방지)
+let _pushTimer=null;         // 디바운스 타이머
 async function initFirebase(){
   if(!FIREBASE_CONFIG||!FIREBASE_CONFIG.databaseURL) return;
   try{
     const app=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
     const db=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js');
     fb=app.initializeApp(FIREBASE_CONFIG); fbdb=db.getDatabase(fb);
-    document.getElementById('syncPill').textContent='실시간 동기화';
-    document.getElementById('syncPill').classList.add('on');
-    db.onValue(db.ref(fbdb,'/'),snap=>{
+    window._fbdb=db;
+    const pill=document.getElementById('syncPill');
+    pill.textContent='실시간 연결 중…';
+
+    // 최초 1회: DB가 비어 있으면 현재(로컬) 데이터를 올려 초기화
+    const rootRef=db.ref(fbdb,'/');
+    const snap=await db.get(rootRef);
+    if(!snap.exists()){
+      await db.set(rootRef,{roster:state.roster, months:state.months});
+    }
+
+    // 실시간 수신: 다른 기기/사용자의 변경을 즉시 반영
+    db.onValue(rootRef,snap=>{
       const v=snap.val();
-      if(v){ if(v.roster)state.roster=v.roster; if(v.months)state.months=v.months; render(); }
+      if(!v) return;
+      _applyingRemote=true;
+      if(v.roster) state.roster=v.roster;
+      state.months = v.months || {};
+      // 로컬 캐시도 갱신(오프라인 대비)
+      try{ localStorage.setItem('asn_roster',JSON.stringify(state.roster));
+           localStorage.setItem('asn_months',JSON.stringify(state.months)); }catch(e){}
+      _applyingRemote=false;
+      render();
     });
-    window._fbdb=db; // store module
-  }catch(e){ console.warn('Firebase init failed, local mode',e); }
+    // 연결 상태 표시
+    const connRef=db.ref(fbdb,'.info/connected');
+    db.onValue(connRef,s=>{
+      const on=s.val()===true;
+      pill.textContent = on?'실시간 동기화':'오프라인(자동 재연결)';
+      pill.classList.toggle('on',on);
+    });
+  }catch(e){ console.warn('Firebase init failed, local mode',e);
+    const pill=document.getElementById('syncPill'); if(pill) pill.textContent='로컬 저장';
+  }
 }
-async function syncPush(){
-  if(!fb||!window._fbdb) return;
+function syncPush(){
+  if(!fb||!window._fbdb||_applyingRemote) return;  // 원격 반영 중에는 다시 올리지 않음(에코 방지)
   const db=window._fbdb;
-  try{ await db.set(db.ref(fbdb,'/'),{roster:state.roster,months:state.months}); }catch(e){}
+  clearTimeout(_pushTimer);
+  _pushTimer=setTimeout(()=>{
+    db.set(db.ref(fbdb,'/'),{roster:state.roster,months:state.months}).catch(e=>console.warn('sync push failed',e));
+  },250); // 짧은 디바운스로 연속 저장 합치기
 }
 
 /* ====================== RENDERING ====================== */
@@ -1046,23 +1203,105 @@ $('#newMonthBtn').onclick=()=>{
   state.months[state.ym]=genMonth(y,m); addAdminLog('새 달 만들기 — 미사 틀 생성');
   save(); renderSchedule(); toast('미사 틀을 생성했습니다');
 };
+let autoDraft=null; // {targets:{}, exclude:Set, minGap, weekUnique}
 $('#autoBtn').onclick=()=>{
-  openSheet('한 달 자동배정',
-    `<div class="note">${Number(state.ym.split('-')[1])}월 전체 미사의 사람만 규칙에 따라 자동 편성합니다. 미사 틀(시간·인원)은 유지됩니다.</div>
-     <div class="help">규칙: 새벽(중1~고1·월1회·전달 우선) · 평일(초4~중1) · 모든 \'대\'자리 대대제외 배제 · 배정제외 제외 · 균등 분배</div>
-     <button class="btnfull" onclick="runAuto()">자동배정 실행</button>`);
-};
-window.runAuto=function(){
   if(!getMonth().assign||!Object.keys(getMonth().assign).length){toast('먼저 \'새 달 만들기\'로 미사 틀을 생성하세요');return;}
-  getMonth().changedNames=[];
-  autoAssign(); addAdminLog('한 달 자동배정 실행');
-  save(); closeSheet(); renderSchedule(); 
-  openSheet('자동배정 완료',
-    `<div class="note">자동배정이 완료되었습니다.</div>
-     <button class="btnfull" onclick="closeSheet()">확인</button>
-     <button class="btnfull ghost" onclick="reshuffle()">🔀 다시 섞기</button>`);
+  autoDraft={ targets:estimateTargets(), exclude:new Set(state.roster.filter(p=>p.excluded).map(p=>p.name)),
+    minGap:3, weekUnique:true };
+  renderAutoPreview();
 };
-window.reshuffle=function(){getMonth().changedNames=[];autoAssign();save();renderSchedule();toast('다시 섞었습니다');};
+function renderAutoPreview(){
+  const mn=Number(state.ym.split('-')[1]);
+  // 총 자리수 / 목표 합 표시
+  let totalSlots=0; const mo=getMonth();
+  Object.values(mo.assign).forEach(day=>day.masses.forEach(m=>totalSlots+=m.big.length+m.small.length));
+  let targetSum=0; state.roster.forEach(p=>{ if(!autoDraft.exclude.has(p.name)) targetSum+=(autoDraft.targets[p.name]||0); });
+
+  let h=`<div class="note">${mn}월 자동배정 — 아이별 <b>목표 횟수</b>를 먼저 정한 뒤 배정합니다. 규칙(자격·학년·대대제외)과 간격 분산은 자동 적용됩니다.</div>`;
+  h+=`<div class="autoopts">
+      <label class="optchk"><input type="checkbox" id="ao_week" ${autoDraft.weekUnique?'checked':''} onchange="autoDraft.weekUnique=this.checked"> 같은 주 중복 피하기</label>
+      <div class="optgap">최소 간격 <select id="ao_gap" onchange="autoDraft.minGap=+this.value">
+        ${[0,2,3,4,5].map(g=>`<option value="${g}" ${autoDraft.minGap===g?'selected':''}>${g===0?'제한 없음':g+'일'}</option>`).join('')}
+      </select></div></div>`;
+  h+=`<div class="help" style="margin-bottom:6px">총 배정 자리 <b>${totalSlots}</b>개 · 현재 목표 합계 <b id="ao_sum">${targetSum}</b>개 (초4는 최소 2회로 설정됨)</div>`;
+
+  // 학년별 그룹 표
+  const grades=['초4','초5','초6','중1','중2','중3','고1','고2','고3'];
+  h+='<div class="ttable">';
+  h+=`<div class="trow th"><span class="tn">이름</span><span class="tg">학년</span><span class="tx">제외</span><span class="tc">목표</span></div>`;
+  grades.forEach(g=>{
+    const list=state.roster.filter(p=>p.grade===g);
+    if(!list.length)return;
+    list.forEach(p=>{
+      const ex=autoDraft.exclude.has(p.name);
+      const min4 = p.grade==='초4'?2:0;
+      h+=`<div class="trow ${ex?'exrow':''}">
+        <span class="tn">${p.name}${p.noDaedae?'<i class="dd">대대제외</i>':''}</span>
+        <span class="tg">${p.grade}</span>
+        <span class="tx"><input type="checkbox" ${ex?'checked':''} onchange="toggleExclude('${p.name}',this.checked)"></span>
+        <span class="tc">
+          <button class="stp" onclick="bumpTarget('${p.name}',-1,${min4})">−</button>
+          <b id="tgt_${cssId(p.name)}">${ex?0:(autoDraft.targets[p.name]||0)}</b>
+          <button class="stp" onclick="bumpTarget('${p.name}',1,${min4})">＋</button>
+        </span></div>`;
+    });
+  });
+  h+='</div>';
+  h+=`<button class="btnfull" onclick="runAutoWithDraft()">이 목표로 자동배정 실행</button>
+      <button class="btnfull ghost" onclick="autoDraft.targets=estimateTargets();renderAutoPreview()">목표 초기화(규칙대로)</button>`;
+  openSheet('자동배정 — 목표 설정',h);
+}
+function cssId(name){ return name.replace(/[^a-zA-Z0-9가-힣]/g,'_'); }
+window.toggleExclude=function(name,on){
+  if(on) autoDraft.exclude.add(name); else autoDraft.exclude.delete(name);
+  const el=document.getElementById('tgt_'+cssId(name)); if(el) el.textContent = on?0:(autoDraft.targets[name]||0);
+  recalcSum();
+};
+window.bumpTarget=function(name,delta,minV){
+  if(autoDraft.exclude.has(name)) return;
+  let v=(autoDraft.targets[name]||0)+delta;
+  if(v<minV)v=minV; if(v<0)v=0; if(v>31)v=31;
+  autoDraft.targets[name]=v;
+  const el=document.getElementById('tgt_'+cssId(name)); if(el) el.textContent=v;
+  recalcSum();
+};
+function recalcSum(){
+  let s=0; state.roster.forEach(p=>{ if(!autoDraft.exclude.has(p.name)) s+=(autoDraft.targets[p.name]||0); });
+  const el=$('#ao_sum'); if(el) el.textContent=s;
+}
+window.runAutoWithDraft=function(){
+  getMonth().changedNames=[];
+  autoAssign({ targets:autoDraft.targets, exclude:autoDraft.exclude, minGapDays:autoDraft.minGap, weekUnique:autoDraft.weekUnique });
+  addAdminLog('한 달 자동배정 실행(목표 설정)');
+  save(); closeSheet(); renderSchedule();
+  showAutoResult();
+};
+function showAutoResult(){
+  // 결과 횟수 집계
+  const mo=getMonth(); const cnt={}; state.roster.forEach(p=>cnt[p.name]=0);
+  Object.values(mo.assign).forEach(day=>day.masses.forEach(m=>[...m.big,...m.small].forEach(n=>n&&(cnt[n]=(cnt[n]||0)+1))));
+  const low4=state.roster.filter(p=>p.grade==='초4'&&!p.excluded&&(cnt[p.name]||0)<2);
+  let h=`<div class="note">자동배정이 완료되었습니다. 결과 횟수를 확인하세요.</div>`;
+  if(low4.length) h+=`<div class="help" style="color:var(--danger)">⚠ 초4 2회 미만: ${low4.map(p=>p.name+'('+(cnt[p.name]||0)+')').join(', ')} — 자리가 부족할 수 있습니다.</div>`;
+  h+='<div class="ttable">';
+  const grades=['초4','초5','초6','중1','중2','중3','고1','고2','고3'];
+  grades.forEach(g=>{ state.roster.filter(p=>p.grade===g).forEach(p=>{
+    const c=cnt[p.name]||0; const ex=p.excluded;
+    h+=`<div class="trow"><span class="tn">${p.name}</span><span class="tg">${p.grade}</span><span class="tc2">${ex?'-':c+'회'}</span></div>`;
+  });});
+  h+='</div>';
+  h+=`<button class="btnfull" onclick="closeSheet()">확인</button>
+      <button class="btnfull ghost" onclick="reshuffle()">🔀 같은 목표로 다시 섞기</button>
+      <button class="btnfull ghost" onclick="renderAutoPreview()">목표 다시 설정</button>`;
+  openSheet('자동배정 결과',h);
+}
+window.runAuto=function(){ $('#autoBtn').onclick(); }; // 호환
+window.reshuffle=function(){
+  getMonth().changedNames=[];
+  const d=autoDraft||{};
+  autoAssign({ targets:d.targets, exclude:d.exclude, minGapDays:d.minGap, weekUnique:d.weekUnique });
+  save(); renderSchedule(); showAutoResult();
+};
 $('#pdfBtn').onclick=()=>{const wasMode=state.mode;state.mode='cal';renderSchedule();setTimeout(()=>{window.print();state.mode=wasMode;renderSchedule();},200);};
 
 /* ====================== INIT ====================== */
