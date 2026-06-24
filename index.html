@@ -6,6 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>복사단 배정 관리</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
 :root{
   --bg:#f4f5f7; --card:#fff; --line:#e3e6ea; --ink:#1f2733; --sub:#6b7682;
@@ -52,11 +54,38 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .toolbar .sp{flex:1}
 .pubbanner{margin:0 0 12px;padding:9px 13px;border-radius:10px;font-size:12.5px;font-weight:700;
   background:#fff4e5;color:#9a5b00;border:1px solid #ffd9a0}
+.laundrybar{margin:0 0 10px;display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.laundrybar::-webkit-scrollbar{display:none}
+.laundrybar .lbsp{flex:1;min-width:8px}
+.laundrybtn{display:inline-flex;align-items:center;gap:3px;padding:3px 6px;border-radius:8px;white-space:nowrap;flex:0 0 auto;
+  border:none;background:none;color:var(--sub);font-size:11.5px;font-weight:600;cursor:pointer;opacity:.75}
+.laundrybtn:hover{opacity:1;text-decoration:underline}
+.laundrybtn:active{transform:scale(.98)}
+.lnav{display:flex;align-items:center;justify-content:center;gap:14px;margin:4px 0 14px;font-size:16px}
+.lnav b{min-width:110px;text-align:center}
+.lwhen{text-align:center;font-weight:800;color:#b4456b;background:#fff0f5;border:1px solid #ffd0df;
+  border-radius:10px;padding:9px;margin-bottom:14px}
+.lempty{text-align:center;color:var(--sub);padding:24px 8px}
+.lblock{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.lblock.wash{background:#eef6ff;border-color:#cfe4fb}
+.lblock.iron{background:#f3eeff;border-color:#ddd2f3}
+.lbtitle{font-weight:800;font-size:13px;margin-bottom:8px;color:#444}
+.lblock.wash .lbtitle{color:#1d5fa8}
+.lblock.iron .lbtitle{color:#5b4a9e}
+.lnames{display:flex;flex-wrap:wrap;gap:7px}
+.lname{background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600}
+.ntlist{display:flex;flex-direction:column;gap:10px}
+.ntitem{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fffdf7}
+.ntmeta{font-size:11.5px;color:var(--sub);font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.ntdel{margin-left:auto;border:none;background:none;color:#c0392b;font-size:11.5px;font-weight:700;cursor:pointer;padding:0}
+.nttext{font-size:14px;line-height:1.55;color:var(--ink);white-space:pre-wrap;word-break:break-word}
 .pubbanner.ok{background:#e7f7ee;color:#1c7a44;border-color:#aee3c4}
 .tbtn.published{background:#e7f7ee;color:#1c7a44;border-color:#aee3c4}
 .tbtn{padding:8px 13px;border-radius:10px;background:var(--card);border:1px solid var(--line);
   font-size:13.5px;font-weight:600;color:var(--ink);display:inline-flex;align-items:center;gap:5px}
 .tbtn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.tbtn.stat{background:#e7f6f4;color:#0f766e;border-color:#a9ddd5}
+.tbtn.save{padding:8px 10px;font-size:12.5px;white-space:nowrap;gap:3px}
 .tbtn:active{transform:scale(.97)}
 
 /* Calendar */
@@ -88,6 +117,7 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .mass .who.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 4px;column-gap:5px}
 .mass .who.grid span{overflow:visible;text-overflow:clip;white-space:nowrap;color:var(--ink)}
 .mass .who.grid span.empty{color:#c4cad2}
+.mass .who.grid .rolep{display:inline-block;color:var(--sub);font-weight:700;margin-right:2px;font-size:9.5px}
 .mass .who b{color:var(--ink);font-weight:600}
 .mass .who .chg{color:var(--changed);font-weight:700}
 
@@ -170,8 +200,9 @@ body.admin .bnav .admin-only{display:flex}
 .sbody{padding:16px 18px}
 .field{margin-bottom:13px}
 .field label{display:block;font-size:12.5px;font-weight:700;color:var(--sub);margin-bottom:5px}
-.field input,.field select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fcfcfd}
-.field input:focus,.field select:focus{outline:none;border-color:var(--brand);background:#fff}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fcfcfd}
+.field textarea{resize:vertical;font-family:inherit;font-size:14px;line-height:1.5}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--brand);background:#fff}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .btnfull{width:100%;padding:13px;border-radius:12px;background:var(--brand);color:#fff;font-weight:700;font-size:15px;margin-top:6px}
 .btnfull.ghost{background:#f1f3f5;color:var(--ink)}
@@ -385,6 +416,7 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
     </div>
     <p class="updated" id="updatedAt">최종 변경: -</p>
     <div id="pubBanner" class="pubbanner" style="display:none"></div>
+    <div class="laundrybar"><button class="laundrybtn" id="noticeBtn">📢 회장 공지사항</button><button class="laundrybtn" id="laundryBtn">🧺 다림질봉사표</button><span class="lbsp"></span><button class="laundrybtn" id="imgBtn">🖼 이미지</button><button class="laundrybtn" id="pdfBtn">📄 PDF</button><button class="laundrybtn admin-act" id="xlsBtn" style="display:none">📊 엑셀</button></div>
 
     <div class="toolbar">
       <div class="seg">
@@ -394,7 +426,6 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
       <div class="sp"></div>
       <button class="tbtn primary" id="swapBtn">맞교환 신청</button>
       <button class="tbtn primary" id="subBtn">대타 신청</button>
-      <button class="tbtn" id="pdfBtn">🖨 PDF</button>
       <button class="tbtn admin-act" id="newMonthBtn" style="display:none">＋ 새 달</button>
       <button class="tbtn primary admin-act" id="autoBtn" style="display:none">⚡ 자동배정</button>
       <button class="tbtn admin-act" id="publishBtn" style="display:none">📢 배정표 배포</button>
@@ -424,10 +455,10 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
     <div class="toolbar">
       <button class="tbtn primary" id="addStudentBtn">＋ 학생 추가</button>
       <button class="tbtn" id="tallyBtn">📊 특별미사 설정</button>
-      <button class="tbtn" id="countBtn">📈 월 누적 횟수</button>
-      <button class="tbtn" id="limitBtn">🎚 학년별 횟수</button>
-      <button class="tbtn" id="massGradeBtn">⛪ 미사별 학년</button>
+      <button class="tbtn" id="limitBtn">🎚 학년별 횟수 설정</button>
+      <button class="tbtn" id="massGradeBtn">⛪ 미사별 학년 설정</button>
       <button class="tbtn" id="vacBtn">🏖 방학 설정</button>
+      <button class="tbtn stat" id="countBtn">📈 월 누적 횟수</button>
     </div>
     <details class="excelfold">
       <summary>엑셀 도구 (가져오기 · 양식)</summary>
@@ -504,6 +535,8 @@ let state={
   vacation: load('asn_vacation', null),  // {schools:{학교명:{start:'MM-DD',end:'MM-DD'}}, grades:[봉사학년], time:'10:00'}
   massGrades: load('asn_massgrades', null),  // 정기미사별 배정 학년 {dawn:[학년], weekday:[], vigil:[], sunday:[]}
   massPriority: load('asn_masspriority', null),  // 정기미사별 우선 배정 학년 {dawn:[], weekday:[], vigil:[], sunday:[]}
+  laundry: load('asn_laundry', {}),  // 월별 세탁/다림질 봉사 {ym:{date,time,wash:[],iron:[]}}
+  notices: load('asn_notices', []),  // 회장 공지사항 누적 [{ts, text}] 최신순
   lastModified: (function(){ const v=localStorage.getItem('asn_lastmod'); return v?Number(v):null; })(),
 };
 /* 특별미사 월 누적 시드(2026년 1~6월, 기존 수기 기록). 저장된 값이 없을 때만 초기값으로 사용 */
@@ -632,6 +665,8 @@ function save(){
   localStorage.setItem('asn_vacation',JSON.stringify(state.vacation||null));
   localStorage.setItem('asn_massgrades',JSON.stringify(state.massGrades||null));
   localStorage.setItem('asn_masspriority',JSON.stringify(state.massPriority||null));
+  localStorage.setItem('asn_laundry',JSON.stringify(state.laundry||{}));
+  localStorage.setItem('asn_notices',JSON.stringify(state.notices||[]));
   localStorage.setItem('asn_lastmod',String(state.lastModified));
   updateLastMod();
   if(fb) syncPush();
@@ -727,6 +762,9 @@ function getMonth(){
 function isPublished(ymKey){
   const mo=state.months[ymKey];
   if(!mo) return false;
+  // 일반 사용자에게는 2026년 1~5월을 공개하지 않음(데이터 정리 전이므로 6월부터 오픈).
+  // 관리자는 이 함수와 무관하게 모든 달을 볼 수 있음.
+  if(ymKey>='2026-01' && ymKey<='2026-05') return false;
   return mo.published!==false;   // undefined(레거시)→공개, true→공개, false→미공개
 }
 /* 공개된 달 'YYYY-MM' 목록(정렬) */
@@ -814,18 +852,26 @@ function buildAssignTally(year){
       });
     });
   }
-  // 2) 과거 누적 시드(엑셀에서 가져온 1~6월) 합산. 단, 그 달에 실제 배정 데이터가 있으면 시드는 건너뜀(중복 방지)
+  // 2) 과거 누적 시드(엑셀 1~6월) 합산.
+  //    정책: 그 달의 '실제 배정 총 인원'이 시드 총합 이상이면 실제 배정을 신뢰(시드 스킵),
+  //    실제 배정이 시드보다 적으면(데이터 없음/불완전) 그 달은 시드로 대체한다.
   const seed=(typeof SEED_ASSIGN_COUNT!=='undefined' && SEED_ASSIGN_COUNT[year])||null;
   if(seed){
-    for(const name in seed){
-      const rec=seed[name];
-      for(const cat in rec){           // cat: dawn/weekday/sunday
-        const months=rec[cat];
-        for(const mk in months){
-          const m=Number(mk); const cnt=months[mk]||0; if(!cnt)continue;
-          // 그 달에 실제 배정(이름)이 존재하면 시드 건너뜀(시스템 배정으로 대체된 것으로 간주).
-          // assign 키만 있고 이름이 하나도 없으면 '실제 배정 없음'으로 보고 시드를 사용한다.
-          if(monthHasRealAssign(year,m)) continue;
+    // 월별 실제 배정 총합, 시드 총합 계산
+    const realMonthTotal={}, seedMonthTotal={};
+    for(const n in total){ for(const mk in total[n]){ if(mk==='sum')continue; const m=Number(mk); realMonthTotal[m]=(realMonthTotal[m]||0)+total[n][mk]; } }
+    for(const name in seed){ for(const cat in seed[name]){ for(const mk in seed[name][cat]){ const m=Number(mk); seedMonthTotal[m]=(seedMonthTotal[m]||0)+(seed[name][cat][mk]||0); } } }
+    for(let m=1;m<=12;m++){
+      const real=realMonthTotal[m]||0, sd=seedMonthTotal[m]||0;
+      if(sd===0) continue;            // 시드에 그 달 없음
+      if(real>=sd) continue;          // 실제 배정이 시드 이상 → 실제 배정 신뢰, 시드 스킵
+      // 실제 배정이 시드보다 적음 → 그 달은 시드로 대체(실제 집계분 제거 후 시드 적용)
+      for(const n in total){ if(total[n][m]){ total[n].sum-=total[n][m]; delete total[n][m]; } }
+      for(const cat in byCat){ for(const n in byCat[cat]){ if(byCat[cat][n][m]){ byCat[cat][n].sum-=byCat[cat][n][m]; delete byCat[cat][n][m]; } } }
+      for(const name in seed){
+        const rec=seed[name];
+        for(const cat in rec){
+          const cnt=rec[cat][String(m)]||0; if(!cnt)continue;
           add(total,name,m,cnt);
           if(byCat[cat]) add(byCat[cat],name,m,cnt);
         }
@@ -839,26 +885,28 @@ function buildAssignTally(year){
    = 실제 배정(state.months) 집계 + 수동 보정(state.specialLog[year]) 합산 */
 function buildSpecialTally(year){
   const tally={}; SPECIAL_KINDS.forEach(k=>{tally[k.key]={};});
-  // 1) 실제 배정에서 집계
-  for(let m=1;m<=12;m++){
-    const key=ym(year,m); const mo=state.months[key]; if(!mo||!mo.assign)continue;
-    Object.values(mo.assign).forEach(day=>{
-      const masses=(day&&day.masses)||[];
-      masses.forEach(ms=>{
-        const k=specialKindOf(ms.title||''); if(!k)return;
-        const all=[...(ms.big||[]),...(ms.small||[])];
-        all.forEach(n=>{ if(!n)return;
-          (tally[k.key][m]=tally[k.key][m]||[]); if(!tally[k.key][m].includes(n)) tally[k.key][m].push(n); });
-      });
-    });
-  }
-  // 2) 수동 보정 합산
   const man=(state.specialLog&&state.specialLog[year])||{};
-  SPECIAL_KINDS.forEach(k=>{
-    const mm=man[k.key]||{};
-    for(const m in mm){ (mm[m]||[]).forEach(n=>{
-      (tally[k.key][m]=tally[k.key][m]||[]); if(!tally[k.key][m].includes(n)) tally[k.key][m].push(n); }); }
-  });
+  // 특별미사 누적표는 '수동 기록(specialLog)'을 정본으로 사용한다.
+  // (정기 배정표의 성모신심 등에는 일반 복사도 다수 배정되므로, 실제 배정을 그대로 세면 명단이 폭증함)
+  // 그 달에 수동 기록이 있으면 그것만 쓰고, 기록이 전혀 없는 달에 한해 실제 배정으로 보완한다.
+  for(let m=1;m<=12;m++){
+    SPECIAL_KINDS.forEach(k=>{
+      const logged=(man[k.key]&&man[k.key][m])||null;
+      if(logged && logged.length){ tally[k.key][m]=logged.slice(); }
+    });
+    // 그 달에 어떤 종류든 수동 기록이 하나도 없고, 실제 배정이 있으면 보완
+    const anyLogged=SPECIAL_KINDS.some(k=>(man[k.key]&&man[k.key][m]&&man[k.key][m].length));
+    if(!anyLogged && monthHasRealAssign(year,m)){
+      const mo=state.months[ym(year,m)];
+      if(mo&&mo.assign) Object.values(mo.assign).forEach(day=>{
+        ((day&&day.masses)||[]).forEach(ms=>{
+          const k=specialKindOf(ms.title||''); if(!k)return;
+          [...(ms.big||[]),...(ms.small||[])].forEach(n=>{ if(!n)return;
+            (tally[k.key][m]=tally[k.key][m]||[]); if(!tally[k.key][m].includes(n)) tally[k.key][m].push(n); });
+        });
+      });
+    }
+  }
   return tally;
 }
 /* 누적표에서 특정 칸의 '수동 추가' 이름 목록 (실제 배정으로 들어온 것과 구분) */
@@ -1117,7 +1165,7 @@ async function initFirebase(){
     const rootRef=db.ref(fbdb,'/');
     const snap=await db.get(rootRef);
     if(!snap.exists()){
-      await db.set(rootRef,{roster:state.roster, months:state.months, specialLog:state.specialLog||{}, gradeLimits:state.gradeLimits||null, vacation:state.vacation||null, massGrades:state.massGrades||null, massPriority:state.massPriority||null, lastModified:state.lastModified||null});
+      await db.set(rootRef,{roster:state.roster, months:state.months, specialLog:state.specialLog||{}, gradeLimits:state.gradeLimits||null, vacation:state.vacation||null, massGrades:state.massGrades||null, massPriority:state.massPriority||null, laundry:state.laundry||{}, notices:state.notices||[], lastModified:state.lastModified||null});
     }
 
     // 실시간 수신: 다른 기기/사용자의 변경을 즉시 반영
@@ -1151,13 +1199,17 @@ async function initFirebase(){
       if(v.vacation) state.vacation = v.vacation;
       if(v.massGrades) state.massGrades = v.massGrades;
       if(v.massPriority) state.massPriority = v.massPriority;
+      if(v.laundry) state.laundry = v.laundry;
+      if(v.notices) state.notices = v.notices;
       if(v.lastModified) state.lastModified = v.lastModified;
       updateLastMod();
       // 로컬 캐시도 갱신(오프라인 대비)
       try{ localStorage.setItem('asn_roster',JSON.stringify(state.roster));
            localStorage.setItem('asn_months',JSON.stringify(state.months));
            localStorage.setItem('asn_speciallog',JSON.stringify(state.specialLog||{}));
-           localStorage.setItem('asn_gradelimits',JSON.stringify(state.gradeLimits||null)); }catch(e){}
+           localStorage.setItem('asn_gradelimits',JSON.stringify(state.gradeLimits||null));
+           localStorage.setItem('asn_laundry',JSON.stringify(state.laundry||{}));
+           localStorage.setItem('asn_notices',JSON.stringify(state.notices||[])); }catch(e){}
       _applyingRemote=false;
       ensureViewableMonth();
       render();
@@ -1179,7 +1231,7 @@ function syncPush(){
   const db=window._fbdb;
   clearTimeout(_pushTimer);
   _pushTimer=setTimeout(()=>{
-    db.set(db.ref(fbdb,'/'),{roster:state.roster,months:state.months,specialLog:state.specialLog||{},gradeLimits:state.gradeLimits||null,vacation:state.vacation||null,massGrades:state.massGrades||null,massPriority:state.massPriority||null,lastModified:state.lastModified||null}).catch(e=>console.warn('sync push failed',e));
+    db.set(db.ref(fbdb,'/'),{roster:state.roster,months:state.months,specialLog:state.specialLog||{},gradeLimits:state.gradeLimits||null,vacation:state.vacation||null,massGrades:state.massGrades||null,massPriority:state.massPriority||null,laundry:state.laundry||{},notices:state.notices||[],lastModified:state.lastModified||null}).catch(e=>console.warn('sync push failed',e));
   },250); // 짧은 디바운스로 연속 저장 합치기
 }
 
@@ -1267,7 +1319,7 @@ function renderCal(y,m,mo){
   h+='</div></div></div>';
   $('#calView').innerHTML=h;
 }
-function nameSpan(n,d,mid,k,i){
+function nameSpan(n,d,mid,k,i,showRole){
   if(!n){
     // 선택 모드(맞교환 두 번째 단계)에서는 빈자리도 탭 가능
     if(pickMode==='swap'&&pickFirst) return `<span class="empty tapn" onclick="event.stopPropagation();pickName(${d},'${mid}','${k}',${i})">·</span>`;
@@ -1277,17 +1329,22 @@ function nameSpan(n,d,mid,k,i){
   const first=isPickedFirst(d,mid,k,i);
   const cls=[chg?'chg':'', first?'pickedfirst':'', pickMode?'tapn':''].filter(Boolean).join(' ');
   const tap = pickMode? `onclick="event.stopPropagation();pickName(${d},'${mid}','${k}',${i})"`:'';
-  return `<span class="${cls}" ${tap}>${n}</span>`;
+  const role = k==='big'?'대':'소';
+  const prefix = showRole? `<span class="rolep">${role}</span>` : '';
+  return `<span class="${cls}" ${tap}>${prefix}${n}</span>`;
 }
 function slotGrid(ms,d){
   const hasAny=[...ms.big,...ms.small].some(Boolean);
   if(!hasAny && !pickMode) return '<div class="who"><i>미배정</i></div>';
   let h='<div class="who grid">';
   // 윗줄: 대 (대대=앞, 대소=뒤) / 아랫줄: 소 (소대=앞, 소소=뒤)
-  ms.big.forEach((n,i)=>h+=nameSpan(n,d,ms.id,'big',i));
+  // 대/소 표시는 각 줄의 첫 이름에만 붙임(예: 대 김재윤 이예나 / 소 구현비 이지안4)
+  let firstBig=true;
+  ms.big.forEach((n,i)=>{ const show=firstBig&&!!n; if(n)firstBig=false; h+=nameSpan(n,d,ms.id,'big',i,show); });
   // 대가 홀수면 빈칸을 채워 소가 항상 새 줄에서 시작하도록 함
   if(ms.big.length%2===1 && ms.small.length>0) h+='<span class="empty"></span>';
-  ms.small.forEach((n,i)=>h+=nameSpan(n,d,ms.id,'small',i));
+  let firstSmall=true;
+  ms.small.forEach((n,i)=>{ const show=firstSmall&&!!n; if(n)firstSmall=false; h+=nameSpan(n,d,ms.id,'small',i,show); });
   h+='</div>';
   return h;
 }
@@ -1888,6 +1945,136 @@ $('#rPrev').onclick=()=>rosterPrevMonth();
 $('#rNext').onclick=()=>rosterNextMonth();
 $('#tallyBtn').onclick=()=>openTally();
 $('#countBtn').onclick=()=>openCountTally();
+
+/* ===== 회장 공지사항 (누적 목록) ===== */
+$('#noticeBtn').onclick=()=>openNotices();
+window.openNotices=function(){
+  const list=(state.notices||[]).slice().sort((a,b)=>(b.ts||0)-(a.ts||0));
+  let h='';
+  if(state.isAdmin){
+    h+=`<div class="field"><label>새 공지 작성</label>
+      <textarea id="nt_new" rows="3" placeholder="공지 내용을 입력하세요"></textarea></div>
+      <button class="btnfull" onclick="addNotice()">＋ 공지 등록</button>
+      <div style="height:14px"></div>`;
+  }
+  if(!list.length){
+    h+=`<div class="lempty">등록된 공지사항이 없습니다.</div>`;
+  } else {
+    h+=`<div class="ntlist">`;
+    list.forEach(n=>{
+      const when=fmtNoticeDate(n.ts);
+      const safe=(n.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      h+=`<div class="ntitem">
+        <div class="ntmeta">${when}${state.isAdmin?` <button class="ntdel" onclick="deleteNotice(${n.ts})">삭제</button>`:''}</div>
+        <div class="nttext">${safe}</div>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+  openSheet('📢 회장 공지사항', h);
+};
+function fmtNoticeDate(ts){
+  if(!ts) return '';
+  const d=new Date(ts);
+  return `${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}`;
+}
+window.addNotice=function(){
+  const txt=($('#nt_new').value||'').trim();
+  if(!txt){toast('공지 내용을 입력하세요');return;}
+  state.notices=state.notices||[];
+  state.notices.unshift({ts:Date.now(), text:txt});
+  addAdminLog(`회장 공지사항 등록`);
+  save(); openNotices(); toast('공지를 등록했습니다');
+};
+window.deleteNotice=function(ts){
+  if(!confirm('이 공지를 삭제할까요?'))return;
+  state.notices=(state.notices||[]).filter(n=>n.ts!==ts);
+  addAdminLog(`회장 공지사항 삭제`);
+  save(); openNotices(); toast('삭제했습니다');
+};
+
+/* ===== 다림질봉사표 (월별 세탁/다림질 봉사) ===== */
+function laundryYmLabel(yk){ const [y,m]=yk.split('-').map(Number); return `${y}년 ${m}월`; }
+function fmtLaundryDate(d){
+  if(!d) return '';
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d);
+  if(!m) return d; // 기존 자유 텍스트는 그대로
+  const dt=new Date(Number(m[1]), Number(m[2])-1, Number(m[3]));
+  const wd=['일','월','화','수','목','금','토'][dt.getDay()];
+  return `${Number(m[2])}월 ${Number(m[3])}일 (${wd})`;
+}
+$('#laundryBtn').onclick=()=>openLaundry(state.ym);
+window.openLaundry=function(yk){
+  yk=yk||state.ym;
+  const rec=(state.laundry&&state.laundry[yk])||null;
+  const [yy,mm]=yk.split('-').map(Number);
+  const prevYk=ym(mm===1?yy-1:yy, mm===1?12:mm-1);
+  const nextYk=ym(mm===12?yy+1:yy, mm===12?1:mm+1);
+  let h=`<div class="lnav">
+    <button class="tnav" onclick="openLaundry('${prevYk}')">‹</button>
+    <b>${laundryYmLabel(yk)}</b>
+    <button class="tnav" onclick="openLaundry('${nextYk}')">›</button></div>`;
+  if(!rec || ((!rec.wash||!rec.wash.length)&&(!rec.iron||!rec.iron.length))){
+    h+=`<div class="lempty">아직 이 달의 봉사표가 등록되지 않았습니다.</div>`;
+  } else {
+    if(rec.date||rec.time){
+      h+=`<div class="lwhen">★ ${[fmtLaundryDate(rec.date),rec.time].filter(Boolean).join(' ')} ★</div>`;
+    }
+    const block=(title,arr,cls)=>{
+      if(!arr||!arr.length) return '';
+      let b=`<div class="lblock ${cls}"><div class="lbtitle">${title}</div><div class="lnames">`;
+      arr.forEach(n=>{ if(n&&n.trim()) b+=`<span class="lname">${n.trim()}</span>`; });
+      return b+`</div></div>`;
+    };
+    h+=block('세탁 봉사', rec.wash, 'wash');
+    h+=block('다림질 봉사', rec.iron, 'iron');
+  }
+  if(state.isAdmin){
+    h+=`<button class="btnfull" style="margin-top:14px" onclick="editLaundry('${yk}')">✏ 편집</button>`;
+  }
+  openSheet('🧺 다림질봉사표', h);
+};
+window.editLaundry=function(yk){
+  const rec=(state.laundry&&state.laundry[yk])||{date:'',time:'',wash:[],iron:[]};
+  const washTxt=(rec.wash||[]).join('\n');
+  const ironTxt=(rec.iron||[]).join('\n');
+  const [yy,mm]=yk.split('-').map(Number);
+  // 날짜 input(type=date)에는 ISO(YYYY-MM-DD)만 들어감. 기존에 자유 텍스트로 저장된 경우는 비워둠.
+  const isoDate=/^\d{4}-\d{2}-\d{2}$/.test(rec.date||'')?rec.date:'';
+  let h=`<div class="help">${yy}년 ${mm}월 봉사표를 입력하세요. 봉사자는 한 줄에 한 명씩 적습니다(세탁 2명, 다림질 6명이 보통).</div>
+    <div class="row2">
+      <div class="field"><label>날짜</label><input type="date" id="l_date" value="${isoDate}"></div>
+      <div class="field"><label>시간</label><input id="l_time" value="${rec.time||''}" placeholder="예: 오후 2시"></div>
+    </div>
+    <div class="field"><label>세탁 봉사자 (한 줄에 한 명)</label>
+      <textarea id="l_wash" rows="3" placeholder="김미경 아델라&#10;송수정 엘리사벳">${washTxt}</textarea></div>
+    <div class="field"><label>다림질 봉사자 (한 줄에 한 명)</label>
+      <textarea id="l_iron" rows="7" placeholder="조민경 리디아&#10;박혜성 수산나&#10;한지혜 안젤라&#10;임혜경 카타리나&#10;차은지 키아라&#10;김성실 사비나">${ironTxt}</textarea></div>
+    <button class="btnfull" onclick="saveLaundry('${yk}')">저장</button>`;
+  if(state.laundry&&state.laundry[yk]){
+    h+=`<button class="btnfull danger" onclick="deleteLaundry('${yk}')">이 달 봉사표 삭제</button>`;
+  }
+  openSheet(`🧺 ${mm}월 봉사표 편집`, h);
+};
+window.saveLaundry=function(yk){
+  const splitLines=s=>(s||'').split('\n').map(x=>x.trim()).filter(Boolean);
+  const rec={
+    date:$('#l_date').value.trim(),
+    time:$('#l_time').value.trim(),
+    wash:splitLines($('#l_wash').value),
+    iron:splitLines($('#l_iron').value)
+  };
+  state.laundry=state.laundry||{};
+  state.laundry[yk]=rec;
+  addAdminLog(`다림질봉사표 — ${yk} 저장 (세탁 ${rec.wash.length}명, 다림질 ${rec.iron.length}명)`);
+  save(); openLaundry(yk); toast('저장했습니다');
+};
+window.deleteLaundry=function(yk){
+  if(!confirm('이 달의 봉사표를 삭제할까요?'))return;
+  if(state.laundry) delete state.laundry[yk];
+  addAdminLog(`다림질봉사표 — ${yk} 삭제`);
+  save(); openLaundry(yk); toast('삭제했습니다');
+};
 
 /* ===== 복사 배정 월 누적 횟수 표 ===== */
 let countYear=null, countCat='total';
@@ -2668,7 +2855,144 @@ window.reshuffle=function(){
   autoAssign({ targets:d.targets, exclude:d.exclude, minGapDays:d.minGap, weekUnique:d.weekUnique });
   renderSchedule(); markPending(); showAutoResult();
 };
-$('#pdfBtn').onclick=()=>{const wasMode=state.mode;state.mode='cal';renderSchedule();setTimeout(()=>{window.print();state.mode=wasMode;renderSchedule();},200);};
+/* ===== 배정 현황 이미지/PDF 저장 ===== */
+// 현재 보고 있는 월의 배정 현황(제목 + 달력/목록)을 캡처할 임시 컨테이너를 만든다.
+async function captureSchedule(){
+  const [y,m]=state.ym.split('-').map(Number);
+  const mo=getMonth();
+  // 현재 어떤 모드를 보고 있든 항상 '달력' 형태로 저장한다.
+  // calView를 달력으로 강제 렌더한 뒤 그 결과를 복제해 캡처(원래 화면 모드는 건드리지 않음).
+  renderCal(y,m,mo);
+  const view = document.getElementById('calView');
+  // 캡처용 래퍼: 흰 배경 + 제목 + 달력 복제
+  const wrap=document.createElement('div');
+  wrap.style.cssText='position:fixed;left:-99999px;top:0;background:#fff;padding:20px;width:'+Math.max(view.scrollWidth,720)+'px';
+  const title=document.createElement('div');
+  title.style.cssText='font-size:22px;font-weight:800;margin-bottom:14px;color:#1a1a1a';
+  title.textContent=`${y}년 ${m}월 복사 배정표`;
+  wrap.appendChild(title);
+  const clone=view.cloneNode(true);
+  clone.style.display='block';
+  // 가로 스크롤 영역을 펼쳐서 전체가 한 화면에 보이도록
+  clone.querySelectorAll('.calscroll').forEach(el=>{el.style.overflow='visible';});
+  clone.querySelectorAll('.calinner').forEach(el=>{el.style.minWidth='auto';});
+  // 편집용 버튼류는 캡처에서 제거
+  clone.querySelectorAll('.addmass,.addrow,.delrow,button').forEach(el=>el.remove());
+  // 오늘 날짜 강조(파란 테두리)는 저장 이미지에서 제거
+  clone.querySelectorAll('.today').forEach(el=>el.classList.remove('today'));
+  wrap.appendChild(clone);
+  document.body.appendChild(wrap);
+  try{
+    const canvas=await html2canvas(wrap,{scale:2,backgroundColor:'#ffffff',useCORS:true});
+    return canvas;
+  } finally {
+    document.body.removeChild(wrap);
+    // 화면을 원래 모드로 복구(목록을 보고 있었다면 다시 목록으로)
+    renderSchedule();
+  }
+}
+function scheduleFileName(ext){
+  const [y,m]=state.ym.split('-').map(Number);
+  return `복사배정표_${y}년${m}월.${ext}`;
+}
+$('#imgBtn').onclick=async ()=>{
+  if(typeof html2canvas==='undefined'){toast('이미지 라이브러리를 불러오지 못했습니다');return;}
+  toast('이미지를 만드는 중…');
+  try{
+    const canvas=await captureSchedule();
+    const a=document.createElement('a');
+    a.href=canvas.toDataURL('image/png');
+    a.download=scheduleFileName('png');
+    a.click();
+    toast('이미지를 저장했습니다');
+  }catch(e){ console.warn(e); toast('이미지 저장에 실패했습니다'); }
+};
+$('#pdfBtn').onclick=async ()=>{
+  if(typeof html2canvas==='undefined' || !window.jspdf){
+    // 라이브러리 로드 실패 시: 브라우저 인쇄 대화상자로 폴백(여기서 'PDF로 저장' 선택 가능)
+    toast('인쇄 화면에서 «PDF로 저장»을 선택하세요');
+    const wasMode=state.mode; state.mode='cal'; renderSchedule();
+    setTimeout(()=>{ window.print(); state.mode=wasMode; renderSchedule(); }, 250);
+    return;
+  }
+  toast('PDF를 만드는 중…');
+  try{
+    const canvas=await captureSchedule();
+    const img=canvas.toDataURL('image/png');
+    const { jsPDF }=window.jspdf;
+    // 캡처 비율에 맞춰 세로/가로 자동 선택
+    const portrait = canvas.height>=canvas.width;
+    const pdf=new jsPDF({orientation:portrait?'p':'l', unit:'mm', format:'a4'});
+    const pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
+    const margin=10;
+    const maxW=pw-margin*2, maxH=ph-margin*2;
+    let w=maxW, h=w*canvas.height/canvas.width;
+    if(h>maxH){ h=maxH; w=h*canvas.width/canvas.height; }
+    const x=(pw-w)/2, yPos=margin;
+    pdf.addImage(img,'PNG',x,yPos,w,h);
+    pdf.save(scheduleFileName('pdf'));
+    toast('PDF를 저장했습니다');
+  }catch(e){ console.warn(e); toast('PDF 저장에 실패했습니다'); }
+};
+
+/* ===== 배정표 엑셀 다운로드 (화면 달력처럼 7열 달력 모양) ===== */
+$('#xlsBtn').onclick=()=>{
+  if(typeof XLSX==='undefined'){toast('엑셀 라이브러리를 불러오지 못했습니다');return;}
+  const [y,m]=state.ym.split('-').map(Number);
+  const mo=getMonth();
+  const first=new Date(y,m-1,1).getDay();
+  const last=new Date(y,m,0).getDate();
+  // 한 미사를 셀 텍스트로: "시간 제목\n대 이름들\n소 이름들"
+  const massText=(ms)=>{
+    const lines=[];
+    const head = (isSpecialMass(ms.title)? ms.title+' ' : '') + (ms.time||'') + ' ('+(COLOR_NAME[ms.color]?COLOR_NAME[ms.color].lbl:'')+')';
+    lines.push(head.trim());
+    const big=(ms.big||[]).filter(Boolean);
+    const small=(ms.small||[]).filter(Boolean);
+    if(big.length) lines.push('대 '+big.join(' '));
+    if(small.length) lines.push('소 '+small.join(' '));
+    return lines.join('\n');
+  };
+  // 한 날짜 칸: 날짜 + 미사들
+  const dayText=(d)=>{
+    const day=mo.assign[d];
+    let s=String(d);
+    if(day && day.masses && day.masses.length){
+      s += '\n' + day.masses.map(massText).join('\n\n');
+    }
+    return s;
+  };
+  const rows=[];
+  rows.push([`${y}년 ${m}월 복사 배정표`]);   // 제목
+  rows.push(WD.slice());                       // 요일 헤더 일~토
+  // 주 단위로 7칸씩
+  let cells=[];
+  for(let i=0;i<first;i++) cells.push('');     // 1일 앞 빈칸
+  for(let d=1;d<=last;d++){
+    cells.push(dayText(d));
+    if(cells.length===7){ rows.push(cells); cells=[]; }
+  }
+  if(cells.length){ while(cells.length<7) cells.push(''); rows.push(cells); }
+
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  // 열 너비
+  ws['!cols']=Array.from({length:7},()=>({wch:18}));
+  // 제목 행 7칸 병합
+  ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:6}}];
+  // 모든 셀 줄바꿈 + 상단 정렬
+  const range=XLSX.utils.decode_range(ws['!ref']);
+  for(let R=range.s.r;R<=range.e.r;R++){
+    for(let C=range.s.c;C<=range.e.c;C++){
+      const addr=XLSX.utils.encode_cell({r:R,c:C});
+      if(!ws[addr]) continue;
+      ws[addr].s={ alignment:{ wrapText:true, vertical:'top', horizontal: R<2?'center':'left' } };
+    }
+  }
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,`${m}월`);
+  XLSX.writeFile(wb,`복사배정표_${y}년${m}월.xlsx`);
+  toast('엑셀을 저장했습니다');
+};
 
 /* ====================== INIT ====================== */
 /* 일반 사용자는 공개(배포)된 달만 볼 수 있으므로, 현재 달이 미공개면 가장 최근 공개 달로 이동 */
