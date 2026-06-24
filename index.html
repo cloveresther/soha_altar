@@ -67,7 +67,8 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .cell.sun .dnum{color:var(--hong)}
 .cell.today{border-color:var(--brand);box-shadow:0 0 0 2px var(--soft)}
 .mass{border-radius:8px;padding:4px 6px;font-size:11px;background:#fafbfc;border:1px solid #eef0f3;line-height:1.3}
-.mass .mt{display:flex;align-items:center;gap:4px;font-weight:700;font-size:11px}
+.mass .mt{display:flex;align-items:center;gap:4px;font-weight:700;font-size:11px;flex-wrap:wrap}
+.mass .mttl{font-weight:800;color:var(--brand);font-size:10.5px;line-height:1.2;margin-bottom:1px;word-break:keep-all}
 .cdot{width:9px;height:9px;border-radius:3px;flex:none}
 .c-hong{background:var(--hong)}.c-nok{background:var(--nok)}.c-baek{background:var(--baek)}.c-bo{background:var(--bo)}
 .mass .who{color:var(--sub);font-size:10.5px;margin-top:1px;word-break:keep-all}
@@ -187,6 +188,99 @@ body.admin .bnav .admin-only{display:flex}
 
 .empty-state{text-align:center;color:var(--sub);padding:40px 20px;font-size:14px}
 .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px}
+.rrow{cursor:pointer}
+.rrow:active{background:var(--soft)}
+.delrow{width:28px;height:28px;border-radius:7px;background:#fbeaea;color:var(--danger);font-size:13px;border:none}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-bottom:6px}
+.qchk{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;padding:4px 0}
+.qchk input{width:auto}
+.tallybar{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.tallybar .tnav{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card);font-size:16px;font-weight:700}
+.tallybar b{font-size:16px}
+.tallybar .thint{font-size:11.5px;color:var(--sub);margin-left:auto}
+.tallywrap{overflow:auto;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
+.tallytbl{border-collapse:collapse;width:100%;font-size:12px;min-width:640px}
+.tallytbl th,.tallytbl td{border:1px solid #eef0f3;padding:4px 5px;text-align:center;vertical-align:top}
+.tallytbl th{background:#fbfcfd;color:var(--sub);font-weight:700;width:40px}
+.tallytbl .kindcol{position:sticky;left:0;background:#fbfcfd;font-weight:700;color:var(--ink);min-width:62px;z-index:1}
+.tcell{cursor:pointer;min-width:46px;height:34px}
+.tcell:active{background:var(--soft)}
+.tname{display:inline-block;font-size:11px;font-weight:600;border-radius:5px;padding:1px 5px;margin:1px;white-space:nowrap}
+.tname.auto{background:var(--soft);color:var(--brand-d)}
+.tname.man{background:#f1f3f5;color:var(--ink)}
+.tempty{color:#c4cad2;font-size:14px;font-weight:700}
+.tlegend{display:flex;gap:10px;align-items:center;font-size:11.5px;color:var(--sub);margin-bottom:4px}
+.tcurlist{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;min-height:24px}
+.tcurlist .tname{font-size:13px;padding:5px 9px;display:inline-flex;align-items:center;gap:6px}
+.tlock{font-style:normal;font-size:9.5px;opacity:.6}
+.trm{border:none;background:rgba(0,0,0,.08);border-radius:50%;width:16px;height:16px;font-size:10px;cursor:pointer;color:#555}
+.tpick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.tpk{font-size:13px;font-weight:600;padding:7px 11px;border-radius:9px;border:1px solid var(--line);background:#fff;display:inline-flex;align-items:center;gap:5px}
+.tpk.q{border-color:#cdd6ff;background:#f7f9ff}
+.tpk i{font-style:normal;font-size:10px;color:#fff;background:#aab2bd;border-radius:5px;padding:1px 5px}
+.tpk.q i{background:var(--brand)}
+.limtbl{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.limrow{display:grid;grid-template-columns:1fr 1.3fr 1.3fr;align-items:center;padding:7px 12px;border-bottom:1px solid #f1f3f5}
+.limrow:last-child{border-bottom:none}
+.limrow.limhd{background:#fbfcfd;font-weight:700;color:var(--sub);font-size:12.5px}
+.limrow .lg{font-weight:700}
+.limrow .lc{display:flex;align-items:center;justify-content:center;gap:10px}
+.limrow .lc b{min-width:20px;text-align:center;font-size:15px}
+.ctabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.ctab{font-size:13px;font-weight:600;padding:7px 13px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--sub)}
+.ctab.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.counttbl td,.counttbl th{min-width:30px}
+.counttbl .kindcol{min-width:78px;text-align:left}
+.counttbl .kindcol .cg{font-style:normal;font-size:9.5px;color:#fff;background:#aab2bd;border-radius:5px;padding:1px 5px;margin-left:5px}
+.counttbl td.z{color:#d3d8de}
+.counttbl .sumcol{font-weight:800;color:var(--brand-d);background:#f7f9ff;position:sticky;right:0}
+.counttbl th.sumcol{background:#eef1fe}
+.daygrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.dchip{display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 0;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:14px;font-weight:700}
+.dchip i{font-style:normal;font-size:9.5px;color:var(--sub);font-weight:600}
+.dchip.cur{background:var(--soft);border-color:var(--brand);color:var(--brand)}
+.dchip:active{transform:scale(.94)}
+.vactbl{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:8px}
+.vacrow{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid #f1f3f5}
+.vacrow:last-child{border-bottom:none}
+.vacrow .vs{flex:1;font-weight:600;font-size:13.5px}
+.vacrow .vd{width:74px;text-align:center;padding:6px 4px;border:1px solid var(--line);border-radius:8px;font-size:13px}
+.vacrow .vdash{color:var(--sub)}
+.vdpick{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:13px;font-weight:600;color:var(--sub);min-width:58px}
+.vdpick.set{background:var(--soft);border-color:var(--brand);color:var(--brand)}
+.vdel{width:28px;height:28px;border-radius:7px;background:#fbeaea;color:var(--danger);border:none;font-size:13px;margin-left:auto}
+.vacadd{display:flex;gap:8px;margin:8px 0 4px}
+.vacadd input{flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:9px;font-size:13.5px}
+.dpnav{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px}
+.dpnav b{font-size:16px;min-width:48px;text-align:center}
+.dpgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:10px}
+.dpcell{padding:9px 0;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:14px;font-weight:600}
+.dpcell.cur{background:var(--brand);color:#fff;border-color:var(--brand)}
+.dpcell:active{transform:scale(.92)}
+.tmass{border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:8px}
+.tmh{font-weight:700;font-size:13px;margin-bottom:6px;color:var(--brand-d)}
+.tslot{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.tslot .lbl{font-size:11px;font-weight:700;color:var(--sub);min-width:26px}
+.tslotbtn{flex:1;text-align:left;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:13.5px;font-weight:600;color:var(--sub)}
+.tslotbtn.set{background:var(--soft);border-color:var(--brand);color:var(--brand-d)}
+.tpk.sel{background:var(--brand);color:#fff;border-color:var(--brand)}
+.tpk.sel i{background:#fff;color:var(--brand)}
+.excelfold{margin:4px 0 10px;border:1px solid var(--line);border-radius:10px;padding:6px 12px;background:#fbfcfd}
+.excelfold summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--sub);padding:3px 0}
+#rosterTable .cnum{text-align:center;min-width:30px}
+#rosterTable th.cnum{font-size:11px;color:var(--sub)}
+#rosterTable td.cnum b{font-size:13.5px}
+#rosterTable td.ctot{background:#f7f9ff}
+#rosterTable td.ctot b{color:var(--brand-d);font-weight:800}
+#rosterTable .zc{color:#d3d8de}
+#rosterTable .csch{font-size:12px;color:var(--sub)}
+#rosterTable tr.rex{opacity:.5}
+#rosterTable .lex{font-style:normal;font-size:10px;background:#fbeaea;color:var(--danger);padding:1px 6px;border-radius:6px}
+#rosterTable .ldd{font-style:normal;font-size:10px;background:#fff3e0;color:#b06f00;padding:1px 6px;border-radius:6px}
+.lastmod{position:fixed;right:9px;bottom:62px;font-size:10px;color:#b8bec6;pointer-events:none;z-index:5;background:rgba(255,255,255,.7);padding:1px 5px;border-radius:5px}
+.mgblock{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.mghd{font-weight:700;font-size:14px;margin-bottom:7px}
+.mghd i{font-style:normal;font-size:11px;color:var(--sub);font-weight:600;margin-left:5px}
 table{border-collapse:collapse;width:100%;font-size:13px}
 th,td{padding:8px 10px;border-bottom:1px solid #eef0f3;text-align:left;white-space:nowrap}
 th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
@@ -205,6 +299,12 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
 .pickbanner .pbtxt b{color:#ffd86b}
 .pickbanner .pbcancel{margin-left:auto;background:rgba(255,255,255,.18);color:#fff;font-weight:700;
   padding:5px 12px;border-radius:8px;font-size:12.5px}
+.pendingbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff4e2;border:1px solid #f0c987;
+  color:#8a5a12;border-radius:12px;padding:11px 14px;margin:10px 0 4px;font-size:13px;font-weight:600}
+.pendingbar b{color:#b9731a}
+.pendingbar .pbtns{margin-left:auto;display:flex;gap:8px}
+.pendingbar .pundo{background:#fff;border:1px solid #e0b070;color:#8a5a12;font-weight:700;padding:6px 14px;border-radius:9px;font-size:13px}
+.pendingbar .psave{background:var(--brand);color:#fff;font-weight:700;padding:6px 16px;border-radius:9px;font-size:13px}
 .tapn{cursor:pointer;border-radius:5px;padding:0 2px;transition:.1s}
 .tapn:active{background:var(--soft)}
 .pickedfirst{background:var(--ink)!important;color:#fff!important;border-radius:6px;padding:1px 6px;font-weight:800}
@@ -276,12 +376,28 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
 
   <!-- VIEW: ROSTER (admin) -->
   <section id="view-roster" style="display:none">
-    <div class="monthbar"><h1>명단 관리</h1></div>
-    <div class="toolbar">
-      <button class="tbtn primary" id="uploadBtn">📥 엑셀 업로드</button>
-      <button class="tbtn" id="downloadBtn">📤 엑셀 양식 받기</button>
-      <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
+    <div class="monthbar">
+      <button class="navbtn" id="rPrev">‹</button>
+      <h1 id="rosterTitle">명단 관리</h1>
+      <button class="navbtn" id="rNext">›</button>
     </div>
+    <div class="toolbar">
+      <button class="tbtn primary" id="addStudentBtn">＋ 학생 추가</button>
+      <button class="tbtn" id="tallyBtn">📊 특별미사 설정</button>
+      <button class="tbtn" id="countBtn">📈 월 누적 횟수</button>
+      <button class="tbtn" id="limitBtn">🎚 학년별 횟수</button>
+      <button class="tbtn" id="massGradeBtn">⛪ 미사별 학년</button>
+      <button class="tbtn" id="vacBtn">🏖 방학 설정</button>
+    </div>
+    <details class="excelfold">
+      <summary>엑셀 도구 (가져오기 · 양식)</summary>
+      <div class="toolbar" style="margin-top:8px">
+        <button class="tbtn" id="uploadBtn">📥 엑셀 업로드</button>
+        <button class="tbtn" id="downloadBtn">📤 엑셀 양식 받기</button>
+        <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
+      </div>
+      <p class="help" style="margin:6px 2px 0">엑셀 업로드는 명단 전체를 덮어씁니다. 평소에는 ＋학생 추가로 직접 관리하세요.</p>
+    </details>
     <p class="updated" id="rosterCount"></p>
     <div class="tablewrap"><table id="rosterTable"></table></div>
   </section>
@@ -309,6 +425,7 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
 <!-- generic sheet -->
 <div class="scrim" id="scrim"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
+<div class="lastmod" id="lastMod"></div>
 
 <script>
 /* ====================== EMBEDDED DATA ====================== */
@@ -342,13 +459,102 @@ let state={
   userName: localStorage.getItem('asn_user')||'',
   roster: load('asn_roster', SEED_ROSTER),
   months: load('asn_months', {}),
+  specialLog: load('asn_speciallog', null),  // 특별미사 누적 수동 보정 {year:{key:{month:[names]}}}
+  gradeLimits: load('asn_gradelimits', null),  // 학년별 {grade:{min,max}} (null이면 기본값)
+  vacation: load('asn_vacation', null),  // {schools:{학교명:{start:'MM-DD',end:'MM-DD'}}, grades:[봉사학년], time:'10:00'}
+  massGrades: load('asn_massgrades', null),  // 정기미사별 배정 학년 {dawn:[학년], weekday:[], vigil:[], sunday:[]}
+  lastModified: (function(){ const v=localStorage.getItem('asn_lastmod'); return v?Number(v):null; })(),
 };
+/* 특별미사 월 누적 시드(2026년 1~6월, 기존 수기 기록). 저장된 값이 없을 때만 초기값으로 사용 */
+const SEED_SPECIAL_LOG={"2026":{"seongsigan":{"1":["김서연","김재윤"],"2":["임해든","이지안6"],"3":["탁윤호","박정서"],"5":["원준영","박시우"],"6":["박예련","홍지아"]},"sinsim":{"1":["신희윤","이예나"],"2":["김재윤","이지유"],"3":["강시우","류정원"],"5":["이윤섭"],"6":["김민준"]},"chanyang":{"1":["이윤섭","이예나"],"2":["박시우","김아인"],"3":["홍지아","이지효"],"4":["이지안6","류정원"],"5":["강시우","변윤서"],"6":["고인서","신윤서"]}}};
+/* 복사 배정 월 누적 횟수 시드(2026 1~6월, 엑셀 '복사' 시트). 어린이는 주일에 합산됨. buildAssignTally 결과에 합산 */
+const SEED_ASSIGN_COUNT={"2026":{"김용재":{"dawn":{"1":1,"3":1}},"양태원":{"dawn":{"1":1}},"이세훈":{"dawn":{"1":1}},"홍정민":{"dawn":{"1":1,"2":1,"3":1,"5":1},"sunday":{"4":1}},"박진우":{"dawn":{"1":1},"sunday":{"1":1,"2":1}},"이시윤":{"dawn":{"1":1,"5":1,"6":1},"sunday":{"1":1,"2":1,"4":1,"5":1,"6":1}},"김서연":{"dawn":{"3":1,"4":1,"5":1,"6":1},"weekday":{"2":1,"3":1,"4":1},"sunday":{"1":1,"3":2,"6":1,"2":1,"5":1}},"성운창":{"dawn":{"2":1,"3":1,"4":1,"6":1},"weekday":{"3":1},"sunday":{"1":2,"3":2,"4":1,"5":2,"6":1}},"윤성현":{"dawn":{"1":1,"5":1,"6":1},"weekday":{"4":1},"sunday":{"1":1,"2":2,"4":1,"5":1,"6":1}},"임해든":{"dawn":{"3":1,"4":1,"5":1,"6":1},"weekday":{"2":1,"3":1},"sunday":{"1":1,"2":2,"4":1,"6":1,"3":2,"5":1}},"탁윤호":{"dawn":{"1":1,"2":1,"5":1,"6":1},"weekday":{"2":1,"3":1,"4":1},"sunday":{"1":1,"3":2,"4":1,"5":1,"6":1,"2":1}},"원준영":{"dawn":{"3":1,"4":1,"6":1},"weekday":{"2":1,"3":1,"4":1,"5":1},"sunday":{"1":2,"2":1,"6":1,"5":1}},"정현진":{"dawn":{"3":1,"4":1},"weekday":{"3":1,"4":2},"sunday":{"2":3,"1":1,"3":1,"5":2}},"조환희":{"dawn":{"2":1,"4":1,"6":1},"weekday":{"3":1,"4":2},"sunday":{"1":2,"2":2,"3":2,"6":1}},"박예련":{"dawn":{"3":1,"4":1,"5":1,"6":1},"weekday":{"2":2,"3":1,"4":2,"6":1},"sunday":{"1":2,"3":1,"5":1}},"최수인":{"dawn":{"3":1,"4":1,"5":1,"6":1},"weekday":{"4":1},"sunday":{"1":1,"3":2,"2":1,"5":1,"6":1}},"고인서":{"weekday":{"1":1,"3":1,"5":1,"6":1},"sunday":{"2":3,"3":2,"5":2,"1":2,"6":1}},"김어진":{"weekday":{"1":1,"2":2},"sunday":{"1":1,"2":1}},"김재윤":{"weekday":{"3":1,"4":1,"6":1},"sunday":{"4":2,"5":3,"1":2,"2":2,"3":2,"6":1}},"박시우":{"dawn":{"3":1},"weekday":{"1":1,"2":1,"3":1,"5":1},"sunday":{"1":2,"3":2,"4":2,"5":2,"6":2,"2":2}},"박정서":{"weekday":{"1":1,"3":1,"4":1,"5":1},"sunday":{"2":2,"4":2,"5":2,"6":2,"1":2,"3":2}},"신희윤":{"weekday":{"1":1,"2":1,"3":1,"5":1},"sunday":{"2":2,"3":3,"4":2,"6":2,"1":1,"5":1}},"이시원":{"weekday":{"1":1,"2":1,"4":2,"6":1},"sunday":{"2":3,"3":3,"5":2,"1":2,"4":1,"6":1}},"이영후":{"weekday":{"1":1,"2":2,"3":1,"6":1},"sunday":{"2":1,"3":3,"4":2,"5":3,"6":1,"1":2}},"이지안6":{"weekday":{"1":1,"2":1,"3":1,"4":1,"6":1},"sunday":{"2":2,"5":3,"1":2,"3":2,"4":1,"6":1}},"홍지아":{"weekday":{"1":1,"2":2,"3":1,"6":1},"sunday":{"1":2,"3":2,"4":3,"5":3,"2":1,"6":1}},"강시우":{"dawn":{"6":1},"weekday":{"1":1,"2":1,"4":1,"5":2},"sunday":{"1":2,"2":2,"3":2,"6":2,"4":1,"5":1}},"이윤섭":{"dawn":{"6":1},"weekday":{"1":2,"4":1,"5":1},"sunday":{"1":2,"2":3,"3":2,"4":1,"5":2,"6":1}},"심다솔":{"dawn":{"6":1},"weekday":{"1":1,"2":1,"3":1,"6":1},"sunday":{"1":2,"3":2,"5":3,"2":2,"4":1,"6":1}},"연주환":{"dawn":{"6":1},"weekday":{"1":1,"2":2,"3":1,"6":1},"sunday":{"1":2,"3":2,"4":3,"2":1,"5":3,"6":1}},"이시호":{"weekday":{"1":1,"2":1,"4":1,"5":1,"6":1},"sunday":{"1":2,"3":3,"2":2,"5":2,"6":2}},"이지효":{"weekday":{"1":3,"2":2,"3":1},"sunday":{"4":3,"5":3,"3":2,"6":2}},"구현비":{"weekday":{"1":2,"2":1,"3":1,"4":1,"6":1},"sunday":{"4":1,"2":1,"3":2,"5":3,"6":1}},"이지유":{"weekday":{"1":2,"2":1,"3":1},"sunday":{"4":2,"6":2,"1":1,"2":1,"3":2,"5":1}},"김민준":{"weekday":{"1":1,"2":1,"3":1,"4":1,"5":1},"sunday":{"1":1,"2":1,"3":1,"4":1,"5":2,"6":2}},"김아인":{"weekday":{"1":1,"2":1,"3":1,"4":1,"5":1,"6":2},"sunday":{"5":2,"1":1,"3":1,"4":2,"6":1}},"류정원":{"weekday":{"1":1,"2":1,"4":2,"6":1},"sunday":{"5":3,"1":1,"2":1,"3":1,"4":1,"6":1}},"변윤서":{"weekday":{"1":1,"2":1,"3":1,"4":1,"5":2,"6":1},"sunday":{"1":1,"2":1,"3":1,"4":1,"5":1,"6":1}},"신윤서":{"weekday":{"1":1,"2":2,"5":1,"6":1},"sunday":{"4":3,"1":1,"3":2,"5":2,"6":1}},"이예나":{"weekday":{"1":1,"2":1,"3":1,"4":1,"5":1,"6":1},"sunday":{"5":2,"2":1,"3":1,"4":2,"6":1}},"이지안4":{"weekday":{"1":1,"2":1,"3":1,"4":1,"6":1},"sunday":{"5":3,"1":1,"2":1,"3":2,"4":1,"6":1}},"장하늘":{"weekday":{"1":1,"2":1,"3":1,"5":1},"sunday":{"4":2,"5":1,"6":3,"1":1,"2":1,"3":2}}}};
+if(state.specialLog==null){ state.specialLog=JSON.parse(JSON.stringify(SEED_SPECIAL_LOG)); }
+/* 2026년 6월 배정표 시드(업로드 이미지 기준). state.months에 6월이 없을 때만 주입 */
+const SEED_JUN_2026={"assign":{"1":{"masses":[{"time":"06:30","title":"새벽미사","color":"홍","big":["강시우"],"small":["심다솔"],"id":"x1l0k74b"}]},"2":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이영후"],"small":["류정원"],"id":"puhn4tha"}]},"4":{"masses":[{"time":"19:30","title":"성시간","color":"녹","big":["박예련"],"small":["홍지아"],"id":"v5zqxcsq"}]},"6":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":["박시우"],"small":["김민준"],"id":"wv3biu1n"},{"time":"17:00","title":"주일 전야미사","color":"백","big":["성운창","강시우"],"small":["이영후","이지유"],"id":"67islmv2"}]},"7":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["김재윤","이예나"],"small":["구현비","이지안4"],"id":"14cxzj42"},{"time":"17:00","title":"주일미사","color":"백","big":["고인서","변윤서"],"small":["신희윤","장하늘"],"id":"ugulx8kc"}]},"8":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["이윤섭"],"small":["연주환"],"id":"bbkddsk8"}]},"9":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["연주환"],"small":["김아인"],"id":"vmpvteou"}]},"11":{"masses":[{"time":"19:30","title":"평일미사","color":"홍","big":["이지안6"],"small":["이지안4"],"id":"wdbv14yn"}]},"13":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["이시윤","탁윤호"],"small":["윤성현","조환희"],"id":"hsw4pt4n"}]},"14":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["최수인"],"small":["김민준"],"id":"821aspv8"},{"time":"17:00","title":"주일미사","color":"녹","big":["이시원"],"small":["이지효"],"id":"vcqtctfo"}]},"15":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["이시윤"],"small":["원준영"],"id":"mm094uqb"}]},"16":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이시호"],"small":["구현비"],"id":"6lsk8d3k"}]},"18":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["심다솔"],"small":["김아인"],"id":"bjdmxgqv"}]},"20":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["임해든","원준영"],"small":["김서연","장하늘"],"id":"8k10ajog"}]},"21":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["이윤섭","변윤서"],"small":["이시원","이지유"],"id":"rpsu0qur"},{"time":"17:00","title":"주일미사","color":"녹","big":["박정서","이시호"],"small":["홍지아","신윤서"],"id":"zl6zwmdl"}]},"22":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["김서연"],"small":["임해든"],"id":"xk4q5rks"}]},"23":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["김재윤"],"small":["김민준"],"id":"x0xrjw7h"}]},"25":{"masses":[{"time":"19:30","title":"찬미미사","color":"백","big":["고인서"],"small":["신윤서"],"id":"7jv12sag"}]},"27":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["박시우","신희윤"],"small":["박정서","장하늘"],"id":"5pfwy4he"}]},"28":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["연주환","강시우"],"small":["이윤섭","심다솔"],"id":"nw0m27ww"},{"time":"17:00","title":"주일미사","color":"녹","big":["이지안6","이지효"],"small":["류정원","김아인"],"id":"nncs6w7i"}]},"29":{"masses":[{"time":"06:30","title":"새벽미사","color":"홍","big":["탁윤호","박예련","이영후"],"small":["성운창","최수인","조환희","윤성현"],"id":"pz8r7y9c"}]},"30":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이시호"],"small":["이예나"],"id":"d6a7o59f"}]}},"updated":0,"requests":[],"logs":[],"adminlogs":[]};
+if(!state.months["2026-06"]){ state.months["2026-06"]=JSON.parse(JSON.stringify(SEED_JUN_2026)); }
+/* 학년별 최소~최대 배정 횟수 기본값 (null이면 이 값 사용) */
+const DEFAULT_GRADE_LIMITS={
+  '초4':{min:2,max:6}, '초5':{min:0,max:8}, '초6':{min:0,max:8},
+  '중1':{min:0,max:10}, '중2':{min:0,max:10}, '중3':{min:0,max:10},
+  '고1':{min:0,max:12}, '고2':{min:0,max:12}, '고3':{min:0,max:12},
+};
+function gradeLimits(){ return state.gradeLimits || DEFAULT_GRADE_LIMITS; }
+function limitFor(grade){ const L=gradeLimits(); return L[grade] || {min:0,max:99}; }
+/* 방학 기본 설정(학교별 기간 + 봉사 학년). 저장값 없으면 이 시드 사용 */
+const DEFAULT_VACATION={
+  schools:{
+    '구름산초':{start:'07-25',end:'08-20'}, '소하초':{start:'07-25',end:'08-20'},
+    '서면초':{start:'07-25',end:'08-20'}, '안서초':{start:'07-25',end:'08-20'},
+    '빛가온초':{start:'07-25',end:'08-20'}, '충현초':{start:'07-25',end:'08-20'},
+    '목동초':{start:'07-25',end:'08-20'},
+    '소하중':{start:'07-20',end:'08-17'}, '빛가온중':{start:'07-25',end:'08-20'}, '충현중':{start:'07-20',end:'08-17'},
+    '광휘고':{start:'07-20',end:'08-20'}, '광명북':{start:'07-20',end:'08-20'},
+  },
+  grades:['초4','초5','초6','중1'],  // 방학 수·금 봉사 학년(기본)
+  time:'10:00',
+};
+function vacationCfg(){ return state.vacation || DEFAULT_VACATION; }
+if(state.vacation==null){ state.vacation=JSON.parse(JSON.stringify(DEFAULT_VACATION)); }
+/* 정기미사별 배정 가능 학년 기본값(기존 고정 규칙과 동일) */
+const DEFAULT_MASS_GRADES={
+  dawn:   ['중1','중2','중3','고1'],            // 새벽: 중1~고1
+  weekday:['초4','초5','초6','중1'],            // 평일: 초4~중1
+  vigil:  ['중1','중2','중3','고1','고2'],       // 주일 전야(토): 중1~고2
+  sunday: ['초4','초5','초6','중1'],            // 주일(일): 초4~중1
+};
+function massGrades(){ return state.massGrades || DEFAULT_MASS_GRADES; }
+/* 미사 제목 → 정기미사 종류 키(학년 설정용). 없으면 null */
+function routineKindOf(title){
+  const t=title||'';
+  if(t.includes('새벽')) return 'dawn';
+  if(t.includes('전야')) return 'vigil';     // '주일'보다 먼저 검사(전야에 '주일' 포함됨)
+  if(t.includes('주일')) return 'sunday';
+  if(t.includes('평일')) return 'weekday';
+  return null;
+}
+/* 특정 날짜(yy,mm,dd)에 방학 중인지: 어느 학교든 방학 기간이면 true. 학교별 집합 반환 */
+function vacationSchoolsOn(yy,mm,dd){
+  const cfg=vacationCfg(); const md=String(mm).padStart(2,'0')+'-'+String(dd).padStart(2,'0');
+  const set=new Set();
+  for(const sch in (cfg.schools||{})){
+    const v=cfg.schools[sch]; if(!v||!v.start||!v.end)continue;
+    // 연도 무관 MM-DD 비교(같은 해 방학 가정)
+    if(md>=v.start && md<=v.end) set.add(sch);
+  }
+  return set;
+}
+/* 그 날 방학 수·금 미사 대상 학생: 방학중 학교 ∩ 봉사학년 */
+function vacationEligibleOn(yy,mm,dd){
+  const cfg=vacationCfg();
+  const schools=vacationSchoolsOn(yy,mm,dd);
+  if(!schools.size) return [];
+  const grades=new Set(cfg.grades||[]);
+  return state.roster.filter(p=>!p.excluded && schools.has(p.school) && grades.has(p.grade));
+}
 function ym(y,m){return y+'-'+String(m).padStart(2,'0');}
 function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function save(){
+  state.lastModified=Date.now();
   localStorage.setItem('asn_roster',JSON.stringify(state.roster));
   localStorage.setItem('asn_months',JSON.stringify(state.months));
+  localStorage.setItem('asn_speciallog',JSON.stringify(state.specialLog||{}));
+  localStorage.setItem('asn_gradelimits',JSON.stringify(state.gradeLimits||null));
+  localStorage.setItem('asn_vacation',JSON.stringify(state.vacation||null));
+  localStorage.setItem('asn_massgrades',JSON.stringify(state.massGrades||null));
+  localStorage.setItem('asn_lastmod',String(state.lastModified));
+  updateLastMod();
   if(fb) syncPush();
+}
+function fmtDateTime(ts){
+  if(!ts) return '';
+  const d=new Date(ts);
+  const p=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}.${p(d.getMonth()+1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function updateLastMod(){
+  const el=document.getElementById('lastMod');
+  if(el) el.textContent = state.lastModified ? `최종 수정 ${fmtDateTime(state.lastModified)}` : '';
 }
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 
@@ -368,8 +574,15 @@ function sundayColorFor(date){ // for Sat evening masses
 }
 
 /* ====================== MONTH TEMPLATE GEN ====================== */
-/* 미사 틀: 월6:30 새벽(대1소1), 화·목19:30 평일(대1소1),
-   토17:00 주일(대2소2), 일9:00·17:00 주일(대2소2), 첫토10:00 성모신심 */
+/* 미사 틀: 월6:30 새벽, 화·목19:30 평일, 토17:00 주일 전야, 일9:00·17:00 주일.
+   고정 특별미사: 첫째주 목 19:30 성시간 / 첫째주 토 10:00 성모신심 / 넷째주 목 19:30 찬미미사 */
+function nthWeekdayOfMonth(yy,mm,d){
+  // 그 달에서 d일이 같은 요일 중 몇 번째인지(1~) 반환
+  return Math.floor((d-1)/7)+1;
+}
+/* 정기 미사(새벽·평일·주일·주일전야)는 제목을 달력에 숨기고, 그 외(성시간·성모신심·찬미·관리자 지정)만 표시 */
+const ROUTINE_TITLES=['새벽미사','평일미사','주일미사','주일 전야미사'];
+function isSpecialMass(title){ return !!title && !ROUTINE_TITLES.includes(title); }
 function genMonth(yy,mm){
   const days={};
   const last=new Date(yy,mm,0).getDate();
@@ -377,19 +590,33 @@ function genMonth(yy,mm){
   for(let d=1; d<=last; d++){
     const date=new Date(yy,mm-1,d);
     const w=date.getDay(); // 0 Sun..6 Sat
+    const nth=nthWeekdayOfMonth(yy,mm,d); // 이 날이 그 요일의 몇째 주인지
     const masses=[];
     const lit=litColor(date);
     const mk=(time,title,color,big,small)=>({id:uid(),time,title,color,
         big:Array(big).fill(''),small:Array(small).fill('')});
     if(w===1) masses.push(mk('06:30','새벽미사',lit.color,1,1));         // Mon dawn
-    if(w===2||w===4) masses.push(mk('19:30','평일미사',lit.color,1,1));  // Tue/Thu evening
+    if(w===2) masses.push(mk('19:30','평일미사',lit.color,1,1));         // Tue evening
+    if(w===4){ // Thursday: 첫째주=성시간, 넷째주=찬미미사, 그 외=평일
+      if(nth===1) masses.push(mk('19:30','성시간',lit.color,1,1));
+      else if(nth===4) masses.push(mk('19:30','찬미미사',lit.color,1,1));
+      else masses.push(mk('19:30','평일미사',lit.color,1,1));
+    }
     if(w===6){ // Saturday
-      if(!firstSatSeen){ masses.push(mk('10:00','성모신심미사',lit.color,1,1)); firstSatSeen=true; }
+      if(nth===1){ masses.push(mk('10:00','성모신심',lit.color,1,1)); firstSatSeen=true; } // 첫째주 토
       masses.push(mk('17:00','주일 전야미사',sundayColorFor(date),2,2)); // vigil -> Sunday color
     }
     if(w===0){ // Sunday
       masses.push(mk('09:00','주일미사',lit.color,2,2));
       masses.push(mk('17:00','주일미사',lit.color,2,2));
+    }
+    // 방학 기간 수·금 10:00 미사: 그 날 방학 대상자가 있으면 생성
+    if(w===3 || w===5){
+      const elig=vacationEligibleOn(yy,mm,d);
+      if(elig.length){
+        const cfg=vacationCfg();
+        masses.push(mk(cfg.time||'10:00','방학미사',lit.color,1,1));
+      }
     }
     if(masses.length) days[d]={masses,lit:lit};
   }
@@ -407,25 +634,156 @@ function getMonth(){
 /* ====================== AUTO-ASSIGN ====================== */
 function gradeRank(g){const o=['초4','초5','초6','중1','중2','중3','고1','고2','고3'];return o.indexOf(g);}
 function inRange(g,lo,hi){const r=gradeRank(g);return r>=gradeRank(lo)&&r<=gradeRank(hi);}
+/* 미사 종류 판별 — 특별미사(자격 상위)와 일반미사(학년 규칙) 구분 */
+function specialCap(title){
+  // 자격(q 키)을 요구하는 특별미사. 매칭되면 그 자격만으로 판정(학년·간격 무관)
+  if(title.includes('성시간')) return 'seongsigan';
+  if(title.includes('신심'))   return 'sinsim';     // 성모신심
+  if(title.includes('찬미')||title.includes('찬양')) return 'chanyang';
+  if(title.includes('어린이')) return 'children';
+  return null;
+}
+/* 누적표에서 다룰 특별미사 종류 */
+const SPECIAL_KINDS=[
+  {key:'seongsigan', label:'성시간',   match:t=>t.includes('성시간')},
+  {key:'sinsim',     label:'성모신심', match:t=>t.includes('신심')},
+  {key:'chanyang',   label:'찬미미사', match:t=>t.includes('찬미')||t.includes('찬양')},
+];
+function specialKindOf(title){ return SPECIAL_KINDS.find(k=>k.match(title))||null; }
+/* 대대 자리 여부: '대'(big) 줄의 첫 칸(index 0)만 대대 — 대대제외 학생 불가.
+   대소(big[1+])·소대·소소(small)는 대대제외 학생도 가능.
+   자리가 1개뿐인 대 줄(2명 미사)도 그 자리가 대대. */
+function isDaedaeSlot(kind, i){ return kind==='big' && i===0; }
+/* 특정 연·월에서 특정 종류(key)의 특별미사들을 [{day, mass}] 로 반환 */
+function findSpecialMasses(year, month, key){
+  const out=[]; const mo=state.months[ym(year,month)];
+  if(!mo||!mo.assign) return out;
+  const days=Object.keys(mo.assign).map(Number).sort((a,b)=>a-b);
+  for(const d of days){
+    (mo.assign[d].masses||[]).forEach(ms=>{
+      const k=specialKindOf(ms.title||''); if(k&&k.key===key) out.push({day:d, mass:ms});
+    });
+  }
+  return out;
+}
+/* 미사 종류 분류 (집계용): 새벽/평일/주일/특별 */
+const MASS_CATEGORIES=[
+  {key:'dawn',    label:'새벽', match:t=>t.includes('새벽')},
+  {key:'special', label:'특별', match:t=>!!specialKindOf(t)},
+  {key:'weekday', label:'평일', match:t=>t.includes('평일')},
+  {key:'sunday',  label:'주일', match:t=>t.includes('주일')},  // 주일·주일 전야
+];
+function massCategory(title){
+  const t=title||'';
+  for(const c of MASS_CATEGORIES){ if(c.match(t)) return c.key; }
+  return 'etc';
+}
+/* 연도별 학생 배정 집계.
+   반환: { total:{name:{1:n,...,12:n, sum:n}}, byCat:{cat:{name:{month:n,sum}}} } */
+function buildAssignTally(year){
+  const total={}; const byCat={};
+  MASS_CATEGORIES.forEach(c=>byCat[c.key]={});
+  byCat['etc']={};
+  const add=(obj,name,m,cnt)=>{ cnt=cnt||1; obj[name]=obj[name]||{sum:0}; obj[name][m]=(obj[name][m]||0)+cnt; obj[name].sum+=cnt; };
+  // 1) 실제 배정에서 집계
+  for(let m=1;m<=12;m++){
+    const key=ym(year,m); const mo=state.months[key]; if(!mo||!mo.assign)continue;
+    Object.values(mo.assign).forEach(day=>{
+      const masses=(day&&day.masses)||[];
+      masses.forEach(ms=>{
+        const cat=massCategory(ms.title);
+        const all=[...(ms.big||[]),...(ms.small||[])];
+        all.forEach(n=>{ if(!n)return; add(total,n,m,1); add(byCat[cat],n,m,1); });
+      });
+    });
+  }
+  // 2) 과거 누적 시드(엑셀에서 가져온 1~6월) 합산. 단, 그 달에 실제 배정 데이터가 있으면 시드는 건너뜀(중복 방지)
+  const seed=(typeof SEED_ASSIGN_COUNT!=='undefined' && SEED_ASSIGN_COUNT[year])||null;
+  if(seed){
+    for(const name in seed){
+      const rec=seed[name];
+      for(const cat in rec){           // cat: dawn/weekday/sunday
+        const months=rec[cat];
+        for(const mk in months){
+          const m=Number(mk); const cnt=months[mk]||0; if(!cnt)continue;
+          // 그 달에 실제 배정이 존재하면 시드 건너뜀(시스템 배정으로 대체된 것으로 간주)
+          const monthKey=ym(year,m); const mo=state.months[monthKey];
+          const hasReal = mo && mo.assign && Object.keys(mo.assign).length;
+          if(hasReal) continue;
+          add(total,name,m,cnt);
+          if(byCat[cat]) add(byCat[cat],name,m,cnt);
+        }
+      }
+    }
+  }
+  return {total, byCat};
+}
+/* 특정 연도의 월별 특별미사 누적 집계.
+   반환: { seongsigan:{1:[이름..],2:[...]}, sinsim:{...}, chanyang:{...} }
+   = 실제 배정(state.months) 집계 + 수동 보정(state.specialLog[year]) 합산 */
+function buildSpecialTally(year){
+  const tally={}; SPECIAL_KINDS.forEach(k=>{tally[k.key]={};});
+  // 1) 실제 배정에서 집계
+  for(let m=1;m<=12;m++){
+    const key=ym(year,m); const mo=state.months[key]; if(!mo||!mo.assign)continue;
+    Object.values(mo.assign).forEach(day=>{
+      const masses=(day&&day.masses)||[];
+      masses.forEach(ms=>{
+        const k=specialKindOf(ms.title||''); if(!k)return;
+        const all=[...(ms.big||[]),...(ms.small||[])];
+        all.forEach(n=>{ if(!n)return;
+          (tally[k.key][m]=tally[k.key][m]||[]); if(!tally[k.key][m].includes(n)) tally[k.key][m].push(n); });
+      });
+    });
+  }
+  // 2) 수동 보정 합산
+  const man=(state.specialLog&&state.specialLog[year])||{};
+  SPECIAL_KINDS.forEach(k=>{
+    const mm=man[k.key]||{};
+    for(const m in mm){ (mm[m]||[]).forEach(n=>{
+      (tally[k.key][m]=tally[k.key][m]||[]); if(!tally[k.key][m].includes(n)) tally[k.key][m].push(n); }); }
+  });
+  return tally;
+}
+/* 누적표에서 특정 칸의 '수동 추가' 이름 목록 (실제 배정으로 들어온 것과 구분) */
+function manualNames(year,key,m){
+  return ((state.specialLog&&state.specialLog[year]&&state.specialLog[year][key]&&state.specialLog[year][key][m])||[]).slice();
+}
+function autoNames(year,key,m){
+  const set=[]; const monthKey=ym(year,m); const mo=state.months[monthKey];
+  if(mo&&mo.assign) Object.values(mo.assign).forEach(day=>{
+    const masses=(day&&day.masses)||[];
+    masses.forEach(ms=>{
+      const k=specialKindOf(ms.title||''); if(!k||k.key!==key)return;
+      const all=[...(ms.big||[]),...(ms.small||[])];
+      all.forEach(n=>{ if(n&&!set.includes(n))set.push(n); });
+    });
+  });
+  return set;
+}
 function eligible(person, mass){
   if(person.excluded) return false;
   const t=mass.title;
-  if(t.includes('새벽')){
-    if(!inRange(person.grade,'중1','고1')) return false; // 중1~고1 (명단 '새벽' 표시는 무시)
+  const q=person.q||{};
+  // ① 특별미사: 자격(1 표기) 있는 학생만. 학년 제한 등 다른 규칙보다 상위.
+  const cap=specialCap(t);
+  if(cap){ return !!q[cap]; }
+  // ②-A 방학미사: 그 날 방학중 학교 ∩ 봉사학년 학생만 (날짜는 mass._d로 전달)
+  if(t.includes('방학')){
+    if(mass._y && mass._d){
+      const schools=vacationSchoolsOn(mass._y, mass._m, mass._d);
+      const grades=new Set(vacationCfg().grades||[]);
+      return schools.has(person.school) && grades.has(person.grade);
+    }
+    // 날짜 정보 없으면 학년만이라도 확인(봉사학년)
+    return new Set(vacationCfg().grades||[]).has(person.grade);
   }
-  else if(t.includes('평일')){
-    if(!inRange(person.grade,'초4','중1')) return false; // 초4~중1
+  // ② 일반(정기)미사: 관리자가 설정한 배정 학년만
+  const rk=routineKindOf(t);
+  if(rk){
+    const allow=massGrades()[rk]||[];
+    if(!allow.includes(person.grade)) return false;
   }
-  else if(t.includes('전야')){ // 토요일 저녁(주일 전야)미사: 중1~고2
-    if(!inRange(person.grade,'중1','고2')) return false;
-  }
-  else if(t.includes('주일')){ // 일요일 주일미사: 초4~중1
-    if(!inRange(person.grade,'초4','중1')) return false;
-  }
-  if(t.includes('성시간')&&!person.q.seongsigan) return false;
-  if((t.includes('신심'))&&!person.q.sinsim) return false;
-  if(t.includes('어린이')&&!person.q.children) return false;
-  if(t.includes('찬미')||t.includes('찬양')){ if(!person.q.chanyang) return false; }
   return true;
 }
 /* 자동배정.
@@ -450,8 +808,10 @@ function autoAssign(opts){
   const weekKey=d=>{ const dt=new Date(yy,mm-1,d); const dow=dt.getDay(); const sun=d-dow; return sun; }; // 그 주 일요일의 '일'(음수 가능)
   const days=Object.keys(mo.assign).map(Number).sort((a,b)=>a-b);
 
-  function scoreOf(p,d,isDawn){
+  function scoreOf(p,d,isDawn,isSpecial){
     let c=counts[p.name];
+    // 특별미사(성시간·성모신심·찬미·어린이): 자격자끼리 '균등 분배'만 적용. 간격/주차 패널티 면제.
+    if(isSpecial) return c;
     // 목표 횟수 초과자는 후순위(소프트). 목표 도달할수록 점수↑
     const tg=targets[p.name];
     if(tg!=null && counts[p.name]>=tg) c += 100 + (counts[p.name]-tg);
@@ -464,17 +824,30 @@ function autoAssign(opts){
     return c;
   }
   function assignOne(arr,i,d,mass,kind,isDawn,isVigil,relax){
-    const base=p=>{
+    const isSpecial = !!specialCap(mass.title);   // 성시간·성모신심·찬미(균등분배만)
+    const isVacation = (mass.title||'').includes('방학'); // 방학미사: 자격상위지만 간격은 유의
+    const capFree = isSpecial || isVacation;       // 학년상한만 면제(대대제외는 면제 안 함)
+    const base=(p,ignoreMax)=>{
       if(exclude.has(p.name)) return false;
       if(usedTodayRef.has(p.name)) return false;
-      if(kind==='big'&&p.noDaedae) return false;
+      // 대대제외: '대대' 자리(대 줄 첫 칸)만 불가. 대소·소 자리는 가능 (연말 대복사 수업 전까지 대대만 금지)
+      if(isDaedaeSlot(kind,i) && p.noDaedae) return false;
       if(isDawn){ if((dawnCount[p.name]||0)>=1) return false; }
+      // 학년별 최대 상한(자격상위 미사·완화 시 제외)
+      if(!capFree && !ignoreMax){
+        const mx=limitFor(p.grade).max;
+        if(counts[p.name] >= mx) return false;
+      }
       return true;
     };
-    let cands=state.roster.filter(p=>base(p)&&eligible(p,mass));
-    if(!cands.length&&isVigil) cands=state.roster.filter(p=>base(p)&&!p.excluded&&inRange(p.grade,'초4','고3'));
+    // 1차: 상한 지킴 → 2차: 같은날 중복만 → 3차(빈자리 방지): 상한 완화
+    let cands=state.roster.filter(p=>base(p,false)&&eligible(p,mass));
+    if(!cands.length&&isVigil) cands=state.roster.filter(p=>base(p,false)&&!p.excluded&&inRange(p.grade,'초4','고3'));
+    if(!cands.length) cands=state.roster.filter(p=>base(p,true)&&eligible(p,mass)); // 상한 완화(빈자리보단 초과 허용)
+    if(!cands.length&&isVigil) cands=state.roster.filter(p=>base(p,true)&&!p.excluded&&inRange(p.grade,'초4','고3'));
     if(!cands.length) return '';
-    let scored=cands.map(p=>({p,s:scoreOf(p,d,isDawn)}));
+    // 방학미사는 간격 분산을 적용(scoreOf 일반 경로), 특별미사만 균등분배-only
+    let scored=cands.map(p=>({p,s:scoreOf(p,d,isDawn,isSpecial)}));
     const min=Math.min(...scored.map(x=>x.s));
     const pool=scored.filter(x=>x.s===min).map(x=>x.p);
     const pick=pool[Math.floor(Math.random()*pool.length)];
@@ -487,10 +860,14 @@ function autoAssign(opts){
   for(const d of days){
     usedTodayRef=new Set();
     for(const mass of mo.assign[d].masses){
+      // 방학미사 자격 판정을 위해 날짜 정보 부여(임시)
+      mass._y=yy; mass._m=mm; mass._d=d;
       const isDawn=mass.title.includes('새벽');
       const isVigil=mass.title.includes('전야');
       for(let i=0;i<mass.big.length;i++){ const nm=assignOne(mass.big,i,d,mass,'big',isDawn,isVigil); mass.big[i]=nm; if(nm)usedTodayRef.add(nm); }
       for(let i=0;i<mass.small.length;i++){ const nm=assignOne(mass.small,i,d,mass,'small',isDawn,isVigil); mass.small[i]=nm; if(nm)usedTodayRef.add(nm); }
+      // 임시 날짜 정보 제거(저장 데이터 오염 방지)
+      delete mass._y; delete mass._m; delete mass._d;
     }
   }
   // 초4 최소 2회 보장: 부족한 초4를 가장 적합한 자리에 추가 투입(같은날 중복·자격·대대제외 지킴)
@@ -501,13 +878,14 @@ function autoAssign(opts){
 /* 초4 최소 2회 보장 패스 */
 function enforceMinCounts(counts, lastDay, weekSet, weekKey){
   const mo=getMonth();
-  const need = state.roster.filter(p=>p.grade==='초4' && !p.excluded && (counts[p.name]||0) < 2);
+  // 학년별 최소(min) 미달자 전체 대상 (min>0인 학년만)
+  const need = state.roster.filter(p=>!p.excluded && (counts[p.name]||0) < limitFor(p.grade).min);
   if(!need.length) return;
   const days=Object.keys(mo.assign).map(Number).sort((a,b)=>a-b);
   for(const p of need){
+    const myMin=limitFor(p.grade).min;
     let guard=0;
-    while((counts[p.name]||0) < 2 && guard++ < 50){
-      // 초4가 들어갈 수 있는 자리 후보 수집: 자격 충족 + 같은날 미사용 + 대대제외면 소 자리
+    while((counts[p.name]||0) < myMin && guard++ < 50){
       let best=null;
       for(const d of days){
         const usedToday=new Set();
@@ -515,15 +893,17 @@ function enforceMinCounts(counts, lastDay, weekSet, weekKey){
         if(usedToday.has(p.name)) continue;
         for(const mass of mo.assign[d].masses){
           if(!eligible(p,mass)) continue;
-          const kinds = p.noDaedae ? ['small'] : ['small','big'];
+          if(specialCap(mass.title)) continue; // 특별미사 자리는 최소보장 대상에서 제외(자격 상위)
+          const kinds = ['small','big'];
           for(const kind of kinds){
             const arr=mass[kind];
             for(let i=0;i<arr.length;i++){
+              // 대대제외 학생은 대대 자리(big[0])만 회피
+              if(p.noDaedae && isDaedaeSlot(kind,i)) continue;
               const cur=arr[i];
-              // 빈자리거나, 현재 점유자가 목표보다 많이 배정된 경우 교체 대상
-              const replaceable = !cur || (counts[cur]||0) > 2;
+              // 빈자리거나, 현재 점유자가 자기 학년 최소보다 많이 섰으면 교체 가능
+              const replaceable = !cur || (counts[cur]||0) > limitFor((state.roster.find(r=>r.name===cur)||{}).grade||'').min;
               if(!replaceable) continue;
-              // 같은 주 회피 우선
               const wk=weekKey(d);
               const sameWeek = weekSet[p.name] && weekSet[p.name].has(wk);
               const score = (cur?1:0) + (sameWeek?5:0) + (lastDay[p.name]!=null?Math.max(0,3-(Math.abs(d-lastDay[p.name]))):0);
@@ -533,7 +913,6 @@ function enforceMinCounts(counts, lastDay, weekSet, weekKey){
         }
       }
       if(!best) break;
-      // 적용
       if(best.cur){ counts[best.cur]=(counts[best.cur]||0)-1; }
       best.mass[best.kind][best.i]=p.name;
       counts[p.name]=(counts[p.name]||0)+1;
@@ -574,7 +953,9 @@ function estimateTargets(){
   state.roster.forEach(p=>{
     if(p.excluded){ targets[p.name]=0; return; }
     let t=Math.round(exp[p.name]);
-    if(p.grade==='초4') t=Math.max(2,t);   // 초4 최소 2회
+    const lim=limitFor(p.grade);
+    if(t<lim.min) t=lim.min;   // 학년 최소 보장
+    if(t>lim.max) t=lim.max;   // 학년 최대 제한
     targets[p.name]=t;
   });
   return targets;
@@ -598,7 +979,7 @@ async function initFirebase(){
     const rootRef=db.ref(fbdb,'/');
     const snap=await db.get(rootRef);
     if(!snap.exists()){
-      await db.set(rootRef,{roster:state.roster, months:state.months});
+      await db.set(rootRef,{roster:state.roster, months:state.months, specialLog:state.specialLog||{}, gradeLimits:state.gradeLimits||null, vacation:state.vacation||null, massGrades:state.massGrades||null, lastModified:state.lastModified||null});
     }
 
     // 실시간 수신: 다른 기기/사용자의 변경을 즉시 반영
@@ -608,11 +989,30 @@ async function initFirebase(){
       _applyingRemote=true;
       if(v.roster) state.roster=v.roster;
       state.months = v.months || {};
+      // 6월 배정 시드: DB에 6월이 없으면 시드 유지하고 곧바로 올림
+      let junNeedsPush=false;
+      if(!state.months['2026-06'] && typeof SEED_JUN_2026!=='undefined'){
+        state.months['2026-06']=JSON.parse(JSON.stringify(SEED_JUN_2026)); junNeedsPush=true;
+      }
+      // 누적 기록: DB에 있으면 사용, 없으면 기존 시드(1~6월) 유지하고 곧바로 올림
+      if(v.specialLog){ state.specialLog = v.specialLog; }
+      else if(!state.specialLog || !Object.keys(state.specialLog).length){
+        state.specialLog = JSON.parse(JSON.stringify(SEED_SPECIAL_LOG));
+      }
+      const seedNeedsPush = junNeedsPush || (!v.specialLog && state.specialLog && Object.keys(state.specialLog).length);
+      state.gradeLimits = v.gradeLimits || null;
+      if(v.vacation) state.vacation = v.vacation;
+      if(v.massGrades) state.massGrades = v.massGrades;
+      if(v.lastModified) state.lastModified = v.lastModified;
+      updateLastMod();
       // 로컬 캐시도 갱신(오프라인 대비)
       try{ localStorage.setItem('asn_roster',JSON.stringify(state.roster));
-           localStorage.setItem('asn_months',JSON.stringify(state.months)); }catch(e){}
+           localStorage.setItem('asn_months',JSON.stringify(state.months));
+           localStorage.setItem('asn_speciallog',JSON.stringify(state.specialLog||{}));
+           localStorage.setItem('asn_gradelimits',JSON.stringify(state.gradeLimits||null)); }catch(e){}
       _applyingRemote=false;
       render();
+      if(seedNeedsPush) syncPush(); // DB에 누적 시드가 없던 경우 한 번 업로드
     });
     // 연결 상태 표시
     const connRef=db.ref(fbdb,'.info/connected');
@@ -630,7 +1030,7 @@ function syncPush(){
   const db=window._fbdb;
   clearTimeout(_pushTimer);
   _pushTimer=setTimeout(()=>{
-    db.set(db.ref(fbdb,'/'),{roster:state.roster,months:state.months}).catch(e=>console.warn('sync push failed',e));
+    db.set(db.ref(fbdb,'/'),{roster:state.roster,months:state.months,specialLog:state.specialLog||{},gradeLimits:state.gradeLimits||null,vacation:state.vacation||null,massGrades:state.massGrades||null,lastModified:state.lastModified||null}).catch(e=>console.warn('sync push failed',e));
   },250); // 짧은 디바운스로 연속 저장 합치기
 }
 
@@ -642,7 +1042,7 @@ function setView(v){
   ['schedule','requests','roster','logs'].forEach(x=>{
     $('#view-'+x).style.display = x===v?'block':'none';});
   document.querySelectorAll('.bnav button').forEach(b=>b.classList.toggle('on',b.dataset.view===v));
-  if(v==='roster') renderRoster();
+  if(v==='roster'){ rosterYM=state.ym; renderRoster(); }
   if(v==='requests') renderRequests();
   if(v==='logs') renderLogs();
   if(v==='schedule') renderSchedule();
@@ -666,6 +1066,9 @@ function renderSchedule(){
   $('#segList').classList.toggle('on',state.mode==='list');
   if(state.mode==='cal'){ $('#calView').style.display='block'; $('#listView').style.display='none'; renderCal(y,m,mo);}
   else { $('#calView').style.display='none'; $('#listView').style.display='flex'; renderList(y,m,mo);}
+  // 미저장 자동배정 배너 유지/숨김
+  const pb=document.getElementById('pendingBar');
+  if(pb) pb.style.display = _autoPending ? 'flex' : 'none';
 }
 function renderCal(y,m,mo){
   const first=new Date(y,m-1,1).getDay();
@@ -680,8 +1083,9 @@ function renderCal(y,m,mo){
     if(day) day.masses.forEach(ms=>{
       const c=COLOR_NAME[ms.color]||COLOR_NAME['녹'];
       const massClick = pickMode? '' : `onclick="openMass(${d},'${ms.id}')"`;
+      const ttl = isSpecialMass(ms.title)? `<div class="mttl">${ms.title}</div>`:'';
       h+=`<div class="mass" ${massClick}>
-        <div class="mt"><span class="cdot ${c.cls}"></span>${ms.time}</div>
+        ${ttl}<div class="mt"><span class="cdot ${c.cls}"></span>${ms.time}</div>
         ${slotGrid(ms,d)}</div>`;
     });
     if(state.isAdmin && !pickMode) h+=`<button class="addmass" onclick="addMass(${d})">＋ 미사</button>`;
@@ -791,7 +1195,15 @@ function editMass(d,mid){
   const ms=findMass(d,mid);
   const opts=['<option value="">— 비움 —</option>'].concat(
     state.roster.map(p=>`<option value="${p.name}">${p.name} (${p.grade})</option>`)).join('');
-  let h=`<div class="field"><label>미사 제목</label><input id="m_title" value="${ms.title}"></div>
+  // 미사 유형 프리셋(제목을 자동으로 채워 자격 규칙이 따라오게)
+  const TYPES=['성시간','성모신심','찬미미사','새벽미사','평일미사','주일미사','주일 전야미사'];
+  const curType = TYPES.includes(ms.title) ? ms.title : '';
+  let h=`<div class="field"><label>미사 유형 (자격 규칙이 제목을 따라갑니다)</label>
+    <select id="m_type" onchange="onTypeChange()">
+      <option value="">— 직접 입력 —</option>
+      ${TYPES.map(t=>`<option value="${t}" ${curType===t?'selected':''}>${t}</option>`).join('')}
+    </select></div>`;
+  h+=`<div class="field"><label>미사 제목</label><input id="m_title" value="${ms.title}"></div>
     <div class="row2"><div class="field"><label>시간</label><input id="m_time" value="${ms.time}"></div>
     <div class="field"><label>전례색</label><select id="m_color">
       ${['홍','녹','백','자'].map(c=>`<option value="${c}" ${ms.color===c?'selected':''}>${COLOR_NAME[c].k}</option>`).join('')}
@@ -803,19 +1215,76 @@ function editMass(d,mid){
   ms.small.forEach((n,i)=>h+=slotRow('small',i,n,opts));
   h+=`<button class="tbtn" onclick="addSlot('${d}','${mid}','small')">＋ 소 자리 추가</button>`;
   h+=`<button class="btnfull" onclick="saveMass(${d},'${mid}')">저장</button>
+      <button class="btnfull ghost" onclick="moveMassPrompt(${d},'${mid}')">📅 다른 날로 이동</button>
       <button class="btnfull ghost" onclick="fillEmpty(${d},'${mid}')">빈자리 자동 채우기</button>
       <button class="btnfull danger" onclick="deleteMass(${d},'${mid}')">미사 삭제</button>`;
   openSheet('미사 편집',h);
 }
+// 유형 선택 시 제목 자동 채움(자격 규칙은 제목 기반이라 이걸로 따라옴)
+window.onTypeChange=function(){
+  const ty=$('#m_type').value;
+  if(ty){ $('#m_title').value=ty; }
+};
+// 미사를 다른 날로 이동(배정 인원 유지)
+window.moveMassPrompt=function(d,mid){
+  const ms=findMass(Number(d),mid); if(!ms)return;
+  syncSheetToMass(ms); // 현재 편집 상태 보존
+  const [y,m]=state.ym.split('-').map(Number);
+  const last=new Date(y,m,0).getDate();
+  let h=`<div class="note">${m}월 ${d}일 · ${ms.title||'미사'} (${ms.time})을 같은 달의 다른 날로 옮깁니다. 배정된 복사와 제목·시간은 그대로 유지됩니다.</div>`;
+  h+='<div class="field"><label>옮길 날짜</label><div class="daygrid">';
+  for(let dd=1;dd<=last;dd++){
+    const wd=WD[new Date(y,m-1,dd).getDay()];
+    h+=`<button class="dchip ${dd===Number(d)?'cur':''}" onclick="moveMass(${d},'${mid}',${dd})">${dd}<i>${wd}</i></button>`;
+  }
+  h+='</div></div>';
+  h+=`<button class="btnfull ghost" onclick="editMass(${d},'${mid}')">← 편집으로</button>`;
+  openSheet('다른 날로 이동',h);
+};
+window.moveMass=function(d,mid,toDay){
+  d=Number(d); toDay=Number(toDay);
+  if(d===toDay){ editMass(d,mid); return; }
+  const mo=getMonth();
+  const day=mo.assign[d]; if(!day)return;
+  const idx=day.masses.findIndex(x=>x.id===mid); if(idx<0)return;
+  const ms=day.masses[idx];
+  // 원래 날에서 제거
+  day.masses.splice(idx,1);
+  if(!day.masses.length) delete mo.assign[d];
+  // 대상 날에 추가
+  if(!mo.assign[toDay]) mo.assign[toDay]={masses:[]};
+  mo.assign[toDay].masses.push(ms);
+  mo.assign[toDay].masses.sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  mo.updated=Date.now();
+  addAdminLog(`미사 이동 — ${ms.title||'미사'} ${d}일→${toDay}일`);
+  save(); closeSheet(); renderSchedule(); toast(`${toDay}일로 옮겼습니다`);
+};
 function slotRow(kind,i,n,opts){
+  const sel=String(n||'');
+  // 현재 배정된 이름(n)에 selected를 직접 부여
+  const optHtml=['<option value="">— 비움 —</option>'].concat(
+    state.roster.map(p=>`<option value="${p.name}" ${p.name===sel?'selected':''}>${p.name} (${p.grade})</option>`)).join('');
   return `<div class="slotedit"><span class="lbl">${kind==='big'?'대':'소'}${i+1}</span>
-    <select data-kind="${kind}" data-i="${i}">${opts}</select>
-    <button class="del" onclick="this.parentElement.remove()">🗑</button></div>`
-    .replace(`value="${n}"`,`value="${n}"`);
+    <select data-kind="${kind}" data-i="${i}">${optHtml}</select>
+    <button class="del" onclick="this.parentElement.remove()">🗑</button></div>`;
 }
-// set selected after insert
-window.addSlot=function(d,mid,kind){ const ms=findMass(Number(d),mid); ms[kind].push(''); editMass(Number(d),mid);
-  setTimeout(restoreSelects,0,Number(d),mid);};
+// 자리 추가: 현재 화면의 선택값을 ms에 먼저 반영한 뒤 한 칸 추가하고 다시 그림(기존 선택 유지)
+window.addSlot=function(d,mid,kind){
+  const ms=findMass(Number(d),mid);
+  syncSheetToMass(ms);   // 현재 드롭다운 값들을 ms에 저장
+  ms[kind].push('');
+  editMass(Number(d),mid);
+};
+// 현재 시트의 입력 상태를 ms 객체에 반영(저장 전 임시 동기화)
+function syncSheetToMass(ms){
+  const t=$('#m_title'); if(t) ms.title=t.value;
+  const tm=$('#m_time'); if(tm) ms.time=tm.value;
+  const c=$('#m_color'); if(c) ms.color=c.value;
+  const big=[],small=[];
+  $('#sheet').querySelectorAll('select[data-kind]').forEach(s=>{
+    (s.dataset.kind==='big'?big:small).push(s.value);});
+  if($('#sheet').querySelector('select[data-kind]')){ ms.big=big; ms.small=small; }
+}
 window.saveMass=function(d,mid){
   const ms=findMass(d,mid);
   ms.title=$('#m_title').value.trim(); ms.time=$('#m_time').value.trim(); ms.color=$('#m_color').value;
@@ -840,7 +1309,7 @@ window.fillEmpty=function(d,mid){
   const counts={}; state.roster.forEach(p=>counts[p.name]=0);
   Object.values(mo.assign).forEach(day=>day.masses.forEach(x=>[...x.big,...x.small].forEach(n=>n&&(counts[n]=(counts[n]||0)+1))));
   const fill=(arr,kind)=>{for(let i=0;i<arr.length;i++){ if(arr[i])continue;
-    let c=state.roster.filter(p=>!usedToday.has(p.name)&&eligible(p,ms)&&!(kind==='big'&&p.noDaedae));
+    let c=state.roster.filter(p=>!usedToday.has(p.name)&&eligible(p,ms)&&!(isDaedaeSlot(kind,i)&&p.noDaedae));
     if(!c.length)continue; let mn=Math.min(...c.map(p=>counts[p.name]||0));
     let pool=c.filter(p=>(counts[p.name]||0)===mn); const pk=pool[Math.floor(Math.random()*pool.length)];
     arr[i]=pk.name; usedToday.add(pk.name); counts[pk.name]=(counts[pk.name]||0)+1;}};
@@ -863,6 +1332,12 @@ window.addMass=function(d){
   const date=new Date(y,mm-1,d);
   const lit=litColor(date);
   let h=`<div class="note">${mm}월 ${d}일 (${WD[date.getDay()]}) 에 새 미사를 추가합니다. 인원은 자유롭게 정할 수 있습니다.</div>`;
+  const TYPES=['성시간','성모신심','찬미미사','새벽미사','평일미사','주일미사','주일 전야미사'];
+  h+=`<div class="field"><label>미사 유형 (자격 규칙이 제목을 따라갑니다)</label>
+    <select id="nm_type" onchange="onNewTypeChange()">
+      <option value="">— 직접 입력 —</option>
+      ${TYPES.map(t=>`<option value="${t}">${t}</option>`).join('')}
+    </select></div>`;
   h+=`<div class="field"><label>미사 제목</label><input id="nm_title" placeholder="예: 평일미사, 대축일 미사, 방학 미사" value="평일미사"></div>`;
   h+=`<div class="row2"><div class="field"><label>시간</label><input id="nm_time" placeholder="예: 19:30" value="19:30"></div>
       <div class="field"><label>전례색</label><select id="nm_color">
@@ -870,9 +1345,17 @@ window.addMass=function(d){
       </select></div></div>`;
   h+=`<div class="row2"><div class="field"><label>대 복사 인원</label><input id="nm_big" type="number" min="0" value="1"></div>
       <div class="field"><label>소 복사 인원</label><input id="nm_small" type="number" min="0" value="1"></div></div>`;
-  h+=`<div class="help">대축일처럼 인원이 많은 미사는 숫자를 크게 적으세요. 추가 후 '미사 편집'에서 자리를 더 늘리거나 줄일 수 있습니다.</div>`;
+  h+=`<div class="help">성시간·성모신심·찬미미사로 지정하면 자격 있는 학생만 배정됩니다(시간·날짜와 무관). 대축일처럼 인원이 많은 미사는 숫자를 크게 적으세요.</div>`;
   h+=`<button class="btnfull" onclick="saveNewMass(${d})">미사 추가</button>`;
   openSheet('미사 추가',h);
+};
+window.onNewTypeChange=function(){
+  const ty=$('#nm_type').value;
+  if(!ty) return;
+  $('#nm_title').value=ty;
+  // 유형별 기본 시간 자동 채움(바꿔도 됨)
+  const T={'성시간':'19:30','성모신심':'10:00','찬미미사':'19:30','새벽미사':'06:30','평일미사':'19:30','주일미사':'09:00','주일 전야미사':'17:00'};
+  if(T[ty]) $('#nm_time').value=T[ty];
 };
 window.saveNewMass=function(d){
   d=Number(d);
@@ -1095,17 +1578,531 @@ $('#segAdmin').onclick=()=>{logTab='admin';renderLogs();};
 $('#segCount').onclick=()=>{logTab='count';renderLogs();};
 
 /* ====================== ROSTER ====================== */
+// 명단 화면에서 보는 월(기본: 배정표의 현재 월)
+let rosterYM=null;
+function rosterYMget(){ return rosterYM || state.ym; }
+/* 특정 월의 학생별 종류별 배정 횟수 {name:{total,dawn,weekday,sunday,special}} */
+function monthCounts(ykey){
+  const res={};
+  const mo=state.months[ykey];
+  if(mo&&mo.assign){
+    Object.values(mo.assign).forEach(day=>{
+      (day&&day.masses||[]).forEach(ms=>{
+        const cat=massCategory(ms.title); // dawn/weekday/sunday/special/etc
+        [...(ms.big||[]),...(ms.small||[])].forEach(n=>{ if(!n)return;
+          res[n]=res[n]||{total:0,dawn:0,weekday:0,sunday:0,special:0};
+          res[n].total++; if(res[n][cat]!=null) res[n][cat]++;
+        });
+      });
+    });
+  }
+  return res;
+}
 function renderRoster(){
-  $('#rosterCount').textContent=`총 ${state.roster.length}명`;
-  const Q=[['성시간','seongsigan'],['신심','sinsim'],['찬양','chanyang'],['새벽','saebyeok'],['평일','pyeongil'],['어린이','children'],['주일','weekend'],['방학','vacation']];
-  let h='<tr><th>학년</th><th>성명</th><th>학교</th>'+Q.map(q=>`<th>${q[0]}</th>`).join('')+'<th>대대제외</th><th>배정제외</th></tr>';
-  state.roster.forEach(p=>{
-    h+=`<tr><td>${p.grade}</td><td><b>${p.name}</b></td><td>${p.school||''}</td>`;
-    Q.forEach(q=>h+=`<td>${p.q&&p.q[q[1]]?'●':''}</td>`);
-    h+=`<td>${p.noDaedae?'●':''}</td><td>${p.excluded?'●':''}</td></tr>`;
+  const yk=rosterYMget();
+  const [yy,mm]=yk.split('-').map(Number);
+  $('#rosterTitle').textContent=`${mm}월 명단·현황`;
+  $('#rosterCount').textContent=`총 ${state.roster.length}명 · 행을 누르면 편집 · 숫자는 ${mm}월 배정 횟수`;
+  const cnt=monthCounts(yk);
+  // 학년 순 정렬
+  const idxOrder=state.roster.map((p,i)=>i).sort((a,b)=>gradeRank(state.roster[a].grade)-gradeRank(state.roster[b].grade));
+  let h='<tr><th>학년</th><th>성명</th><th>학교</th><th class="cnum">계</th><th class="cnum">새벽</th><th class="cnum">평일</th><th class="cnum">주일</th><th class="cnum">특별</th><th>제한</th><th></th></tr>';
+  idxOrder.forEach(idx=>{
+    const p=state.roster[idx];
+    const c=cnt[p.name]||{total:0,dawn:0,weekday:0,sunday:0,special:0};
+    const lim=p.excluded?'<i class="lex">제외</i>':(p.noDaedae?'<i class="ldd">대대제외</i>':'');
+    const z=v=>v?`<b>${v}</b>`:'<span class="zc">·</span>';
+    h+=`<tr class="rrow ${p.excluded?'rex':''}" onclick="editStudent(${idx})">
+      <td>${p.grade}</td><td><b>${p.name}</b></td><td class="csch">${p.school||''}</td>
+      <td class="cnum ctot">${z(c.total)}</td>
+      <td class="cnum">${z(c.dawn)}</td><td class="cnum">${z(c.weekday)}</td>
+      <td class="cnum">${z(c.sunday)}</td><td class="cnum">${z(c.special)}</td>
+      <td>${lim}</td>
+      <td><button class="delrow" onclick="event.stopPropagation();deleteStudent(${idx})">🗑</button></td></tr>`;
   });
   $('#rosterTable').innerHTML=h;
 }
+window.rosterPrevMonth=function(){ const [y,m]=rosterYMget().split('-').map(Number); rosterYM=ym(m===1?y-1:y, m===1?12:m-1); renderRoster(); };
+window.rosterNextMonth=function(){ const [y,m]=rosterYMget().split('-').map(Number); rosterYM=ym(m===12?y+1:y, m===12?1:m+1); renderRoster(); };
+const GRADES=['초4','초5','초6','중1','중2','중3','고1','고2','고3'];
+const QDEF=[['성시간','seongsigan'],['성모신심','sinsim'],['찬양/찬미','chanyang'],['새벽','saebyeok'],['평일','pyeongil'],['어린이','children'],['주일(9/5시)','weekend'],['방학','vacation']];
+window.addStudentBtnFn=function(){ openStudentForm(-1); };
+window.editStudent=function(idx){ openStudentForm(idx); };
+window.deleteStudent=function(idx){
+  const p=state.roster[idx]; if(!p)return;
+  if(!confirm(`${p.name} 학생을 명단에서 삭제할까요?`))return;
+  state.roster.splice(idx,1);
+  addAdminLog(`명단 — 학생 삭제: ${p.name}`);
+  save(); renderRoster(); toast('삭제했습니다');
+};
+function openStudentForm(idx){
+  const isNew = idx<0;
+  const p = isNew ? {grade:'초4',name:'',school:'',q:{},noDaedae:false,excluded:false} : state.roster[idx];
+  const q = p.q||{};
+  let h=`<div class="row2">
+    <div class="field"><label>학년</label><select id="st_grade">
+      ${GRADES.map(g=>`<option value="${g}" ${p.grade===g?'selected':''}>${g}</option>`).join('')}
+    </select></div>
+    <div class="field"><label>성명</label><input id="st_name" value="${p.name||''}" placeholder="이름"></div>
+  </div>`;
+  // 기존 학교 목록(명단 + 방학설정)을 자동완성으로 제공
+  const schoolList=[...new Set([
+    ...state.roster.map(r=>r.school).filter(Boolean),
+    ...Object.keys((vacationCfg().schools)||{})
+  ])].sort();
+  h+=`<div class="field"><label>학교</label>
+    <input id="st_school" list="schoolList" value="${p.school||''}" placeholder="학교 선택 또는 입력">
+    <datalist id="schoolList">${schoolList.map(s=>`<option value="${s}">`).join('')}</datalist></div>`;
+  h+=`<div class="sectitle">자격 (체크한 미사만 배정)</div><div class="qgrid">`;
+  QDEF.forEach(([lbl,key])=>{
+    h+=`<label class="qchk"><input type="checkbox" id="st_${key}" ${q[key]?'checked':''}> ${lbl}</label>`;
+  });
+  h+='</div>';
+  h+=`<div class="sectitle">배정 제한</div><div class="qgrid">
+      <label class="qchk"><input type="checkbox" id="st_noDaedae" ${p.noDaedae?'checked':''}> 대대 제외(대대 자리만 안 줌)</label>
+      <label class="qchk"><input type="checkbox" id="st_excluded" ${p.excluded?'checked':''}> 배정 제외(이번 달 안 함)</label></div>`;
+  h+=`<div class="help">성시간·성모신심·찬미는 위 자격을 체크한 학생만 배정됩니다(학년 무관). 「대대 제외」는 가장 윗자리(대대)만 막고 대소·소 자리는 배정됩니다 — 나중에 대복사 자격이 생기면 체크를 풀면 대대도 가능해집니다.</div>`;
+  h+=`<button class="btnfull" onclick="saveStudent(${idx})">${isNew?'추가':'저장'}</button>`;
+  if(!isNew) h+=`<button class="btnfull danger" onclick="closeSheet();deleteStudent(${idx})">삭제</button>`;
+  openSheet(isNew?'학생 추가':'학생 편집',h);
+}
+window.saveStudent=function(idx){
+  const name=$('#st_name').value.trim();
+  if(!name){toast('이름을 입력하세요');return;}
+  const q={};
+  QDEF.forEach(([lbl,key])=>{ if($('#st_'+key).checked) q[key]=1; });
+  const rec={
+    grade:$('#st_grade').value, name, school:$('#st_school').value.trim(),
+    q, noDaedae:$('#st_noDaedae').checked, excluded:$('#st_excluded').checked,
+    bigo:[$('#st_noDaedae').checked?'대대 제외':'',$('#st_excluded').checked?'배정 제외':''].filter(Boolean).join(', ')
+  };
+  if(idx<0){ state.roster.push(rec); addAdminLog(`명단 — 학생 추가: ${name}`); }
+  else { state.roster[idx]=rec; addAdminLog(`명단 — 학생 편집: ${name}`); }
+  save(); closeSheet(); renderRoster(); toast(idx<0?'추가했습니다':'저장했습니다');
+};
+$('#addStudentBtn').onclick=()=>addStudentBtnFn();
+$('#rPrev').onclick=()=>rosterPrevMonth();
+$('#rNext').onclick=()=>rosterNextMonth();
+$('#tallyBtn').onclick=()=>openTally();
+$('#countBtn').onclick=()=>openCountTally();
+
+/* ===== 복사 배정 월 누적 횟수 표 ===== */
+let countYear=null, countCat='total';
+window.openCountTally=function(){
+  if(countYear==null) countYear=Number(state.ym.split('-')[0]);
+  countCat='total';
+  renderCountTally();
+};
+function renderCountTally(){
+  const year=countYear;
+  const data=buildAssignTally(year);
+  const tabs=[{key:'total',label:'총합'}].concat(MASS_CATEGORIES.map(c=>({key:c.key,label:c.label})));
+  let h=`<div class="tallybar">
+    <button class="tnav" onclick="countYear--;renderCountTally()">‹</button>
+    <b>${year}년</b>
+    <button class="tnav" onclick="countYear++;renderCountTally()">›</button></div>`;
+  // 종류 탭
+  h+='<div class="ctabs">';
+  tabs.forEach(t=>h+=`<button class="ctab ${countCat===t.key?'on':''}" onclick="countCat='${t.key}';renderCountTally()">${t.label}</button>`);
+  h+='</div>';
+  // 표
+  const tally = countCat==='total' ? data.total : data.byCat[countCat];
+  // 학년 순으로 정렬, 배정 0도 표시
+  const ordered=[...state.roster].sort((a,b)=>gradeRank(a.grade)-gradeRank(b.grade));
+  h+='<div class="tallywrap"><table class="tallytbl counttbl"><tr><th class="kindcol">이름</th>';
+  for(let m=1;m<=12;m++) h+=`<th>${m}</th>`;
+  h+='<th class="sumcol">계</th></tr>';
+  let anyRow=false;
+  ordered.forEach(p=>{
+    const rec=tally[p.name];
+    const sum=rec?rec.sum:0;
+    // 배정 한 번도 없는 학생은 총합 탭에서만 표시(종류별은 0이면 생략해 표가 길어지지 않게)
+    if(countCat!=='total' && !sum) return;
+    anyRow=true;
+    h+=`<tr><td class="kindcol">${p.name}<i class="cg">${p.grade}</i></td>`;
+    for(let m=1;m<=12;m++){ const v=rec&&rec[m]?rec[m]:0; h+=`<td class="${v?'':'z'}">${v||''}</td>`; }
+    h+=`<td class="sumcol">${sum||0}</td>`;
+    h+='</tr>';
+  });
+  h+='</table></div>';
+  if(!anyRow) h+='<div class="help">이 종류의 배정 기록이 아직 없습니다.</div>';
+  h+=`<div class="help">실제 배정표(${year}년 1~12월)에서 자동 집계됩니다. 빈칸은 0회입니다.</div>`;
+  h+=`<button class="btnfull ghost" onclick="exportCountTally()">📤 엑셀로 내보내기</button>`;
+  openSheet('복사 배정 월 누적 횟수',h);
+}
+window.exportCountTally=function(){
+  const year=countYear; const data=buildAssignTally(year);
+  const wb=XLSX.utils.book_new();
+  const ordered=[...state.roster].sort((a,b)=>gradeRank(a.grade)-gradeRank(b.grade));
+  const makeSheet=(tally,name)=>{
+    const head=['이름','학년',...Array.from({length:12},(_,i)=>`${i+1}월`),'계'];
+    const rows=[head];
+    ordered.forEach(p=>{ const rec=tally[p.name]; const sum=rec?rec.sum:0;
+      rows.push([p.name,p.grade,...Array.from({length:12},(_,i)=>rec&&rec[i+1]?rec[i+1]:0),sum]); });
+    const ws=XLSX.utils.aoa_to_sheet(rows); XLSX.utils.book_append_sheet(wb,ws,name);
+  };
+  makeSheet(data.total,'총합');
+  MASS_CATEGORIES.forEach(c=>makeSheet(data.byCat[c.key],c.label));
+  XLSX.writeFile(wb,`복사배정_월누적_${year}.xlsx`);
+};
+$('#limitBtn').onclick=()=>openLimits();
+
+/* ===== 학년별 최소~최대 배정 횟수 설정 ===== */
+window.openLimits=function(){
+  const L = state.gradeLimits ? JSON.parse(JSON.stringify(state.gradeLimits)) : JSON.parse(JSON.stringify(DEFAULT_GRADE_LIMITS));
+  // 누락 학년 보정
+  GRADES.forEach(g=>{ if(!L[g]) L[g]={min:(DEFAULT_GRADE_LIMITS[g]||{min:0}).min, max:(DEFAULT_GRADE_LIMITS[g]||{max:99}).max}; });
+  window._limDraft=L;
+  let h=`<div class="note">학년별 한 달 배정 횟수의 <b>최소~최대</b>를 정합니다. 자동배정은 최대를 넘지 않게 제한하고, 최소는 가능한 한 채웁니다.</div>`;
+  h+='<div class="limtbl"><div class="limrow limhd"><span>학년</span><span>최소</span><span>최대</span></div>';
+  GRADES.forEach(g=>{
+    const lim=L[g];
+    h+=`<div class="limrow">
+      <span class="lg">${g}</span>
+      <span class="lc"><button class="stp" onclick="bumpLimit('${g}','min',-1)">−</button><b id="lim_${g}_min">${lim.min}</b><button class="stp" onclick="bumpLimit('${g}','min',1)">＋</button></span>
+      <span class="lc"><button class="stp" onclick="bumpLimit('${g}','max',-1)">−</button><b id="lim_${g}_max">${lim.max}</b><button class="stp" onclick="bumpLimit('${g}','max',1)">＋</button></span>
+    </div>`;
+  });
+  h+='</div>';
+  h+=`<button class="btnfull" onclick="saveLimits()">저장</button>
+      <button class="btnfull ghost" onclick="resetLimits()">기본값으로 초기화</button>`;
+  openSheet('학년별 배정 횟수',h);
+};
+window.bumpLimit=function(g,which,delta){
+  const L=window._limDraft; if(!L[g])return;
+  let v=L[g][which]+delta;
+  if(v<0)v=0; if(v>31)v=31;
+  // min은 max 이하로, max는 min 이상으로 유지
+  if(which==='min' && v>L[g].max) v=L[g].max;
+  if(which==='max' && v<L[g].min) v=L[g].min;
+  L[g][which]=v;
+  const el=document.getElementById(`lim_${g}_${which}`); if(el)el.textContent=v;
+};
+window.saveLimits=function(){
+  state.gradeLimits=window._limDraft;
+  addAdminLog('학년별 배정 횟수 설정 변경');
+  save(); closeSheet(); toast('저장되었습니다');
+};
+window.resetLimits=function(){
+  if(!confirm('학년별 횟수를 기본값으로 되돌릴까요?'))return;
+  state.gradeLimits=null;
+  save(); closeSheet(); toast('기본값으로 초기화했습니다');
+};
+$('#vacBtn').onclick=()=>openVacation();
+
+/* ===== 방학 설정(학교별 기간 + 봉사 학년) ===== */
+window.openVacation=function(){
+  const cfg=JSON.parse(JSON.stringify(vacationCfg()));
+  cfg.schools=cfg.schools||{}; cfg.grades=cfg.grades||[]; cfg.time=cfg.time||'10:00';
+  // 설정에 학교가 하나도 없을 때만 명단 학교를 빈 기간으로 채움(이후엔 사용자가 추가·삭제로 관리)
+  if(!Object.keys(cfg.schools).length){
+    [...new Set(state.roster.map(p=>p.school).filter(Boolean))].forEach(s=>{ cfg.schools[s]={start:'',end:''}; });
+  }
+  window._vacDraft=cfg;
+  renderVacation();
+};
+function renderVacation(){
+  const cfg=window._vacDraft;
+  let h=`<div class="note">방학 기간에는 <b>수·금 ${cfg.time}</b> 미사에 복사를 배정합니다. 대상은 <b>방학 중인 학교 학생</b> 중 <b>봉사 학년</b>인 아이들입니다.</div>`;
+  // 봉사 학년 선택
+  h+='<div class="sectitle">봉사 학년 (방학 수·금 담당)</div><div class="qgrid">';
+  GRADES.forEach(g=>{
+    const on=cfg.grades.includes(g);
+    h+=`<label class="qchk"><input type="checkbox" ${on?'checked':''} onchange="toggleVacGrade('${g}',this.checked)"> ${g}</label>`;
+  });
+  h+='</div>';
+  // 미사 시간
+  h+=`<div class="field"><label>방학 미사 시간</label><input id="vac_time" value="${cfg.time}" onchange="window._vacDraft.time=this.value" placeholder="예: 10:00"></div>`;
+  // 학교별 기간
+  h+='<div class="sectitle">학교별 방학 기간</div>';
+  h+='<div class="vactbl">';
+  const schools=Object.keys(cfg.schools).sort();
+  if(!schools.length) h+='<div class="vacrow"><span class="help" style="margin:4px 0">아직 학교가 없습니다. 아래에서 추가하세요.</span></div>';
+  schools.forEach(s=>{
+    const v=cfg.schools[s]||{start:'',end:''};
+    h+=`<div class="vacrow">
+      <span class="vs">${s}</span>
+      <button class="vdpick ${v.start?'set':''}" onclick="pickVacDate('${s}','start')">${v.start?fmtMD(v.start):'시작일'}</button>
+      <span class="vdash">~</span>
+      <button class="vdpick ${v.end?'set':''}" onclick="pickVacDate('${s}','end')">${v.end?fmtMD(v.end):'종료일'}</button>
+      <button class="vdel" onclick="removeVacSchool('${s}')">🗑</button>
+    </div>`;
+  });
+  h+='</div>';
+  // 학교 추가
+  const known=[...new Set([...state.roster.map(r=>r.school).filter(Boolean), ...Object.keys(cfg.schools)])].sort();
+  h+=`<div class="vacadd">
+    <input id="vac_newschool" list="vacSchoolList" placeholder="학교 이름 입력 또는 선택">
+    <datalist id="vacSchoolList">${known.map(s=>`<option value="${s}">`).join('')}</datalist>
+    <button class="tbtn" onclick="addVacSchool()">＋ 학교 추가</button></div>`;
+  h+=`<div class="help">학교 이름을 누르면 작은 달력에서 날짜를 고를 수 있습니다. 날짜가 비어 있으면 그 학교는 방학 대상에서 제외됩니다.</div>`;
+  h+=`<button class="btnfull" onclick="saveVacation()">저장</button>
+      <button class="btnfull ghost" onclick="resetVacation()">기본값으로 초기화</button>`;
+  openSheet('방학 설정',h);
+}
+function fmtMD(md){ const [m,d]=String(md).split('-'); return `${Number(m)}/${Number(d)}`; }
+window.addVacSchool=function(){
+  const inp=$('#vac_newschool'); const name=(inp.value||'').trim();
+  if(!name){ toast('학교 이름을 입력하세요'); return; }
+  if(window._vacDraft.schools[name]){ toast('이미 있는 학교입니다'); return; }
+  window._vacDraft.schools[name]={start:'',end:''};
+  renderVacation();
+};
+window.removeVacSchool=function(s){
+  if(!confirm(`${s}을(를) 방학 목록에서 삭제할까요?`))return;
+  delete window._vacDraft.schools[s];
+  renderVacation();
+};
+// 작은 달력 팝업으로 날짜 선택 (월·일만)
+let _pickTarget=null;
+window.pickVacDate=function(school,which){
+  _pickTarget={school,which};
+  const cur=(window._vacDraft.schools[school]||{})[which]||'';
+  let pm = cur ? Number(cur.split('-')[0]) : (which==='end'?8:7); // 기본 7~8월
+  renderDatePicker(pm);
+};
+function renderDatePicker(month){
+  const monthNames=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const cur=(window._vacDraft.schools[_pickTarget.school]||{})[_pickTarget.which]||'';
+  const curMD = cur||'';
+  // 해당 월의 날짜 그리드(요일 무시, 1~말일)
+  const last=new Date(2026,month,0).getDate();
+  let h=`<div class="note">${_pickTarget.school} · ${_pickTarget.which==='start'?'시작일':'종료일'}</div>`;
+  h+=`<div class="dpnav">
+    <button class="tnav" onclick="renderDatePicker(${month>1?month-1:12})">‹</button>
+    <b>${monthNames[month-1]}</b>
+    <button class="tnav" onclick="renderDatePicker(${month<12?month+1:1})">›</button></div>`;
+  h+='<div class="dpgrid">';
+  for(let d=1;d<=last;d++){
+    const md=String(month).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    h+=`<button class="dpcell ${md===curMD?'cur':''}" onclick="setPickedDate('${md}')">${d}</button>`;
+  }
+  h+='</div>';
+  h+=`<button class="btnfull ghost" onclick="setPickedDate('')">날짜 비우기</button>
+      <button class="btnfull ghost" onclick="renderVacation()">← 방학 설정으로</button>`;
+  openSheet('날짜 선택',h);
+}
+window.setPickedDate=function(md){
+  const {school,which}=_pickTarget;
+  window._vacDraft.schools[school]=window._vacDraft.schools[school]||{start:'',end:''};
+  window._vacDraft.schools[school][which]=md;
+  renderVacation();
+};
+window.toggleVacGrade=function(g,on){
+  const arr=window._vacDraft.grades;
+  if(on){ if(!arr.includes(g)) arr.push(g); }
+  else { window._vacDraft.grades=arr.filter(x=>x!==g); }
+};
+window.saveVacation=function(){
+  // 빈 기간 학교는 제거
+  const cfg=window._vacDraft;
+  const clean={};
+  for(const s in cfg.schools){ const v=cfg.schools[s]; if(v&&v.start&&v.end) clean[s]=v; }
+  state.vacation={schools:clean, grades:cfg.grades.slice(), time:cfg.time||'10:00'};
+  addAdminLog('방학 설정 변경');
+  save(); closeSheet(); toast('저장되었습니다 — 새 달 만들 때 반영됩니다');
+};
+window.resetVacation=function(){
+  if(!confirm('방학 설정을 기본값으로 되돌릴까요?'))return;
+  state.vacation=JSON.parse(JSON.stringify(DEFAULT_VACATION));
+  save(); closeSheet(); toast('기본값으로 초기화했습니다');
+};
+$('#massGradeBtn').onclick=()=>openMassGrades();
+
+/* ===== 정기미사별 배정 학년 설정 ===== */
+const MASS_GRADE_DEFS=[
+  {key:'dawn',   label:'새벽미사', desc:'월 6:30'},
+  {key:'weekday',label:'평일미사', desc:'화·목 19:30'},
+  {key:'vigil',  label:'주일 전야미사', desc:'토 17:00'},
+  {key:'sunday', label:'주일미사', desc:'일 9:00·17:00'},
+];
+window.openMassGrades=function(){
+  const cur = state.massGrades ? JSON.parse(JSON.stringify(state.massGrades)) : JSON.parse(JSON.stringify(DEFAULT_MASS_GRADES));
+  MASS_GRADE_DEFS.forEach(d=>{ if(!cur[d.key]) cur[d.key]=(DEFAULT_MASS_GRADES[d.key]||[]).slice(); });
+  window._mgDraft=cur;
+  renderMassGrades();
+};
+function renderMassGrades(){
+  const cur=window._mgDraft;
+  let h=`<div class="note">각 정기미사에 배정할 <b>학년을 체크</b>하세요. 체크한 학년 학생만 그 미사에 배정됩니다. (성시간·성모신심·찬미는 자격 기준이라 여기서 제외)</div>`;
+  MASS_GRADE_DEFS.forEach(d=>{
+    h+=`<div class="mgblock"><div class="mghd">${d.label} <i>${d.desc}</i></div><div class="qgrid">`;
+    GRADES.forEach(g=>{
+      const on=(cur[d.key]||[]).includes(g);
+      h+=`<label class="qchk"><input type="checkbox" ${on?'checked':''} onchange="toggleMassGrade('${d.key}','${g}',this.checked)"> ${g}</label>`;
+    });
+    h+='</div></div>';
+  });
+  h+=`<button class="btnfull" onclick="saveMassGrades()">저장</button>
+      <button class="btnfull ghost" onclick="resetMassGrades()">기본값으로 초기화</button>`;
+  openSheet('미사별 배정 학년',h);
+}
+window.toggleMassGrade=function(key,g,on){
+  const arr=window._mgDraft[key]=window._mgDraft[key]||[];
+  if(on){ if(!arr.includes(g)) arr.push(g); }
+  else { window._mgDraft[key]=arr.filter(x=>x!==g); }
+};
+window.saveMassGrades=function(){
+  // 빈 학년 미사 경고(아무도 배정 못 함)
+  const empty=MASS_GRADE_DEFS.filter(d=>!(window._mgDraft[d.key]||[]).length).map(d=>d.label);
+  if(empty.length && !confirm(`${empty.join(', ')}에 학년이 하나도 선택되지 않았습니다. 그 미사는 배정이 비게 됩니다. 계속할까요?`)) return;
+  state.massGrades=window._mgDraft;
+  addAdminLog('미사별 배정 학년 설정 변경');
+  save(); closeSheet(); toast('저장되었습니다');
+};
+window.resetMassGrades=function(){
+  if(!confirm('미사별 학년을 기본값으로 되돌릴까요?'))return;
+  state.massGrades=null;
+  save(); closeSheet(); toast('기본값으로 초기화했습니다');
+};
+
+/* ===== 특별미사 월 누적표 ===== */
+let tallyYear=null;
+window.openTally=function(){
+  if(tallyYear==null) tallyYear=Number(state.ym.split('-')[0]);
+  renderTally();
+};
+function renderTally(){
+  const year=tallyYear;
+  const tally=buildSpecialTally(year);
+  let h=`<div class="tallybar">
+    <button class="tnav" onclick="tallyYear--;renderTally()">‹</button>
+    <b>${year}년</b>
+    <button class="tnav" onclick="tallyYear++;renderTally()">›</button>
+    <span class="thint">칸을 누르면 이름을 추가·삭제할 수 있습니다</span></div>`;
+  h+='<div class="tallywrap"><table class="tallytbl"><tr><th class="kindcol">미사</th>';
+  for(let m=1;m<=12;m++) h+=`<th>${m}</th>`;
+  h+='</tr>';
+  SPECIAL_KINDS.forEach(k=>{
+    h+=`<tr><td class="kindcol">${k.label}</td>`;
+    for(let m=1;m<=12;m++){
+      const names=tally[k.key][m]||[];
+      const auto=autoNames(year,k.key,m);
+      const cells=names.map(n=>{
+        const isAuto=auto.includes(n);
+        return `<span class="tname ${isAuto?'auto':'man'}">${n}</span>`;
+      }).join('');
+      h+=`<td class="tcell" onclick="editTallyCell('${k.key}',${m})">${cells||'<span class="tempty">+</span>'}</td>`;
+    }
+    h+='</tr>';
+  });
+  h+='</table></div>';
+  h+=`<div class="tlegend"><span class="tname auto">배정 자동기록</span> <span class="tname man">수동 추가</span></div>`;
+  h+=`<div class="help">파란 이름은 실제 배정에서 자동 집계된 것이라 누적표에서 지워도 배정을 바꾸지 않습니다(표시는 사라짐). 회색 이름은 수동으로 추가한 기록입니다.</div>`;
+  openSheet('특별미사 월 누적',h);
+}
+window.editTallyCell=function(key,m){
+  const year=tallyYear;
+  const label=SPECIAL_KINDS.find(k=>k.key===key).label;
+  const yk=ym(year,m);
+  const monthExists = !!(state.months[yk] && state.months[yk].assign && Object.keys(state.months[yk].assign).length);
+  const masses=findSpecialMasses(year,m,key);
+  const man=manualNames(year,key,m);
+  let h=`<div class="note">${year}년 ${m}월 · ${label}</div>`;
+
+  if(masses.length){
+    // 실제 배정: 그 달 해당 특별미사의 자리에 자격자를 넣기
+    h+='<div class="sectitle">실제 배정 (미사 자리)</div>';
+    masses.forEach((mm,mi)=>{
+      h+=`<div class="tmass"><div class="tmh">${m}/${mm.day} · ${mm.mass.time||''}</div>`;
+      ['big','small'].forEach(kind=>{
+        (mm.mass[kind]||[]).forEach((nm,si)=>{
+          const sl = kind==='big' ? (si===0?'대대':'대소') : (si===0?'소대':'소소');
+          h+=`<div class="tslot"><span class="lbl">${sl}</span>
+            <button class="tslotbtn ${nm?'set':''}" onclick="pickSpecialSlot('${key}',${m},${mi},'${kind}',${si})">${nm||'— 비움 —'}</button></div>`;
+        });
+      });
+      h+='</div>';
+    });
+    h+=`<div class="help">자리를 누르면 자격 있는 학생을 골라 바로 배정합니다. 누적표에는 자동으로 파란색으로 반영됩니다.</div>`;
+  } else if(!monthExists){
+    // 그 달 미사 틀 자체가 없음 → 만들기 버튼
+    h+=`<div class="help" style="color:var(--danger)">${m}월 미사 틀이 아직 없습니다. 먼저 ${m}월 미사 틀을 만들어야 특별미사 자리에 배정할 수 있습니다.</div>`;
+    h+=`<button class="btnfull" onclick="genMonthFromTally(${m})">${m}월 미사 틀 만들기</button>`;
+  } else {
+    h+=`<div class="help" style="color:var(--danger)">이 달에 '${label}' 미사가 없습니다. 달력에서 그 미사를 추가하거나(＋ 미사 → 유형 '${label}'), 아래 '수동 기록'으로 누적만 남길 수 있습니다.</div>`;
+  }
+
+  // 수동 누적 기록(미사 없이 기록만 남기고 싶을 때)
+  h+='<div class="sectitle">수동 기록 (배정표와 별개)</div><div class="tcurlist">';
+  if(!man.length) h+='<span class="help">없음</span>';
+  man.forEach(n=>h+=`<span class="tname man">${n}<button class="trm" onclick="removeTallyName('${key}',${m},'${n.replace(/'/g,"\\'")}')">✕</button></span>`);
+  h+='</div>';
+  const qualified=state.roster.filter(p=>p.q&&p.q[key]);
+  h+='<div class="tpick">';
+  qualified.forEach(p=>h+=`<button class="tpk q" onclick="addTallyName('${key}',${m},'${p.name.replace(/'/g,"\\'")}')">${p.name}<i>${p.grade}</i></button>`);
+  if(!qualified.length) h+='<span class="help">자격자가 없습니다(명단에서 자격을 체크하세요)</span>';
+  h+='</div>';
+
+  h+=`<button class="btnfull ghost" onclick="renderTally()">← 누적표로</button>`;
+  openSheet('특별미사 배정 · 기록',h);
+};
+// 누적 화면에서 그 달 미사 틀 생성
+window.genMonthFromTally=function(m){
+  const year=tallyYear; const yk=ym(year,m);
+  if(state.months[yk] && Object.keys(state.months[yk].assign||{}).length){ toast('이미 미사 틀이 있습니다'); return; }
+  state.months[yk]=genMonth(year,m);
+  addAdminLog(`새 달 만들기 — ${year}/${m} 미사 틀 생성(특별미사 설정)`);
+  save();
+  // 첫 종류로 다시 열기
+  editTallyCell('seongsigan',m);
+  toast(`${m}월 미사 틀을 만들었습니다`);
+};
+// 미사 자리 클릭 → 자격자 선택 목록
+window.pickSpecialSlot=function(key,m,mi,kind,si){
+  const year=tallyYear;
+  const label=SPECIAL_KINDS.find(k=>k.key===key).label;
+  const masses=findSpecialMasses(year,m,key);
+  const mm=masses[mi]; if(!mm){ editTallyCell(key,m); return; }
+  const cur=(mm.mass[kind]||[])[si]||'';
+  // 자격자(그 미사에 eligible). 대대 자리(대 줄 첫 칸)만 대대제외 빼기
+  let cand=state.roster.filter(p=>!p.excluded && eligible(p,mm.mass) && !(isDaedaeSlot(kind,si)&&p.noDaedae));
+  // 같은 미사에 이미 들어간 사람은 제외(중복 방지), 단 현재 자리값은 허용
+  const usedHere=new Set([...(mm.mass.big||[]),...(mm.mass.small||[])].filter(Boolean));
+  const slotLabel = kind==='big' ? (si===0?'대대':'대소') : (si===0?'소대':'소소');
+  let h=`<div class="note">${year}년 ${m}/${mm.day} · ${label} · ${slotLabel} 자리</div>`;
+  h+='<div class="tpick">';
+  h+=`<button class="tpk" onclick="setSpecialSlot('${key}',${m},${mi},'${kind}',${si},'')">— 비움 —</button>`;
+  cand.forEach(p=>{
+    const dup = usedHere.has(p.name) && p.name!==cur;
+    h+=`<button class="tpk q ${p.name===cur?'sel':''}" ${dup?'disabled style="opacity:.4"':''} onclick="setSpecialSlot('${key}',${m},${mi},'${kind}',${si},'${p.name.replace(/'/g,"\\'")}')">${p.name}<i>${p.grade}</i></button>`;
+  });
+  if(!cand.length) h+='<span class="help">자격 있는 학생이 없습니다. 명단에서 ${label} 자격을 체크하세요.</span>';
+  h+='</div>';
+  h+=`<button class="btnfull ghost" onclick="editTallyCell('${key}',${m})">← 뒤로</button>`;
+  openSheet('자리 배정',h);
+};
+window.setSpecialSlot=function(key,m,mi,kind,si,name){
+  const year=tallyYear;
+  const mo=state.months[ym(year,m)]; if(!mo){ editTallyCell(key,m); return; }
+  const masses=findSpecialMasses(year,m,key);
+  const mm=masses[mi]; if(!mm){ editTallyCell(key,m); return; }
+  mm.mass[kind][si]=name;
+  mo.updated=Date.now();
+  addAdminLog(`특별미사 배정 — ${year}/${m}/${mm.day} ${SPECIAL_KINDS.find(k=>k.key===key).label} ${kind==='big'?'대':'소'}${si+1}: ${name||'(비움)'}`);
+  save(); editTallyCell(key,m); toast(name?`${name} 배정`:'비웠습니다');
+};
+function ensureLogPath(year,key){
+  state.specialLog=state.specialLog||{};
+  state.specialLog[year]=state.specialLog[year]||{};
+  state.specialLog[year][key]=state.specialLog[year][key]||{};
+}
+window.addTallyName=function(key,m,name){
+  const year=tallyYear;
+  if(autoNames(year,key,m).includes(name)||manualNames(year,key,m).includes(name)){ toast('이미 기록되어 있습니다'); return; }
+  ensureLogPath(year,key);
+  (state.specialLog[year][key][m]=state.specialLog[year][key][m]||[]).push(name);
+  addAdminLog(`누적 기록 추가 — ${year}/${m} ${SPECIAL_KINDS.find(k=>k.key===key).label}: ${name}`);
+  save(); editTallyCell(key,m); toast('추가했습니다');
+};
+window.removeTallyName=function(key,m,name){
+  const year=tallyYear;
+  ensureLogPath(year,key);
+  const arr=state.specialLog[year][key][m]||[];
+  state.specialLog[year][key][m]=arr.filter(n=>n!==name);
+  addAdminLog(`누적 기록 삭제 — ${year}/${m} ${SPECIAL_KINDS.find(k=>k.key===key).label}: ${name}`);
+  save(); editTallyCell(key,m); toast('삭제했습니다');
+};
 $('#downloadBtn').onclick=()=>{
   const Q=[['성시간','seongsigan'],['신심','sinsim'],['찬양','chanyang'],['새벽','saebyeok'],['평일','pyeongil'],['어린이','children'],['주일9/5시','weekend'],['방학','vacation']];
   const head=['번호','학년','성명','학교',...Q.map(q=>q[0]),'비고'];
@@ -1193,7 +2190,9 @@ $('#subBtn').onclick=()=>openSub();
 $('#segList').onclick=()=>{state.mode='list';renderSchedule();};
 $('#prevM').onclick=()=>shiftMonth(-1);
 $('#nextM').onclick=()=>shiftMonth(1);
-function shiftMonth(n){let[y,m]=state.ym.split('-').map(Number);m+=n;if(m<1){m=12;y--;}if(m>12){m=1;y++;}
+function shiftMonth(n){
+  if(_autoPending && !confirm('저장하지 않은 자동배정 결과가 있습니다. 다른 달로 이동하면 저장되지 않은 변경은 그대로 남지만 화면에서 벗어납니다. 계속할까요?')) return;
+  let[y,m]=state.ym.split('-').map(Number);m+=n;if(m<1){m=12;y--;}if(m>12){m=1;y++;}
   if(pickMode){pickMode=null;pickFirst=null;hidePickBanner();}
   state.ym=ym(y,m);renderSchedule();}
 $('#newMonthBtn').onclick=()=>{
@@ -1269,19 +2268,52 @@ function recalcSum(){
   let s=0; state.roster.forEach(p=>{ if(!autoDraft.exclude.has(p.name)) s+=(autoDraft.targets[p.name]||0); });
   const el=$('#ao_sum'); if(el) el.textContent=s;
 }
+let _autoBackup=null;   // 자동배정 직전 해당 월 스냅샷
+let _autoPending=false;  // 저장 대기(미확정) 상태
+function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
 window.runAutoWithDraft=function(){
-  getMonth().changedNames=[];
+  const mo=getMonth();
+  // 기존 배정이 있으면 직전 상태를 백업(되돌리기용). 자동배정은 '저장' 전까지 미확정.
+  _autoBackup = deepClone(mo);
+  _autoPending = true;
+  mo.changedNames=[];
   autoAssign({ targets:autoDraft.targets, exclude:autoDraft.exclude, minGapDays:autoDraft.minGap, weekUnique:autoDraft.weekUnique });
-  addAdminLog('한 달 자동배정 실행(목표 설정)');
-  save(); closeSheet(); renderSchedule();
+  // 주의: 여기서 save() 하지 않음 → '저장' 눌러야 반영
+  closeSheet(); renderSchedule(); markPending();
   showAutoResult();
+};
+function markPending(){
+  // 화면 상단에 미저장 안내 배너 표시
+  let b=document.getElementById('pendingBar');
+  if(!b){ b=document.createElement('div'); b.id='pendingBar'; b.className='pendingbar';
+    document.querySelector('#view-schedule').prepend(b); }
+  b.innerHTML=`<span>⚠ 자동배정 결과가 <b>아직 저장되지 않았습니다.</b> 저장해야 모두에게 반영됩니다.</span>
+    <span class="pbtns"><button class="pundo" onclick="undoAuto()">되돌리기</button>
+    <button class="psave" onclick="saveAuto()">저장</button></span>`;
+  b.style.display='flex';
+}
+function clearPending(){ _autoPending=false; _autoBackup=null; const b=document.getElementById('pendingBar'); if(b)b.style.display='none'; }
+window.saveAuto=function(){
+  if(!_autoPending){ toast('저장할 변경이 없습니다'); return; }
+  addAdminLog('한 달 자동배정 저장(확정)');
+  getMonth().updated=Date.now();
+  save();                 // 여기서 Firebase 반영
+  clearPending(); renderSchedule(); closeSheet();
+  toast('저장되었습니다 — 모두에게 반영됩니다');
+};
+window.undoAuto=function(){
+  if(!_autoBackup){ toast('되돌릴 배정이 없습니다'); return; }
+  if(!confirm('자동배정을 취소하고 이전 배정으로 되돌릴까요?'))return;
+  state.months[state.ym] = _autoBackup;
+  clearPending(); renderSchedule(); closeSheet();
+  toast('이전 배정으로 되돌렸습니다');
 };
 function showAutoResult(){
   // 결과 횟수 집계
   const mo=getMonth(); const cnt={}; state.roster.forEach(p=>cnt[p.name]=0);
   Object.values(mo.assign).forEach(day=>day.masses.forEach(m=>[...m.big,...m.small].forEach(n=>n&&(cnt[n]=(cnt[n]||0)+1))));
   const low4=state.roster.filter(p=>p.grade==='초4'&&!p.excluded&&(cnt[p.name]||0)<2);
-  let h=`<div class="note">자동배정이 완료되었습니다. 결과 횟수를 확인하세요.</div>`;
+  let h=`<div class="note">자동배정 미리보기입니다. 아래에서 결과를 확인하고 <b>저장</b>해야 반영됩니다. 마음에 들지 않으면 <b>되돌리기</b>로 이전 배정으로 돌아갈 수 있습니다.</div>`;
   if(low4.length) h+=`<div class="help" style="color:var(--danger)">⚠ 초4 2회 미만: ${low4.map(p=>p.name+'('+(cnt[p.name]||0)+')').join(', ')} — 자리가 부족할 수 있습니다.</div>`;
   h+='<div class="ttable">';
   const grades=['초4','초5','초6','중1','중2','중3','고1','고2','고3'];
@@ -1290,23 +2322,29 @@ function showAutoResult(){
     h+=`<div class="trow"><span class="tn">${p.name}</span><span class="tg">${p.grade}</span><span class="tc2">${ex?'-':c+'회'}</span></div>`;
   });});
   h+='</div>';
-  h+=`<button class="btnfull" onclick="closeSheet()">확인</button>
+  h+=`<button class="btnfull" onclick="saveAuto()">저장 (모두에게 반영)</button>
       <button class="btnfull ghost" onclick="reshuffle()">🔀 같은 목표로 다시 섞기</button>
-      <button class="btnfull ghost" onclick="renderAutoPreview()">목표 다시 설정</button>`;
-  openSheet('자동배정 결과',h);
+      <button class="btnfull ghost" onclick="renderAutoPreview()">목표 다시 설정</button>
+      <button class="btnfull danger" onclick="undoAuto()">되돌리기 (이전 배정으로)</button>`;
+  openSheet('자동배정 결과 (미저장)',h);
 }
 window.runAuto=function(){ $('#autoBtn').onclick(); }; // 호환
 window.reshuffle=function(){
-  getMonth().changedNames=[];
+  const mo=getMonth();
+  // 다시 섞기는 백업을 유지(최초 자동배정 직전 상태로 되돌릴 수 있게)
+  if(!_autoBackup) _autoBackup=deepClone(mo);
+  _autoPending=true;
+  mo.changedNames=[];
   const d=autoDraft||{};
   autoAssign({ targets:d.targets, exclude:d.exclude, minGapDays:d.minGap, weekUnique:d.weekUnique });
-  save(); renderSchedule(); showAutoResult();
+  renderSchedule(); markPending(); showAutoResult();
 };
 $('#pdfBtn').onclick=()=>{const wasMode=state.mode;state.mode='cal';renderSchedule();setTimeout(()=>{window.print();state.mode=wasMode;renderSchedule();},200);};
 
 /* ====================== INIT ====================== */
 initFirebase();
 render();
+updateLastMod();
 </script>
 </body>
 </html>
