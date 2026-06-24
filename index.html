@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -55,6 +56,8 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .tbtn:active{transform:scale(.97)}
 
 /* Calendar */
+.calscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.calinner{min-width:100%}
 .calhead{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px}
 .calhead div{text-align:center;font-size:12px;font-weight:700;color:var(--sub);padding:4px 0}
 .calhead div:first-child{color:var(--hong)}
@@ -72,7 +75,7 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .c-hong{background:var(--hong)}.c-nok{background:var(--nok)}.c-baek{background:var(--baek)}.c-bo{background:var(--bo)}
 .mass .who{color:var(--sub);font-size:10.5px;margin-top:1px;word-break:keep-all}
 .mass .who.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 4px;column-gap:5px}
-.mass .who.grid span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+.mass .who.grid span{overflow:visible;text-overflow:clip;white-space:nowrap;color:var(--ink)}
 .mass .who.grid span.empty{color:#c4cad2}
 .mass .who b{color:var(--ink);font-weight:600}
 .mass .who .chg{color:var(--changed);font-weight:700}
@@ -321,11 +324,22 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
 .subname.on{background:var(--brand);color:#fff;border-color:var(--brand)}
 .subname.on .sg{background:rgba(255,255,255,.25)}
 .popbtns{display:flex;gap:10px;margin-top:8px}
+@media (max-width:640px){
+  /* 모바일: 칸을 화면폭에 욱여넣지 않고 최소너비 확보 → 넘치면 가로 스크롤(이름 잘림 방지) */
+  .calhead{grid-template-columns:repeat(7,minmax(96px,1fr));gap:5px}
+  .cal{grid-template-columns:repeat(7,minmax(96px,1fr));gap:5px}
+  .calinner{min-width:686px} /* 96*7 + 여백 */
+  .mass .who.grid{column-gap:7px}
+  .calscroll{padding-bottom:6px}
+}
 @media print{
   header,.bnav,.toolbar,.monthbar .nav,.reqbtn,.editbtn{display:none!important}
   body{background:#fff}.wrap{padding:0}
   .cell{min-height:80px;break-inside:avoid}
-  .cal{gap:2px}
+  .cal{gap:2px;grid-template-columns:repeat(7,1fr)}
+  .calhead{grid-template-columns:repeat(7,1fr)}
+  .calscroll{overflow:visible}
+  .calinner{min-width:0}
 }
 </style>
 </head>
@@ -839,11 +853,10 @@ function autoAssign(opts){
       }
       return true;
     };
-    // 1차: 상한 지킴 → 2차: 같은날 중복만 → 3차(빈자리 방지): 상한 완화
+    // 1차: 상한 지킴 → 2차(전야 한정): 학년범위 확장하되 상한은 유지.
+    // ※ 학년 최대치(max)는 절대 초과하지 않음 — 후보가 없으면 빈자리로 남김.
     let cands=state.roster.filter(p=>base(p,false)&&eligible(p,mass));
     if(!cands.length&&isVigil) cands=state.roster.filter(p=>base(p,false)&&!p.excluded&&inRange(p.grade,'초4','고3'));
-    if(!cands.length) cands=state.roster.filter(p=>base(p,true)&&eligible(p,mass)); // 상한 완화(빈자리보단 초과 허용)
-    if(!cands.length&&isVigil) cands=state.roster.filter(p=>base(p,true)&&!p.excluded&&inRange(p.grade,'초4','고3'));
     if(!cands.length) return '';
     // 방학미사는 간격 분산을 적용(scoreOf 일반 경로), 특별미사만 균등분배-only
     let scored=cands.map(p=>({p,s:scoreOf(p,d,isDawn,isSpecial)}));
@@ -863,8 +876,27 @@ function autoAssign(opts){
       mass._y=yy; mass._m=mm; mass._d=d;
       const isDawn=mass.title.includes('새벽');
       const isVigil=mass.title.includes('전야');
-      for(let i=0;i<mass.big.length;i++){ const nm=assignOne(mass.big,i,d,mass,'big',isDawn,isVigil); mass.big[i]=nm; if(nm)usedTodayRef.add(nm); }
-      for(let i=0;i<mass.small.length;i++){ const nm=assignOne(mass.small,i,d,mass,'small',isDawn,isVigil); mass.small[i]=nm; if(nm)usedTodayRef.add(nm); }
+      // 특별미사(성시간·성모신심·찬미)는 '특별미사 설정'에서 미리 지정한 배정을 보존.
+      // 이미 채워진 칸은 자동배정이 덮어쓰지 않고, 그 학생을 카운트·중복방지에만 반영하고 빈칸만 채움.
+      const preserve = !!specialCap(mass.title);
+      const keepFilled=(arr,kind,i)=>{
+        const nm=arr[i];
+        if(!nm) return false;            // 빈칸 → 자동배정 대상
+        // 기존 이름 보존: 카운트·당일중복·새벽카운트·주차·간격에 반영
+        counts[nm]=(counts[nm]||0)+1; lastDay[nm]=d;
+        (weekSet[nm]=weekSet[nm]||new Set()).add(weekKey(d));
+        if(isDawn) dawnCount[nm]=(dawnCount[nm]||0)+1;
+        usedTodayRef.add(nm);
+        return true;                     // 보존됨 → 자동배정 건너뜀
+      };
+      for(let i=0;i<mass.big.length;i++){
+        if(preserve && keepFilled(mass.big,'big',i)) continue;
+        const nm=assignOne(mass.big,i,d,mass,'big',isDawn,isVigil); mass.big[i]=nm; if(nm)usedTodayRef.add(nm);
+      }
+      for(let i=0;i<mass.small.length;i++){
+        if(preserve && keepFilled(mass.small,'small',i)) continue;
+        const nm=assignOne(mass.small,i,d,mass,'small',isDawn,isVigil); mass.small[i]=nm; if(nm)usedTodayRef.add(nm);
+      }
       // 임시 날짜 정보 제거(저장 데이터 오염 방지)
       delete mass._y; delete mass._m; delete mass._d;
     }
@@ -883,8 +915,10 @@ function enforceMinCounts(counts, lastDay, weekSet, weekKey){
   const days=Object.keys(mo.assign).map(Number).sort((a,b)=>a-b);
   for(const p of need){
     const myMin=limitFor(p.grade).min;
+    const myMax=limitFor(p.grade).max;
     let guard=0;
-    while((counts[p.name]||0) < myMin && guard++ < 50){
+    // 최소 채우기라도 자기 학년 최대치는 넘지 않음
+    while((counts[p.name]||0) < myMin && (counts[p.name]||0) < myMax && guard++ < 50){
       let best=null;
       for(const d of days){
         const usedToday=new Set();
@@ -1072,7 +1106,7 @@ function renderSchedule(){
 function renderCal(y,m,mo){
   const first=new Date(y,m-1,1).getDay();
   const last=new Date(y,m,0).getDate();
-  let h='<div class="calhead">'+WD.map(w=>`<div>${w}</div>`).join('')+'</div><div class="cal">';
+  let h='<div class="calscroll"><div class="calinner"><div class="calhead">'+WD.map(w=>`<div>${w}</div>`).join('')+'</div><div class="cal">';
   for(let i=0;i<first;i++) h+='<div class="cell empty"></div>';
   for(let d=1;d<=last;d++){
     const date=new Date(y,m-1,d); const w=date.getDay();
@@ -1090,7 +1124,7 @@ function renderCal(y,m,mo){
     if(state.isAdmin && !pickMode) h+=`<button class="addmass" onclick="addMass(${d})">＋ 미사</button>`;
     h+='</div>';
   }
-  h+='</div>';
+  h+='</div></div></div>';
   $('#calView').innerHTML=h;
 }
 function nameSpan(n,d,mid,k,i){
@@ -2041,8 +2075,10 @@ window.genMonthFromTally=function(m){
   const year=tallyYear; const yk=ym(year,m);
   if(state.months[yk] && Object.keys(state.months[yk].assign||{}).length){ toast('이미 미사 틀이 있습니다'); return; }
   state.months[yk]=genMonth(year,m);
+  state.ym=yk;  // 화면 현재 달을 이 달로 맞춰 이후 자동배정이 이 달을 대상으로 하게 함
   addAdminLog(`새 달 만들기 — ${year}/${m} 미사 틀 생성(특별미사 설정)`);
   save();
+  renderSchedule();  // 상단 달 표시·배정표 갱신
   // 첫 종류로 다시 열기
   editTallyCell('seongsigan',m);
   toast(`${m}월 미사 틀을 만들었습니다`);
@@ -2078,6 +2114,7 @@ window.setSpecialSlot=function(key,m,mi,kind,si,name){
   const mm=masses[mi]; if(!mm){ editTallyCell(key,m); return; }
   mm.mass[kind][si]=name;
   mo.updated=Date.now();
+  state.ym=ym(year,m);  // 특별미사 편집 중인 달을 화면 현재 달로 맞춤(이후 자동배정 대상 일치)
   addAdminLog(`특별미사 배정 — ${year}/${m}/${mm.day} ${SPECIAL_KINDS.find(k=>k.key===key).label} ${kind==='big'?'대':'소'}${si+1}: ${name||'(비움)'}`);
   save(); editTallyCell(key,m); toast(name?`${name} 배정`:'비웠습니다');
 };
