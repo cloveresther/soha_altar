@@ -119,7 +119,7 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .mass .who.grid span.empty{color:#c4cad2}
 .mass .who.grid .rolep{display:inline-block;color:var(--sub);font-weight:700;margin-right:2px;font-size:9.5px}
 .mass .who b{color:var(--ink);font-weight:600}
-.mass .who .chg{color:var(--changed);font-weight:700}
+.mass .who .chg{color:var(--changed)}
 
 /* List/card view */
 .cards{display:flex;flex-direction:column;gap:10px}
@@ -1717,7 +1717,14 @@ window.submitPick=function(type){
   const req={id:uid(),type,by:name,reason,
     d:P.src.d,mid:P.src.mid,slot:P.src.k+':'+P.src.i,ts:Date.now(),status:'wait'};
   if(type==='sub') req.sub=P.subName;
-  else req.target=P.dst.d+'|'+P.dst.mid+'|'+P.dst.k+'|'+P.dst.i;
+  else {
+    req.target=P.dst.d+'|'+P.dst.mid+'|'+P.dst.k+'|'+P.dst.i;
+    // 신청 시점의 양쪽 이름을 보존(승인 후 자리가 바뀌어도 기록이 정확하도록)
+    const srcMs=findMass(P.src.d,P.src.mid);
+    const dstMs=findMass(P.dst.d,P.dst.mid);
+    if(srcMs){ const a=(P.src.k==='big'?srcMs.big:srcMs.small)||[]; req.bySlotName=a[P.src.i]||''; }
+    if(dstMs){ const b=(P.dst.k==='big'?dstMs.big:dstMs.small)||[]; req.targetName=b[P.dst.i]||''; }
+  }
   mo.requests=mo.requests||[]; mo.requests.unshift(req);
   save(); closeSheet();
   pickMode=null; pickFirst=null; hidePickBanner();
@@ -1729,13 +1736,32 @@ function renderRequests(){
   $('#reqMonthLabel').textContent=state.ym.split('-')[0]+'년 '+Number(state.ym.split('-')[1])+'월';
   const mo=getMonth(); const reqs=mo.requests||[];
   if(!reqs.length){$('#reqList').innerHTML='<div class="empty-state">신청 내역이 없습니다.</div>';return;}
+  const mn=Number(state.ym.split('-')[1]);
+  // 자리 정보 → "M/D HH:MM 이름" 문자열. nameOverride가 있으면 그 이름을 우선 사용(신청 시점 이름 보존용)
+  const slotLabel=(d,mid,k,i,nameOverride)=>{
+    const ms=findMass(d,mid);
+    const time=ms?ms.time:'';
+    let nm=nameOverride||'';
+    if(!nm && ms){ const arr=(k==='big'?ms.big:ms.small)||[]; nm=arr[i]||''; }
+    return `${mn}/${d} ${time}${nm?' '+nm:''}`.trim();
+  };
   let h='';
   reqs.forEach(r=>{
     const ms=findMass(r.d,r.mid);
     const where=ms?`${r.d}일 ${ms.time} ${ms.title}`:`${r.d}일`;
-    let desc = r.type==='sub'
-      ? `<b>${r.by}</b> 자리를 <b>${r.sub}</b> 가 대신`
-      : `<b>${r.by}</b> ↔ 맞교환`;
+    let desc;
+    if(r.type==='sub'){
+      desc=`<b>${r.by}</b> 자리를 <b>${r.sub}</b> 가 대신`;
+    } else if(r.target){
+      // 맞교환: 양쪽 날짜·시간·이름을 모두 표기 (예: 6/2 19:30 이영후 ↔ 6/9 19:30 연주환)
+      const [sk,si]=(r.slot||'').split(':');
+      const [td,tmid,tk,ti]=r.target.split('|');
+      const left=slotLabel(r.d, r.mid, sk, Number(si), r.bySlotName||r.by);
+      const right=slotLabel(Number(td), tmid, tk, Number(ti), r.targetName);
+      desc=`${left} ↔ ${right} 맞교환`;
+    } else {
+      desc=`<b>${r.by}</b> ↔ 맞교환`;
+    }
     const badge = r.status==='wait'?'<span class="badge wait">승인 대기</span>'
       : r.status==='ok'?'<span class="badge ok">승인됨</span>':'<span class="badge no">거절됨</span>';
     h+=`<div class="reqitem"><div class="rt">${desc} ${badge}</div>
