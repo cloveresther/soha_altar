@@ -527,7 +527,7 @@ const today=new Date();
 let state={
   ym: ym(2026,6),
   view:'schedule',
-  mode: window.innerWidth<700 ? 'list':'cal',
+  mode: 'cal',
   isAdmin:false,
   userName: localStorage.getItem('asn_user')||'',
   roster: load('asn_roster', SEED_ROSTER),
