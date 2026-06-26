@@ -1,13 +1,13 @@
 
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0046)file:///Users/dongja94/Downloads/index_62.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>복사단 배정 관리</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="./복사단 배정 관리_files/xlsx.full.min.js"></script>
+<script src="./복사단 배정 관리_files/html2canvas.min.js"></script>
+<script src="./복사단 배정 관리_files/jspdf.umd.min.js"></script>
 <style>
 :root{
   --bg:#f4f5f7; --card:#fff; --line:#e3e6ea; --ink:#1f2733; --sub:#6b7682;
@@ -119,7 +119,14 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .mass .who.grid span.empty{color:#c4cad2}
 .mass .who.grid .rolep{display:inline-block;color:var(--sub);font-weight:700;margin-right:2px;font-size:9.5px}
 .mass .who b{color:var(--ink);font-weight:600}
-.mass .who .chg{color:var(--changed)}
+.mass .who .chg{color:var(--changed);font-weight:800}
+.role .nm.chg{color:var(--changed);font-weight:800}
+/* 배포 전 검토용 경고: 규칙위반(진한 주황·밑줄), 같은 주 2회(주황 배경) */
+.mass .who .warnbad, .role .nm.warnbad{color:#c75a00;font-weight:800;text-decoration:underline wavy #e08a1e}
+.mass .who .warnweek, .role .nm.warnweek{background:#ffe7c2;color:#9a5800;border-radius:5px;padding:0 3px;font-weight:700}
+/* 변경(검붉은)이면서 경고도 걸린 자리: 글자색은 변경(검붉은) 유지, 경고는 밑줄/배경으로 함께 표시 */
+.mass .who .chg.warnbad, .role .nm.chg.warnbad{color:var(--changed);text-decoration:underline wavy #e08a1e}
+.mass .who .chg.warnweek, .role .nm.chg.warnweek{color:var(--changed);background:#ffe7c2}
 
 /* List/card view */
 .cards{display:flex;flex-direction:column;gap:10px}
@@ -140,7 +147,6 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .role{font-size:12px;background:#f4f6f8;border:1px solid #e8ebee;border-radius:8px;padding:3px 9px}
 .role .lbl{color:var(--sub);font-weight:700;margin-right:4px}
 .role .nm{font-weight:600}
-.role .nm.chg{color:var(--changed)}
 .role.empty{border-style:dashed;color:var(--sub)}
 .editbtn{font-size:11px;color:var(--brand);font-weight:700;padding:2px 8px;border:1px solid #cdd6ff;
   border-radius:7px;background:var(--soft)}
@@ -241,6 +247,8 @@ body.admin .bnav .admin-only{display:flex}
 .tallybar{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .tallybar .tnav{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card);font-size:16px;font-weight:700}
 .tallybar b{font-size:16px}
+.tallybar .xlsmini{font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:7px;border:1px solid #aee3c4;background:#e7f7ee;color:#1c7a44}
+.tallybar .xlsmini:active{transform:scale(.95)}
 .tallybar .thint{font-size:11.5px;color:var(--sub);margin-left:auto}
 .tallywrap{overflow:auto;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
 .tallytbl{border-collapse:collapse;width:100%;font-size:12px;min-width:640px}
@@ -330,6 +338,11 @@ body.admin .bnav .admin-only{display:flex}
 #rosterTable .lex{font-style:normal;font-size:10px;background:#fbeaea;color:var(--danger);padding:1px 6px;border-radius:6px}
 #rosterTable .ldd{font-style:normal;font-size:10px;background:#fff3e0;color:#b06f00;padding:1px 6px;border-radius:6px}
 .lastmod{position:fixed;right:9px;bottom:62px;font-size:10px;color:#b8bec6;pointer-events:none;z-index:5;background:rgba(255,255,255,.7);padding:1px 5px;border-radius:5px}
+.warnlegend{font-size:11.5px;color:#9a5800;background:#fff6e9;border:1px solid #f3d9b0;border-radius:8px;padding:6px 10px;margin:0 0 10px;line-height:1.5}
+.warnlegend .wlhead{font-weight:700}
+.warnlegend .wl{font-weight:600;white-space:nowrap}
+.warnlegend .wl.bad{color:#c75a00;text-decoration:underline wavy #e08a1e}
+.warnlegend .wl.week{background:#ffe7c2;border-radius:4px;padding:0 4px}
 .mgblock{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
 .mgrow{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .pribtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:2px 7px;font-size:13px;
@@ -341,8 +354,10 @@ body.admin .bnav .admin-only{display:flex}
 table{border-collapse:collapse;width:100%;font-size:13px}
 th,td{padding:8px 10px;border-bottom:1px solid #eef0f3;text-align:left;white-space:nowrap}
 th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
-.logitem{font-size:12.5px;padding:9px 12px;border-bottom:1px solid #f1f3f5}
+.logitem{font-size:12.5px;padding:9px 12px;border-bottom:1px solid #f1f3f5;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.logitem .lt{flex:1;min-width:60%}
 .logitem .lw{color:var(--sub);font-size:11px}
+.logitem .logdel{font-size:11px;font-weight:700;color:var(--danger);background:#fbeaea;border:none;border-radius:6px;padding:3px 9px}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1f2733;color:#fff;
   padding:11px 18px;border-radius:12px;font-size:13.5px;z-index:80;opacity:0;transition:.25s;pointer-events:none;font-weight:600}
 .toast.show{opacity:1;bottom:90px}
@@ -403,7 +418,7 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
   <div class="hdr">
     <div class="logo"><span class="dot">✝</span> 복사단 배정</div>
     <div class="sp"></div>
-    <span class="pill" id="syncPill">로컬 저장</span>
+    <span class="pill on" id="syncPill">실시간 동기화</span>
     <button class="iconbtn" id="adminBtn" title="관리자">🔑</button>
   </div>
 </header>
@@ -416,13 +431,14 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
       <h1 id="monthTitle">2026년 6월</h1>
       <button class="nav" id="nextM">›</button>
     </div>
-    <p class="updated" id="updatedAt">최종 변경: -</p>
+    <p class="updated" id="updatedAt">최종 변경: 6월 24일 17:35</p>
     <div id="pubBanner" class="pubbanner" style="display:none"></div>
+    <div id="warnLegend" class="warnlegend" style="display:none"></div>
     <div class="laundrybar"><button class="laundrybtn" id="noticeBtn">📢 회장 공지사항</button><button class="laundrybtn" id="laundryBtn">🧺 다림질봉사표</button><span class="lbsp"></span><button class="laundrybtn" id="imgBtn">🖼 이미지</button><button class="laundrybtn" id="pdfBtn">📄 PDF</button><button class="laundrybtn admin-act" id="xlsBtn" style="display:none">📊 엑셀</button></div>
 
     <div class="toolbar">
       <div class="seg">
-        <button id="segCal">달력</button>
+        <button id="segCal" class="on">달력</button>
         <button id="segList">목록</button>
       </div>
       <div class="sp"></div>
@@ -430,10 +446,64 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
       <button class="tbtn primary" id="subBtn">대타 신청</button>
       <button class="tbtn admin-act" id="newMonthBtn" style="display:none">＋ 새 달</button>
       <button class="tbtn primary admin-act" id="autoBtn" style="display:none">⚡ 자동배정</button>
-      <button class="tbtn admin-act" id="publishBtn" style="display:none">📢 배정표 배포</button>
+      <button class="tbtn admin-act published" id="publishBtn" style="display:none">✅ 배포됨 (취소)</button>
     </div>
 
-    <div id="calView"></div>
+    <div id="calView" style="display: block;"><div class="calscroll"><div class="calinner"><div class="calhead"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div><div class="cal"><div class="cell empty"></div><div class="cell  "><div class="dnum">1</div><div class="mass" onclick="openMass(1,&#39;spc6hxpe&#39;)">
+        <div class="mt"><span class="clbl cl-hong">홍</span>06:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>강시우</span><span class="empty"></span><span class=""><span class="rolep">소</span>심다솔</span></div></div></div><div class="cell  "><div class="dnum">2</div><div class="mass" onclick="openMass(2,&#39;tudkfwux&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>19:30</div>
+        <div class="who grid"><span class="chg"><span class="rolep">대</span>이영후</span><span class="empty"></span><span class=""><span class="rolep">소</span>류정원</span></div></div></div><div class="cell  "><div class="dnum">3</div></div><div class="cell  "><div class="dnum">4</div><div class="mass" onclick="openMass(4,&#39;w3pwrxn0&#39;)">
+        <div class="mttl">성시간</div><div class="mt"><span class="clbl cl-nok">녹</span>19:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>박예련</span><span class="empty"></span><span class=""><span class="rolep">소</span>홍지아</span></div></div></div><div class="cell  "><div class="dnum">5</div></div><div class="cell  "><div class="dnum">6</div><div class="mass" onclick="openMass(6,&#39;ysxezzqg&#39;)">
+        <div class="mttl">성모신심</div><div class="mt"><span class="clbl cl-baek">백</span>10:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>이윤섭</span><span class="empty"></span><span class=""><span class="rolep">소</span>김민준</span></div></div><div class="mass" onclick="openMass(6,&#39;joa0kw09&#39;)">
+        <div class="mt"><span class="clbl cl-baek">백</span>17:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>성운창</span><span class="">강시우</span><span class=""><span class="rolep">소</span>이영후</span><span class="">이지유</span></div></div></div><div class="cell sun "><div class="dnum">7</div><div class="mass" onclick="openMass(7,&#39;ce5buhsd&#39;)">
+        <div class="mt"><span class="clbl cl-baek">백</span>09:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>김재윤</span><span class="">이예나</span><span class=""><span class="rolep">소</span>구현비</span><span class="">이지안4</span></div></div><div class="mass" onclick="openMass(7,&#39;6j1l8grm&#39;)">
+        <div class="mt"><span class="clbl cl-baek">백</span>17:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>고인서</span><span class="">변윤서</span><span class=""><span class="rolep">소</span>신희윤</span><span class="">장하늘</span></div></div></div><div class="cell  "><div class="dnum">8</div><div class="mass" onclick="openMass(8,&#39;boo6pv96&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>06:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>이윤섭</span><span class="empty"></span><span class=""><span class="rolep">소</span>연주환</span></div></div></div><div class="cell  "><div class="dnum">9</div><div class="mass" onclick="openMass(9,&#39;x7ksnydz&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>19:30</div>
+        <div class="who grid"><span class="chg"><span class="rolep">대</span>연주환</span><span class="empty"></span><span class=""><span class="rolep">소</span>김아인</span></div></div></div><div class="cell  "><div class="dnum">10</div></div><div class="cell  "><div class="dnum">11</div><div class="mass" onclick="openMass(11,&#39;82a60jn8&#39;)">
+        <div class="mt"><span class="clbl cl-hong">홍</span>19:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>이지안6</span><span class="empty"></span><span class=""><span class="rolep">소</span>이지안4</span></div></div></div><div class="cell  "><div class="dnum">12</div></div><div class="cell  "><div class="dnum">13</div><div class="mass" onclick="openMass(13,&#39;942ntn8q&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>17:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>이시윤</span><span class="">탁윤호</span><span class=""><span class="rolep">소</span>윤성현</span><span class="">조환희</span></div></div></div><div class="cell sun "><div class="dnum">14</div><div class="mass" onclick="openMass(14,&#39;wmg4n53q&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>09:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>최수인</span><span class="empty"></span><span class=""><span class="rolep">소</span>김민준</span></div></div><div class="mass" onclick="openMass(14,&#39;g1cud1rw&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>17:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>이시원</span><span class="empty"></span><span class=""><span class="rolep">소</span>이지효</span></div></div></div><div class="cell  "><div class="dnum">15</div><div class="mass" onclick="openMass(15,&#39;mfo3mzrt&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>06:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>이시윤</span><span class="empty"></span><span class=""><span class="rolep">소</span>원준영</span></div></div></div><div class="cell  "><div class="dnum">16</div><div class="mass" onclick="openMass(16,&#39;5rgw4szl&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>19:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>이시호</span><span class="empty"></span><span class=""><span class="rolep">소</span>구현비</span></div></div></div><div class="cell  "><div class="dnum">17</div></div><div class="cell  "><div class="dnum">18</div><div class="mass" onclick="openMass(18,&#39;wp3ggtdu&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>19:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>심다솔</span><span class="empty"></span><span class=""><span class="rolep">소</span>김아인</span></div></div></div><div class="cell  "><div class="dnum">19</div></div><div class="cell  "><div class="dnum">20</div><div class="mass" onclick="openMass(20,&#39;l03pyiih&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>17:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>임해든</span><span class="">원준영</span><span class=""><span class="rolep">소</span>김서연</span><span class="">장하늘</span></div></div></div><div class="cell sun "><div class="dnum">21</div><div class="mass" onclick="openMass(21,&#39;9ws2xiiz&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>09:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>이윤섭</span><span class="">변윤서</span><span class=""><span class="rolep">소</span>이시원</span><span class="">이지유</span></div></div><div class="mass" onclick="openMass(21,&#39;2ypra5dv&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>17:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>박정서</span><span class="">이시호</span><span class=""><span class="rolep">소</span>홍지아</span><span class="">신윤서</span></div></div></div><div class="cell  "><div class="dnum">22</div><div class="mass" onclick="openMass(22,&#39;khuweiic&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>06:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>김서연</span><span class="empty"></span><span class=""><span class="rolep">소</span>임해든</span></div></div></div><div class="cell  "><div class="dnum">23</div><div class="mass" onclick="openMass(23,&#39;39fdbuxq&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>19:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>김재윤</span><span class="empty"></span><span class=""><span class="rolep">소</span>김민준</span></div></div></div><div class="cell  "><div class="dnum">24</div></div><div class="cell  today"><div class="dnum">25</div><div class="mass" onclick="openMass(25,&#39;vn43h5k4&#39;)">
+        <div class="mttl">찬미미사</div><div class="mt"><span class="clbl cl-baek">백</span>19:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>고인서</span><span class="empty"></span><span class=""><span class="rolep">소</span>신윤서</span></div></div></div><div class="cell  "><div class="dnum">26</div></div><div class="cell  "><div class="dnum">27</div><div class="mass" onclick="openMass(27,&#39;xld8rwg3&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>17:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>박시우</span><span class="">신희윤</span><span class=""><span class="rolep">소</span>박정서</span><span class="">장하늘</span></div></div></div><div class="cell sun "><div class="dnum">28</div><div class="mass" onclick="openMass(28,&#39;dr8t26jr&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>09:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>연주환</span><span class="">강시우</span><span class=""><span class="rolep">소</span>이윤섭</span><span class="">심다솔</span></div></div><div class="mass" onclick="openMass(28,&#39;d5r46ftf&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>17:00</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>이지안6</span><span class="">이지효</span><span class=""><span class="rolep">소</span>류정원</span><span class="">김아인</span></div></div></div><div class="cell  "><div class="dnum">29</div><div class="mass" onclick="openMass(29,&#39;8yu6k45s&#39;)">
+        <div class="mt"><span class="clbl cl-hong">홍</span>06:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>탁윤호</span><span class="">성운창</span><span class="">윤성현</span><span class="empty"></span><span class=""><span class="rolep">소</span>박예련</span><span class="">최수인</span><span class="">조환희</span><span class="">이영후</span></div></div></div><div class="cell  "><div class="dnum">30</div><div class="mass" onclick="openMass(30,&#39;9qnlt8y0&#39;)">
+        <div class="mt"><span class="clbl cl-nok">녹</span>19:30</div>
+        <div class="who grid"><span class=""><span class="rolep">대</span>이시호</span><span class="empty"></span><span class=""><span class="rolep">소</span>이예나</span></div></div></div></div></div></div></div>
     <div id="listView" class="cards" style="display:none"></div>
     <div id="maintBar" class="maintbar" style="display:none">
       <button class="maintlink" id="resetSeedBtn">유지보수: 이 달을 시드로 되돌리기</button>
@@ -498,7 +568,7 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
 <!-- generic sheet -->
 <div class="scrim" id="scrim"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
-<div class="lastmod" id="lastMod"></div>
+<div class="lastmod" id="lastMod">최종 수정 2026.06.24 17:35</div>
 
 <script>
 /* ====================== EMBEDDED DATA ====================== */
@@ -779,6 +849,12 @@ function isPublished(ymKey){
 /* 공개된 달 'YYYY-MM' 목록(정렬) */
 function publishedYms(){
   return Object.keys(state.months).filter(k=>isPublished(k)).sort();
+}
+/* 변경(검붉은) 표시용: 그 달이 '배포된 적 있는' 상태인지. 일반사용자 공개차단(1~5월)과 무관. */
+function isDistributed(ymKey){
+  const mo=state.months[ymKey];
+  if(!mo) return false;
+  return mo.published!==false;  // undefined(레거시)·true → 배포됨, false → 미배포
 }
 /* 일반 사용자에게 보여줄 기본(가장 최근 공개) 달. 없으면 null */
 function latestPublishedYm(){ const a=publishedYms(); return a.length? a[a.length-1] : null; }
@@ -1275,6 +1351,7 @@ function fmtUpdated(ts){ if(!ts)return'-'; const d=new Date(ts);
   return `${d.getMonth()+1}월 ${d.getDate()}일 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
 
 function renderSchedule(){
+  invalidateWarnCache();
   const [y,m]=state.ym.split('-').map(Number);
   $('#monthTitle').textContent=`${y}년 ${m}월`;
   const mo=getMonth();
@@ -1300,6 +1377,31 @@ function renderSchedule(){
     } else {
       banner.style.display='none';
       banner.classList.remove('ok');
+    }
+  }
+  // 관리자용 경고 색상 설명(주황) — 실제 경고가 있을 때만 표시
+  const legend=document.getElementById('warnLegend');
+  if(legend){
+    let hasBad=false, hasWeek=false;
+    if(state.isAdmin){
+      const weekSet=buildWeekWarnSet();
+      hasWeek=weekSet.size>0;
+      outer:
+      for(const d in mo.assign){
+        for(const ms of (mo.assign[d].masses||[])){
+          const chk=(arr,kind)=>arr.some((n,i)=>n&&warnSlot(Number(d),ms,kind,i,n));
+          if(chk(ms.big||[],'big')||chk(ms.small||[],'small')){ hasBad=true; break outer; }
+        }
+      }
+    }
+    if(state.isAdmin && (hasBad||hasWeek)){
+      let parts=[];
+      if(hasBad) parts.push('<span class="wl bad">배정 규칙 위반</span>');
+      if(hasWeek) parts.push('<span class="wl week">같은 주 2회 이상(3일 이내) 배정</span>');
+      legend.style.display='block';
+      legend.innerHTML=`<span class="wlhead">주황 표시:</span> ${parts.join(' · ')} 가 있습니다. (관리자에게만 보임)`;
+    } else {
+      legend.style.display='none';
     }
   }
   $('#segCal').classList.toggle('on',state.mode==='cal');
@@ -1334,15 +1436,63 @@ function renderCal(y,m,mo){
   h+='</div></div></div>';
   $('#calView').innerHTML=h;
 }
+/* ===== 배포 전 검토용: 규칙 위반 / 같은 주 2회 배정 표시 =====
+   - 미발행(배포 전) 월에서만 동작. 발행된 달은 표시하지 않음.
+   - warnSlot(d,ms,kind,i,name): 그 자리의 학생이 자격/대대제외/배정제외 규칙에 어긋나면 true
+   - buildWeekWarnSet(): 같은 주에 2회 이상 배정된 학생 이름 집합
+*/
+let _warnWeekCache=null, _warnWeekKey=null;
+function weekKeyFor(y,m,d){ const dt=new Date(y,m-1,d); return d - dt.getDay(); } // 그 주 일요일 기준
+function buildWeekWarnSet(){
+  const yk=state.ym;
+  if(_warnWeekKey===yk && _warnWeekCache) return _warnWeekCache;
+  const [y,m]=yk.split('-').map(Number);
+  const mo=state.months[yk];
+  const set=new Set();
+  if(mo&&mo.assign){
+    const perWeek={};
+    Object.keys(mo.assign).map(Number).forEach(d=>{
+      const wk=weekKeyFor(y,m,d);
+      (mo.assign[d].masses||[]).forEach(ms=>{
+        [...(ms.big||[]),...(ms.small||[])].forEach(n=>{ if(!n)return;
+          (perWeek[wk]=perWeek[wk]||{}); perWeek[wk][n]=(perWeek[wk][n]||0)+1;
+        });
+      });
+    });
+    Object.values(perWeek).forEach(cnt=>{ for(const n in cnt){ if(cnt[n]>=2) set.add(n); } });
+  }
+  _warnWeekCache=set; _warnWeekKey=yk; return set;
+}
+function invalidateWarnCache(){ _warnWeekCache=null; _warnWeekKey=null; }
+// 그 자리의 학생이 배정 규칙에 어긋나는지
+function warnSlot(d, ms, kind, i, name){
+  if(!name) return false;
+  const p=state.roster.find(r=>r.name===name);
+  if(!p) return true;                 // 명단에 없는 이름
+  if(p.excluded) return true;         // 배정 제외 학생인데 배정됨
+  if(isDaedaeSlot(kind,i) && p.noDaedae) return true; // 대대 자리에 대대제외
+  const [y,m]=state.ym.split('-').map(Number);
+  ms._y=y; ms._m=m; ms._d=d;          // 방학미사 eligible용 임시 날짜
+  let ok=true;
+  try{ ok=eligible(p,ms); }catch(e){ ok=true; }
+  delete ms._y; delete ms._m; delete ms._d;
+  return !ok;                         // 자격/학년 안 맞으면 경고
+}
 function nameSpan(n,d,mid,k,i,showRole){
   if(!n){
     // 선택 모드(맞교환 두 번째 단계)에서는 빈자리도 탭 가능
     if(pickMode==='swap'&&pickFirst) return `<span class="empty tapn" onclick="event.stopPropagation();pickName(${d},'${mid}','${k}',${i})">·</span>`;
     return '<span class="empty">·</span>';
   }
-  const chg=isChanged(d,mid,n);
   const first=isPickedFirst(d,mid,k,i);
-  const cls=[chg?'chg':'', first?'pickedfirst':'', pickMode?'tapn':''].filter(Boolean).join(' ');
+  // 검붉은(변경): 배포된 달이면 표시(일반 공개차단과 무관). 주황(경고): 관리자에게 항상.
+  let chg=false, warn='';
+  if(isDistributed(state.ym)) chg=isChanged(d,mid,n);
+  if(state.isAdmin){
+    const mo=getMonth(); const ms=(mo.assign[d]&&mo.assign[d].masses||[]).find(x=>x.id===mid);
+    if(ms){ if(warnSlot(d,ms,k,i,n)) warn='warnbad'; else if(buildWeekWarnSet().has(n)) warn='warnweek'; }
+  }
+  const cls=[chg?'chg':'', first?'pickedfirst':'', pickMode?'tapn':'', warn].filter(Boolean).join(' ');
   const tap = pickMode? `onclick="event.stopPropagation();pickName(${d},'${mid}','${k}',${i})"`:'';
   const role = k==='big'?'대':'소';
   const prefix = showRole? `<span class="rolep">${role}</span>` : '';
@@ -1390,14 +1540,18 @@ function renderList(y,m,mo){
           <span class="ttl">${ms.title}</span>
           ${state.isAdmin && !pickMode?`<button class="editbtn" onclick="openMass(${d},'${ms.id}')">편집</button>`:''}</div>
           <div class="roles">`;
-      const slot=(n,lbl,k,i)=>{ const chg=isChanged(d,ms.id,n);
+      const distributed=isDistributed(state.ym);
+      const weekWarn = state.isAdmin ? buildWeekWarnSet() : null;
+      const slot=(n,lbl,k,i)=>{ const chg=distributed && isChanged(d,ms.id,n);
         const first=isPickedFirst(d,ms.id,k,i);
         const tap=pickMode?`onclick="pickName(${d},'${ms.id}','${k}',${i})" style="cursor:pointer"`:'';
         if(!n){
           const tapVac=(pickMode==='swap'&&pickFirst)?`onclick="pickName(${d},'${ms.id}','${k}',${i})" style="cursor:pointer"`:'';
           return `<span class="role empty" ${tapVac}><span class="lbl">${lbl}</span>비어있음</span>`;
         }
-        return `<span class="role ${first?'pickedfirst':''}" ${tap}><span class="lbl">${lbl}</span><span class="nm ${chg?'chg':''}">${n}</span></span>`;};
+        let warn='';
+        if(state.isAdmin){ if(warnSlot(d,ms,k,i,n)) warn='warnbad'; else if(weekWarn.has(n)) warn='warnweek'; }
+        return `<span class="role ${first?'pickedfirst':''}" ${tap}><span class="lbl">${lbl}</span><span class="nm ${chg?'chg':''} ${warn}">${n}</span></span>`;};
       ms.big.forEach((n,i)=>h+=slot(n,'대','big',i)); ms.small.forEach((n,i)=>h+=slot(n,'소','small',i));
       h+=`</div></div>`;
     });
@@ -1782,27 +1936,30 @@ function renderRequests(){
 }
 function getReq(id){return (getMonth().requests||[]).find(r=>r.id===id);}
 function markChanged(d,mid,name){const mo=getMonth();mo.changedNames=mo.changedNames||[];
-  const key=d+'|'+mid+'|'+name; if(name&&!mo.changedNames.includes(key))mo.changedNames.push(key);}
+  const key=d+'|'+mid+'|'+name; if(name&&!mo.changedNames.includes(key))mo.changedNames.push(key); return key;}
 window.approveReq=function(id){
   const r=getReq(id); const mo=getMonth();
   const mn=Number(state.ym.split('-')[1]);
-  let logText='';
+  let logText=''; let chKeys=[]; let undo=null;
   if(r.type==='sub'){
     const ms=findMass(r.d,r.mid); const [k,i]=r.slot.split(':');
-    const before=ms[k][+i]||'(빈자리)';
-    ms[k][+i]=r.sub; markChanged(r.d,r.mid,r.sub);
-    logText=`대타 승인 — ${mn}/${r.d} ${ms.time} ${ms.title}: ${before} → ${r.sub} (신청 ${r.by})`;
+    const before=ms[k][+i]||'';
+    // 되돌리기: (d,mid,k,i)를 before로
+    undo={type:'sub', items:[{d:r.d, mid:r.mid, k, i:+i, prev:before}]};
+    ms[k][+i]=r.sub; chKeys.push(markChanged(r.d,r.mid,r.sub));
+    logText=`대타 승인 — ${mn}/${r.d} ${ms.time} ${ms.title}: ${before||'(빈자리)'} → ${r.sub} (신청 ${r.by})`;
   }else{
     const ms=findMass(r.d,r.mid); const [k,i]=r.slot.split(':');
     const [td,tmid,tk,ti]=r.target.split('|'); const tms=findMass(Number(td),tmid);
     const a=ms[k][+i], b=tms[tk][+ti];
+    undo={type:'swap', items:[{d:r.d, mid:r.mid, k, i:+i, prev:a},{d:Number(td), mid:tmid, k:tk, i:+ti, prev:b}]};
     ms[k][+i]=b; tms[tk][+ti]=a;
-    markChanged(r.d,r.mid,b); markChanged(Number(td),tmid,a);
+    chKeys.push(markChanged(r.d,r.mid,b)); chKeys.push(markChanged(Number(td),tmid,a));
     logText=`맞교환 승인 — ${mn}/${r.d} ${ms.time}(${a}) ↔ ${mn}/${td} ${tms.time}(${b}) (신청 ${r.by})`;
   }
   r.status='ok'; r.decidedTs=Date.now(); mo.updated=Date.now();
   if(r.reason) logText+=` · 사유: ${r.reason}`;
-  addPublicLog(logText);
+  addPublicLog(logText, chKeys, undo);
   save(); renderRequests(); toast('승인되어 배정표에 반영되었습니다');
 };
 window.rejectReq=function(id){const r=getReq(id);r.status='no';r.decidedTs=Date.now();
@@ -1813,7 +1970,8 @@ window.cancelReq=function(id){const mo=getMonth();mo.requests=mo.requests.filter
   save();renderRequests();toast('신청을 취소했습니다');};
 
 /* ====================== LOGS ====================== */
-function addPublicLog(t){const mo=getMonth();mo.logs=mo.logs||[];mo.logs.unshift({t,ts:Date.now()});}
+function addPublicLog(t, chKeys, undo){const mo=getMonth();mo.logs=mo.logs||[];
+  mo.logs.unshift({id:uid(), t, ts:Date.now(), chKeys:(chKeys||[]).filter(Boolean), undo:undo||null});}
 function addAdminLog(t){const mo=getMonth();mo.adminlogs=mo.adminlogs||[];mo.adminlogs.unshift({t,ts:Date.now()});}
 let logTab='public';
 function renderLogs(){
@@ -1823,7 +1981,10 @@ function renderLogs(){
   const mo=getMonth(); let h='';
   if(logTab==='public'){
     const ls=mo.logs||[];
-    h=ls.length?ls.map(l=>`<div class="logitem">${l.t}<div class="lw">${fmtUpdated(l.ts)}</div></div>`).join('')
+    h=ls.length?ls.map((l,idx)=>{
+      const delBtn = state.isAdmin ? `<button class="logdel" onclick="deletePublicLog('${l.id||''}',${idx})">삭제</button>` : '';
+      return `<div class="logitem"><div class="lt">${l.t}</div><div class="lw">${fmtUpdated(l.ts)}</div>${delBtn}</div>`;
+    }).join('')
       :'<div class="empty-state">공개 변경 기록이 없습니다.</div>';
   }else if(logTab==='admin'){
     if(!state.isAdmin){h='<div class="empty-state">관리자만 열람할 수 있습니다.</div>';}
@@ -1846,6 +2007,54 @@ function renderLogs(){
   }
   $('#logBody').innerHTML=h;
 }
+/* 변경 기록 삭제: 배정 유지(기록만 삭제) 또는 되돌리기(배정 복원) 선택 */
+window.deletePublicLog=function(logId, idx){
+  const mo=getMonth();
+  const ls=mo.logs||[];
+  let li = logId ? ls.findIndex(x=>x.id===logId) : idx;
+  if(li<0 || li>=ls.length){ toast('기록을 찾을 수 없습니다'); return; }
+  const log=ls[li];
+  const hasUndo = log.undo && log.undo.items && log.undo.items.length;
+  let h=`<div class="note">${log.t}</div>`;
+  h+=`<div class="help">이 변경 기록을 어떻게 처리할까요?</div>`;
+  if(hasUndo){
+    h+=`<button class="btnfull" onclick="doDeleteLog('${log.id}',false)">기록만 삭제 (배정·검붉은 표시 유지)</button>`;
+    h+=`<button class="btnfull danger" onclick="doDeleteLog('${log.id}',true)">되돌리기 (배정 원래대로 + 검붉은 표시 제거)</button>`;
+  } else {
+    // 되돌리기 정보가 없는 (구버전) 기록 → 기록만 삭제 가능
+    h+=`<button class="btnfull" onclick="doDeleteLog('${log.id}',false)">기록만 삭제</button>`;
+    h+=`<div class="help">이 기록은 되돌리기 정보가 없어 배정 복원은 지원되지 않습니다.</div>`;
+  }
+  h+=`<button class="btnfull ghost" onclick="closeSheet()">취소</button>`;
+  openSheet('변경 기록 삭제', h);
+};
+window.doDeleteLog=function(logId, revert){
+  const mo=getMonth();
+  const ls=mo.logs||[];
+  const li=ls.findIndex(x=>x.id===logId);
+  if(li<0){ toast('기록을 찾을 수 없습니다'); closeSheet(); return; }
+  const log=ls[li];
+  if(revert && log.undo && log.undo.items){
+    // 배정 원래대로 복원
+    log.undo.items.forEach(it=>{
+      const ms=findMass(it.d, it.mid);
+      if(ms && ms[it.k]) ms[it.k][it.i]=it.prev;
+    });
+    // 연결된 검붉은 표시 제거
+    if(log.chKeys && log.chKeys.length){
+      mo.changedNames=(mo.changedNames||[]).filter(k=>!log.chKeys.includes(k));
+    }
+    mo.updated=Date.now();
+    addAdminLog(`변경 기록 되돌림 — ${log.t}`);
+  } else {
+    // 기록만 삭제(배정·검붉은 표시 유지)
+    addAdminLog(`변경 기록 삭제(배정 유지) — ${log.t}`);
+  }
+  ls.splice(li,1);
+  save(); closeSheet(); renderLogs();
+  if(state.view==='schedule') renderSchedule();
+  toast(revert?'되돌렸습니다':'기록을 삭제했습니다');
+};
 $('#segPublic').onclick=()=>{logTab='public';renderLogs();};
 $('#segAdmin').onclick=()=>{logTab='admin';renderLogs();};
 $('#segCount').onclick=()=>{logTab='count';renderLogs();};
@@ -2507,6 +2716,7 @@ function renderTally(){
     <button class="tnav" onclick="tallyYear--;renderTally()">‹</button>
     <b>${year}년</b>
     <button class="tnav" onclick="tallyYear++;renderTally()">›</button>
+    <button class="xlsmini" onclick="exportSpecialTally()">📊 엑셀</button>
     <span class="thint">칸을 누르면 이름을 추가·삭제할 수 있습니다</span></div>`;
   h+='<div class="tallywrap"><table class="tallytbl"><tr><th class="kindcol">미사</th>';
   for(let m=1;m<=12;m++) h+=`<th>${m}</th>`;
@@ -2529,6 +2739,22 @@ function renderTally(){
   h+=`<div class="help">파란 이름은 실제 배정에서 자동 집계된 것이라 누적표에서 지워도 배정을 바꾸지 않습니다(표시는 사라짐). 회색 이름은 수동으로 추가한 기록입니다.</div>`;
   openSheet('특별미사 월 누적',h);
 }
+window.exportSpecialTally=function(){
+  const year=tallyYear;
+  const tally=buildSpecialTally(year);
+  const head=['미사', ...Array.from({length:12},(_,i)=>`${i+1}월`)];
+  const rows=[head];
+  SPECIAL_KINDS.forEach(k=>{
+    const row=[k.label];
+    for(let m=1;m<=12;m++){ row.push((tally[k.key][m]||[]).join(', ')); }
+    rows.push(row);
+  });
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:10}, ...Array.from({length:12},()=>({wch:14}))];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, `${year}년 특별미사`);
+  XLSX.writeFile(wb, `특별미사_누적_${year}.xlsx`);
+};
 window.editTallyCell=function(key,m){
   const year=tallyYear;
   const label=SPECIAL_KINDS.find(k=>k.key===key).label;
@@ -3119,5 +3345,5 @@ ensureViewableMonth();
 render();
 updateLastMod();
 </script>
-</body>
-</html>
+
+</body></html>
