@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>복사단 배정 관리</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="./복사단 배정 관리_files/xlsx.full.min.js"></script>
+<script src="./복사단 배정 관리_files/html2canvas.min.js"></script>
+<script src="./복사단 배정 관리_files/jspdf.umd.min.js"></script>
 <style>
 :root{
   --bg:#f4f5f7; --card:#fff; --line:#e3e6ea; --ink:#1f2733; --sub:#6b7682;
@@ -92,6 +92,15 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .ntmeta{font-size:11.5px;color:var(--sub);font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:8px}
 .ntdel{margin-left:auto;border:none;background:none;color:#c0392b;font-size:11.5px;font-weight:700;cursor:pointer;padding:0}
 .nttext{font-size:14px;line-height:1.55;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+.ntedit-btn{border:none;background:none;color:#2563eb;font-size:11.5px;font-weight:700;cursor:pointer;padding:0}
+.ntbtns{margin-left:auto;display:flex;align-items:center;gap:10px}
+.ntnew{display:inline-block;background:#e11d48;color:#fff;font-size:9px;font-weight:800;line-height:1;padding:2px 5px;border-radius:6px;letter-spacing:.5px;vertical-align:middle}
+.ntea{width:100%;box-sizing:border-box;font:inherit;font-size:14px;line-height:1.5;padding:8px;border:1px solid var(--line);border-radius:8px;resize:vertical}
+.ntedrow{display:flex;gap:8px;margin-top:8px}
+.ntedrow button{flex:1;padding:7px;border-radius:8px;border:1px solid var(--line);background:#fff;font-weight:700;cursor:pointer}
+.ntedrow button.save{background:#2563eb;color:#fff;border-color:#2563eb}
+#noticeBtn{position:relative}
+.lbdot{display:inline-block;min-width:15px;height:15px;line-height:15px;padding:0 4px;margin-left:3px;background:#e11d48;color:#fff;font-size:10px;font-weight:800;border-radius:8px;text-align:center;box-sizing:border-box}
 .pubbanner.ok{background:#e7f7ee;color:#1c7a44;border-color:#aee3c4}
 .tbtn.published{background:#e7f7ee;color:#1c7a44;border-color:#aee3c4}
 .tbtn{padding:8px 13px;border-radius:10px;background:var(--card);border:1px solid var(--line);
@@ -1334,6 +1343,7 @@ async function initFirebase(){
       _applyingRemote=false;
       ensureViewableMonth();
       render();
+      if(window.refreshNoticeBadge) refreshNoticeBadge();
       if(seedNeedsPush) syncPush(); // DB에 누적 시드가 없던 경우 한 번 업로드
     });
     // 연결 상태 표시
@@ -2344,8 +2354,28 @@ $('#tallyBtn').onclick=()=>openTally();
 $('#countBtn').onclick=()=>openCountTally();
 
 /* ===== 회장 공지사항 (누적 목록) ===== */
+/* 마지막으로 읽은 공지 시각(ts) — 기기별 localStorage 저장 */
+function noticeSeenTs(){ return Number(localStorage.getItem('asn_notice_seen')||0); }
+function setNoticeSeen(ts){ try{ localStorage.setItem('asn_notice_seen', String(ts||0)); }catch(e){} }
+/* 안 읽은(=마지막 확인 이후 등록·수정된) 공지 개수 */
+function unreadNoticeCount(){
+  const seen=noticeSeenTs();
+  return (state.notices||[]).filter(n=>(n.editedTs||n.ts||0)>seen).length;
+}
+/* 📢 버튼에 안 읽은 공지 수 배지 갱신 */
+window.refreshNoticeBadge=function(){
+  const btn=$('#noticeBtn'); if(!btn) return;
+  const old=btn.querySelector('.lbdot'); if(old) old.remove();
+  const c=unreadNoticeCount();
+  if(c>0){
+    const s=document.createElement('span');
+    s.className='lbdot'; s.textContent=c>9?'9+':String(c);
+    btn.appendChild(s);
+  }
+};
 $('#noticeBtn').onclick=()=>openNotices();
 window.openNotices=function(){
+  const seen=noticeSeenTs();
   const list=(state.notices||[]).slice().sort((a,b)=>(b.ts||0)-(a.ts||0));
   let h='';
   if(state.isAdmin){
@@ -2359,16 +2389,26 @@ window.openNotices=function(){
   } else {
     h+=`<div class="ntlist">`;
     list.forEach(n=>{
-      const when=fmtNoticeDate(n.ts);
+      const eff=n.editedTs||n.ts||0;
+      const isNew=eff>seen;
+      const when=fmtNoticeDate(n.ts)+(n.editedTs?` <span style="font-weight:600">(수정됨 ${fmtNoticeDate(n.editedTs)})</span>`:'');
       const safe=(n.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-      h+=`<div class="ntitem">
-        <div class="ntmeta">${when}${state.isAdmin?` <button class="ntdel" onclick="deleteNotice(${n.ts})">삭제</button>`:''}</div>
-        <div class="nttext">${safe}</div>
+      const adminBtns=state.isAdmin?`<div class="ntbtns">
+          <button class="ntedit-btn" onclick="startEditNotice(${n.ts})">수정</button>
+          <button class="ntdel" onclick="deleteNotice(${n.ts})">삭제</button>
+        </div>`:'';
+      h+=`<div class="ntitem" id="nt_${n.ts}">
+        <div class="ntmeta">${when}${isNew?' <span class="ntnew">NEW</span>':''}${adminBtns}</div>
+        <div class="nttext" id="nttext_${n.ts}">${safe}</div>
       </div>`;
     });
     h+=`</div>`;
   }
   openSheet('📢 회장 공지사항', h);
+  /* 목록을 연 시점에 "가장 최신 공지 시각"까지 읽은 것으로 처리 */
+  const latest=(state.notices||[]).reduce((m,n)=>Math.max(m,(n.editedTs||n.ts||0)),0);
+  if(latest>seen) setNoticeSeen(latest);
+  refreshNoticeBadge();
 };
 function fmtNoticeDate(ts){
   if(!ts) return '';
@@ -2379,9 +2419,34 @@ window.addNotice=function(){
   const txt=($('#nt_new').value||'').trim();
   if(!txt){toast('공지 내용을 입력하세요');return;}
   state.notices=state.notices||[];
-  state.notices.unshift({ts:Date.now(), text:txt});
+  const ts=Date.now();
+  state.notices.unshift({ts:ts, text:txt});
   addAdminLog(`회장 공지사항 등록`);
+  setNoticeSeen(ts); /* 작성자 본인은 읽음 처리 */
   save(); openNotices(); toast('공지를 등록했습니다');
+};
+/* 인라인 수정 시작 */
+window.startEditNotice=function(ts){
+  const n=(state.notices||[]).find(x=>x.ts===ts); if(!n) return;
+  const box=$('#nttext_'+ts); if(!box) return;
+  const cur=(n.text||'');
+  box.innerHTML=`<textarea class="ntea" id="ntea_${ts}" rows="4"></textarea>
+    <div class="ntedrow">
+      <button class="save" onclick="saveEditNotice(${ts})">저장</button>
+      <button onclick="openNotices()">취소</button>
+    </div>`;
+  const ta=$('#ntea_'+ts); ta.value=cur; ta.focus();
+};
+/* 수정 저장 */
+window.saveEditNotice=function(ts){
+  const ta=$('#ntea_'+ts); if(!ta) return;
+  const txt=(ta.value||'').trim();
+  if(!txt){toast('공지 내용을 입력하세요');return;}
+  const n=(state.notices||[]).find(x=>x.ts===ts); if(!n) return;
+  n.text=txt; n.editedTs=Date.now();
+  addAdminLog(`회장 공지사항 수정`);
+  setNoticeSeen(n.editedTs); /* 수정한 본인은 읽음 처리 */
+  save(); openNotices(); toast('공지를 수정했습니다');
 };
 window.deleteNotice=function(ts){
   if(!confirm('이 공지를 삭제할까요?'))return;
@@ -3507,6 +3572,7 @@ initFirebase();
 ensureViewableMonth();
 render();
 updateLastMod();
+if(window.refreshNoticeBadge) refreshNoticeBadge();
 </script>
 
 </body></html>
