@@ -449,7 +449,7 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
       <button class="tbtn primary admin-act" id="autoBtn" style="display:none">⚡ 자동배정</button>
       <label class="tbtn admin-act" id="visibilityCtrl" style="display:none;cursor:pointer">
         <input type="checkbox" id="visibilityChk" style="width:auto;margin-right:6px">
-        <span id="visibilityLabel">사용자에게 보이기</span>
+        <span>공개</span>
       </label>
       <button class="tbtn admin-act published" id="publishBtn" style="display:none">✅ 배포됨 (취소)</button>
     </div>
@@ -840,6 +840,10 @@ function getMonth(){
   return state.months[state.ym];
 }
 /* ===== 배정표 배포(공개) 상태 ===== */
+const MIN_VISIBLE_YM='2026-06';
+function isAccessibleMonth(ymKey){
+  return !!ymKey && ymKey >= MIN_VISIBLE_YM;
+}
 /* 관리자가 명시적으로 배포한 달만 일반 사용자에게 공개합니다. 관리자는 항상 모든 달을 볼 수 있습니다. */
 function isPublished(ymKey){
   const mo=state.months[ymKey];
@@ -848,7 +852,7 @@ function isPublished(ymKey){
 }
 function isVisibleToUsers(ymKey){
   const mo=state.months[ymKey];
-  if(!mo || !isPublished(ymKey)) return false;
+  if(!mo || !isAccessibleMonth(ymKey) || !isPublished(ymKey)) return false;
   return mo.visibleToUsers !== false;
 }
 /* 공개된 달 'YYYY-MM' 목록(정렬) */
@@ -1391,11 +1395,9 @@ function renderSchedule(){
   }
   const visCtrl=document.getElementById('visibilityCtrl');
   const visChk=document.getElementById('visibilityChk');
-  const visLabel=document.getElementById('visibilityLabel');
-  if(visCtrl && visChk && visLabel){
+  if(visCtrl && visChk){
     visCtrl.style.display=(state.isAdmin && published)?'inline-flex':'none';
     visChk.checked=isVisibleToUsers(state.ym);
-    visLabel.textContent=visChk.checked ? '사용자에게 보이기' : '사용자에게 숨기기';
   }
   // 관리자용 경고 색상 설명(주황) — 실제 경고가 있을 때만 표시
   const legend=document.getElementById('warnLegend');
@@ -3008,6 +3010,10 @@ function shiftMonth(n){
   if(_autoPending && !confirm('저장하지 않은 자동배정 결과가 있습니다. 다른 달로 이동하면 저장되지 않은 변경은 그대로 남지만 화면에서 벗어납니다. 계속할까요?')) return;
   let[y,m]=state.ym.split('-').map(Number);m+=n;if(m<1){m=12;y--;}if(m>12){m=1;y++;}
   const targetYm=ym(y,m);
+  if(!isAccessibleMonth(targetYm)){
+    toast('6월 이후 배정표만 조회할 수 있습니다');
+    return;
+  }
   // 일반 사용자는 사용자에게 보이도록 선택된 달만 이동 가능
   if(!state.isAdmin && !isVisibleToUsers(targetYm)){
     toast(n>0?'아직 사용자에게 공개된 달이 아닙니다':'더 이전에 공개된 달이 없습니다');
@@ -3046,7 +3052,6 @@ $('#visibilityChk').onchange=()=>{
   const mo=getMonth();
   mo.visibleToUsers=$('#visibilityChk').checked;
   save(); renderSchedule();
-  toast(mo.visibleToUsers ? '이 달을 일반 사용자에게 표시합니다' : '이 달을 일반 사용자에게 숨깁니다');
 };
 $('#resetSeedBtn').onclick=()=>{
   const k=state.ym;
@@ -3361,6 +3366,10 @@ $('#xlsBtn').onclick=()=>{
 /* ====================== INIT ====================== */
 /* 일반 사용자는 공개(배포)된 달만 볼 수 있으므로, 현재 달이 미공개면 가장 최근 공개 달로 이동 */
 function ensureViewableMonth(){
+  if(!isAccessibleMonth(state.ym)){
+    state.ym = latestVisibleYm() || MIN_VISIBLE_YM;
+    return;
+  }
   if(state.isAdmin) return;                 // 관리자는 제한 없음
   if(isVisibleToUsers(state.ym)) return;    // 이미 사용자에게 보이는 달이면 그대로
   const latest=latestVisibleYm();
