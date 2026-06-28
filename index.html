@@ -446,6 +446,10 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
       <button class="tbtn primary" id="subBtn">대타 신청</button>
       <button class="tbtn admin-act" id="newMonthBtn" style="display:none">＋ 새 달</button>
       <button class="tbtn primary admin-act" id="autoBtn" style="display:none">⚡ 자동배정</button>
+      <label class="tbtn admin-act" id="visibilityCtrl" style="display:none;cursor:pointer">
+        <input type="checkbox" id="visibilityChk" style="width:auto;margin-right:6px">
+        <span id="visibilityLabel">사용자에게 보이기</span>
+      </label>
       <button class="tbtn admin-act published" id="publishBtn" style="display:none">✅ 배포됨 (취소)</button>
     </div>
 
@@ -618,7 +622,7 @@ const SEED_ASSIGN_COUNT={"2026":{"김용재":{"dawn":{"1":1,"3":1}},"양태원":
 if(state.specialLog==null){ state.specialLog=JSON.parse(JSON.stringify(SEED_SPECIAL_LOG)); }
 /* 2026년 6월 배정표 시드(업로드 이미지 기준). state.months에 6월이 없을 때만 주입 */
 const SEED_JUN_2026={"assign":{"1":{"masses":[{"time":"06:30","title":"새벽미사","color":"홍","big":["강시우"],"small":["심다솔"],"id":"spc6hxpe"}]},"2":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이영후"],"small":["류정원"],"id":"tudkfwux"}]},"4":{"masses":[{"time":"19:30","title":"성시간","color":"녹","big":["박예련"],"small":["홍지아"],"id":"w3pwrxn0"}]},"6":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":["박시우"],"small":["김민준"],"id":"ysxezzqg"},{"time":"17:00","title":"주일 전야미사","color":"백","big":["성운창","강시우"],"small":["이영후","이지유"],"id":"joa0kw09"}]},"7":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["김재윤","이예나"],"small":["구현비","이지안4"],"id":"ce5buhsd"},{"time":"17:00","title":"주일미사","color":"백","big":["고인서","변윤서"],"small":["신희윤","장하늘"],"id":"6j1l8grm"}]},"8":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["이윤섭"],"small":["연주환"],"id":"boo6pv96"}]},"9":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["연주환"],"small":["김아인"],"id":"x7ksnydz"}]},"11":{"masses":[{"time":"19:30","title":"평일미사","color":"홍","big":["이지안6"],"small":["이지안4"],"id":"82a60jn8"}]},"13":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["이시윤","탁윤호"],"small":["윤성현","조환희"],"id":"942ntn8q"}]},"14":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["최수인"],"small":["김민준"],"id":"wmg4n53q"},{"time":"17:00","title":"주일미사","color":"녹","big":["이시원"],"small":["이지효"],"id":"g1cud1rw"}]},"15":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["이시윤"],"small":["원준영"],"id":"mfo3mzrt"}]},"16":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이시호"],"small":["구현비"],"id":"5rgw4szl"}]},"18":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["심다솔"],"small":["김아인"],"id":"wp3ggtdu"}]},"20":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["임해든","원준영"],"small":["김서연","장하늘"],"id":"l03pyiih"}]},"21":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["이윤섭","변윤서"],"small":["이시원","이지유"],"id":"9ws2xiiz"},{"time":"17:00","title":"주일미사","color":"녹","big":["박정서","이시호"],"small":["홍지아","신윤서"],"id":"2ypra5dv"}]},"22":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["김서연"],"small":["임해든"],"id":"khuweiic"}]},"23":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["김재윤"],"small":["김민준"],"id":"39fdbuxq"}]},"25":{"masses":[{"time":"19:30","title":"찬미미사","color":"백","big":["고인서"],"small":["신윤서"],"id":"vn43h5k4"}]},"27":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["박시우","신희윤"],"small":["박정서","장하늘"],"id":"xld8rwg3"}]},"28":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["연주환","강시우"],"small":["이윤섭","심다솔"],"id":"dr8t26jr"},{"time":"17:00","title":"주일미사","color":"녹","big":["이지안6","이지효"],"small":["류정원","김아인"],"id":"d5r46ftf"}]},"29":{"masses":[{"time":"06:30","title":"새벽미사","color":"홍","big":["탁윤호","성운창","윤성현"],"small":["박예련","최수인","조환희","이영후"],"id":"8yu6k45s"}]},"30":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이시호"],"small":["이예나"],"id":"9qnlt8y0"}]}},"updated":0,"requests":[],"logs":[],"adminlogs":[],"published":true};
-if(!state.months["2026-06"]){ state.months["2026-06"]=JSON.parse(JSON.stringify(SEED_JUN_2026)); state.months["2026-06"].published=true; }
+if(!state.months["2026-06"]){ state.months["2026-06"]=JSON.parse(JSON.stringify(SEED_JUN_2026)); state.months["2026-06"].published=false; }
 /* 2026년 1~5월 배정표 시드(첨부 엑셀 기준, 1~6월 배포완료) */
 const SEED_01_2026={"assign":{"1":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":[],"small":[],"id":"4g2se207"},{"time":"17:00","title":"주일미사","color":"백","big":["강시우"],"small":["이지안4"],"id":"x10qf4cj"}]},"3":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":["신희윤"],"small":["이예나"],"id":"aciz9ys2"},{"time":"17:00","title":"주일 전야미사","color":"백","big":["탁윤호","윤성현"],"small":["원준영","강시우"],"id":"08sg40uu"}]},"4":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["이시원","원준영"],"small":["홍지아","신윤서"],"id":"odc65pcq"},{"time":"17:00","title":"주일미사","color":"백","big":["정현진","조환희"],"small":["김재윤","김아인"],"id":"0iw81dtp"}]},"5":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["김용재"],"small":["홍정민"],"id":"59xqd57c"}]},"6":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["이윤섭"],"small":["구현비"],"id":"wpfbu6kk"}]},"8":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["박시우"],"small":["이지유"],"id":"073aa582"}]},"10":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"백","big":["최수인","홍지아"],"small":["박예련","이시호"],"id":"elwcv7wx"}]},"11":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["박시우","이영후"],"small":["이지안6","류정원"],"id":"6euw85of"},{"time":"17:00","title":"주일미사","color":"백","big":["연주환","박정서"],"small":["고인서","변윤서"],"id":"7qvy873c"}]},"12":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["이시윤"],"small":["박진우"],"id":"9gmyw7qa"}]},"13":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["김어진"],"small":["김민준"],"id":"je3ub64r"}]},"14":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["신희윤"],"small":["신윤서"],"id":"1q1g6ean"}]},"15":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["연주환"],"small":["이지유"],"id":"jeucpgkv"}]},"16":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["심다솔"],"small":["류정원"],"id":"seolf2fo"}]},"17":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["김서연","임해든"],"small":["성운창","연주환"],"id":"3d75hv9p"}]},"18":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["심다솔","신희윤"],"small":["김재윤","장하늘"],"id":"v05dauxn"},{"time":"17:00","title":"주일미사","color":"녹","big":["이윤섭","이시원"],"small":["이시호","이지유"],"id":"zzdgg2ge"}]},"19":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":[],"small":[],"id":"q9mnx6m6"}]},"20":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["고인서"],"small":["이지효"],"id":"zauf8viw"}]},"21":{"masses":[{"time":"10:00","title":"성모신심","color":"홍","big":["이영후"],"small":["김아인"],"id":"8paadns0"}]},"22":{"masses":[{"time":"19:30","title":"찬미미사","color":"녹","big":["김재윤"],"small":["이예나"],"id":"kijbvxzp"}]},"23":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["이시원"],"small":["이지효"],"id":"9bo42t4o"}]},"24":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["이시윤","박시우"],"small":["박진우","심다솔"],"id":"sgoxo09x"}]},"25":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["고인서","김어진"],"small":["이지안6","이지안4"],"id":"c5bheqrq"},{"time":"17:00","title":"주일미사","color":"녹","big":["박예련","강시우"],"small":["박정서","김민준"],"id":"kdkxtcrp"}]},"26":{"masses":[{"time":"06:30","title":"새벽미사","color":"백","big":["윤성현"],"small":["탁윤호"],"id":"ci1o7cmm"}]},"27":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이지안6"],"small":["장하늘"],"id":"gcwl16wo"}]},"28":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":["박정서"],"small":["구현비"],"id":"pl2aenld"}]},"29":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["홍지아"],"small":["이지효"],"id":"s2punnw9"}]},"30":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["이시호"],"small":["변윤서"],"id":"ym12fykt"}]},"31":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"백","big":["정현진","김어진"],"small":["조환희","이윤섭"],"id":"oktpyt14"}]}},"updated":0,"requests":[],"logs":[],"adminlogs":[],"published":true};
 const SEED_02_2026={"assign":{"1":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["신희윤","탁윤호"],"small":["박정서","이지안4"],"id":"qamxjefe"},{"time":"17:00","title":"주일미사","color":"녹","big":["박시우","윤성현"],"small":["고인서","이예나"],"id":"bfkeyrp5"}]},"2":{"masses":[{"time":"09:00","title":"주일미사","color":"백","big":["심다솔"],"small":["이지효"],"id":"ydqphokv"}]},"3":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["이시원"],"small":["이지효"],"id":"q12tu3nu"}]},"4":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["연주환"],"small":["구현비"],"id":"6f3vqvff"}]},"5":{"masses":[{"time":"19:30","title":"성시간","color":"홍","big":["임해든"],"small":["이지안6"],"id":"6xhlp3dx"}]},"6":{"masses":[{"time":"10:00","title":"성모신심","color":"홍","big":["김어진"],"small":["신윤서"],"id":"szxggio4"}]},"7":{"masses":[{"time":"10:00","title":"성모신심","color":"백","big":["김재윤"],"small":["이지유"],"id":"4q4anse0"},{"time":"17:00","title":"주일 전야미사","color":"녹","big":["강시우","이시원"],"small":["이윤섭","고인서"],"id":"14xhxak5"}]},"8":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["심다솔","최수인"],"small":["홍지아","변윤서"],"id":"vmhs5fc1"},{"time":"17:00","title":"주일미사","color":"녹","big":["조환희","정현진"],"small":["김재윤","김민준"],"id":"0r2poit1"}]},"9":{"masses":[{"time":"06:30","title":"새벽미사","color":"녹","big":["홍정민"],"small":["성운창"],"id":"clodcga2"}]},"10":{"masses":[{"time":"19:30","title":"평일미사","color":"백","big":["홍지아"],"small":["이예나"],"id":"89z38kc8"}]},"11":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["이영후"],"small":["김민준"],"id":"y4eop3sc"}]},"12":{"masses":[{"time":"19:30","title":"평일미사","color":"녹","big":["박예련"],"small":["이지유"],"id":"94ib3dvm"}]},"13":{"masses":[{"time":"10:00","title":"성모신심","color":"녹","big":["이시호"],"small":["신윤서"],"id":"g43v9cv3"}]},"14":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"녹","big":["박정서","이지안6"],"small":["신희윤","이영후"],"id":"mqadq9h7"}]},"15":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["임해든","심다솔"],"small":["이윤섭","류정원"],"id":"d39bmx6c"},{"time":"17:00","title":"주일미사","color":"녹","big":["이시호","고인서"],"small":["박시우","구현비"],"id":"6kpu0ajh"}]},"16":{"masses":[{"time":"09:00","title":"주일미사","color":"녹","big":["강시우","이윤섭"],"small":["이시원","김재윤"],"id":"88wkdcq9"}]},"18":{"masses":[{"time":"10:00","title":"성모신심","color":"보","big":[],"small":[],"id":"7i5odh7i"},{"time":"19:30","title":"평일미사","color":"보","big":["김서연","탁윤호"],"small":["박예련"],"id":"xyf7jfe3"}]},"19":{"masses":[{"time":"19:30","title":"평일미사","color":"보","big":["강시우"],"small":["이지안4"],"id":"5valjp8d"}]},"20":{"masses":[{"time":"10:00","title":"성모신심","color":"보","big":["원준영"],"small":["류정원"],"id":"n2mavrm8"}]},"21":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"보","big":["박진우","이시윤"],"small":["정현진","윤성현"],"id":"xkvldp5l"}]},"22":{"masses":[{"time":"09:00","title":"주일미사","color":"보","big":["연주환","김어진"],"small":["이시원","이지유"],"id":"vi4zyjy8"},{"time":"17:00","title":"주일미사","color":"보","big":["김서연","이시호"],"small":["이지안6","장하늘"],"id":"bzwayljh"}]},"23":{"masses":[{"time":"06:30","title":"새벽미사","color":"보","big":["탁윤호"],"small":["조환희"],"id":"sfi2xscb"}]},"24":{"masses":[{"time":"19:30","title":"평일미사","color":"보","big":["연주환","이예나"],"small":["장하늘"],"id":"m9wh6w09"}]},"25":{"masses":[{"time":"10:00","title":"성모신심","color":"보","big":["홍지아"],"small":["변윤서"],"id":"zlxjle9x"}]},"26":{"masses":[{"time":"19:30","title":"찬미미사","color":"보","big":["박시우","신윤서"],"small":["김아인","이지유"],"id":"gdrc85c6"}]},"27":{"masses":[{"time":"10:00","title":"성모신심","color":"보","big":["신희윤","김어진"],"small":["이영후"],"id":"lwubf368"}]},"28":{"masses":[{"time":"17:00","title":"주일 전야미사","color":"보","big":["임해든","조환희"],"small":["원준영","정현진"],"id":"1rmhh3f0"}]}},"updated":0,"requests":[],"logs":[],"adminlogs":[],"published":true};
@@ -835,29 +839,33 @@ function getMonth(){
   return state.months[state.ym];
 }
 /* ===== 배정표 배포(공개) 상태 ===== */
-/* 각 달 mo.published===true 면 일반 사용자에게 공개. 관리자는 항상 모두 볼 수 있음.
-   ※ 기존 데이터 호환: published 플래그가 아예 없던(undefined) 달은 '이미 공개'로 간주(과거 운영 상태 유지).
-      명시적으로 false인 달만 미공개. */
+/* 관리자가 명시적으로 배포한 달만 일반 사용자에게 공개합니다. 관리자는 항상 모든 달을 볼 수 있습니다. */
 function isPublished(ymKey){
   const mo=state.months[ymKey];
   if(!mo) return false;
-  // 일반 사용자에게는 2026년 1~5월을 공개하지 않음(데이터 정리 전이므로 6월부터 오픈).
-  // 관리자는 이 함수와 무관하게 모든 달을 볼 수 있음.
-  if(ymKey>='2026-01' && ymKey<='2026-05') return false;
-  return mo.published!==false;   // undefined(레거시)→공개, true→공개, false→미공개
+  return mo.published===true;
+}
+function isVisibleToUsers(ymKey){
+  const mo=state.months[ymKey];
+  if(!mo || !isPublished(ymKey)) return false;
+  return mo.visibleToUsers !== false;
 }
 /* 공개된 달 'YYYY-MM' 목록(정렬) */
 function publishedYms(){
   return Object.keys(state.months).filter(k=>isPublished(k)).sort();
 }
-/* 변경(검붉은) 표시용: 그 달이 '배포된 적 있는' 상태인지. 일반사용자 공개차단(1~5월)과 무관. */
+function visibleYms(){
+  return Object.keys(state.months).filter(k=>isVisibleToUsers(k)).sort();
+}
+/* 변경(검붉은) 표시용: 그 달이 관리자가 배포한 상태인지. */
 function isDistributed(ymKey){
   const mo=state.months[ymKey];
   if(!mo) return false;
-  return mo.published!==false;  // undefined(레거시)·true → 배포됨, false → 미배포
+  return mo.published===true;
 }
 /* 일반 사용자에게 보여줄 기본(가장 최근 공개) 달. 없으면 null */
 function latestPublishedYm(){ const a=publishedYms(); return a.length? a[a.length-1] : null; }
+function latestVisibleYm(){ const a=visibleYms(); return a.length? a[a.length-1] : null; }
 
 /* ====================== AUTO-ASSIGN ====================== */
 function gradeRank(g){const o=['초4','초5','초6','중1','중2','중3','고1','고2','고3'];return o.indexOf(g);}
@@ -1373,11 +1381,20 @@ function renderSchedule(){
     } else if(state.isAdmin && published){
       banner.style.display='block';
       banner.classList.add('ok');
-      banner.textContent=`✅ 배포됨 — 일반 사용자가 이 달을 볼 수 있습니다.`;
+      const visible=isVisibleToUsers(state.ym);
+      banner.textContent=visible ? `✅ 배포됨 — 일반 사용자가 이 달을 볼 수 있습니다.` : `🔒 배포됨 — 이 달은 일반 사용자에게 숨겨진 상태입니다.`;
     } else {
       banner.style.display='none';
       banner.classList.remove('ok');
     }
+  }
+  const visCtrl=document.getElementById('visibilityCtrl');
+  const visChk=document.getElementById('visibilityChk');
+  const visLabel=document.getElementById('visibilityLabel');
+  if(visCtrl && visChk && visLabel){
+    visCtrl.style.display=(state.isAdmin && published)?'inline-flex':'none';
+    visChk.checked=isVisibleToUsers(state.ym);
+    visLabel.textContent=visChk.checked ? '사용자에게 보이기' : '사용자에게 숨기기';
   }
   // 관리자용 경고 색상 설명(주황) — 실제 경고가 있을 때만 표시
   const legend=document.getElementById('warnLegend');
@@ -2990,9 +3007,9 @@ function shiftMonth(n){
   if(_autoPending && !confirm('저장하지 않은 자동배정 결과가 있습니다. 다른 달로 이동하면 저장되지 않은 변경은 그대로 남지만 화면에서 벗어납니다. 계속할까요?')) return;
   let[y,m]=state.ym.split('-').map(Number);m+=n;if(m<1){m=12;y--;}if(m>12){m=1;y++;}
   const targetYm=ym(y,m);
-  // 일반 사용자는 공개(배포)된 달만 이동 가능
-  if(!state.isAdmin && !isPublished(targetYm)){
-    toast(n>0?'아직 배포되지 않은 달입니다':'더 이전 배포된 달이 없습니다');
+  // 일반 사용자는 사용자에게 보이도록 선택된 달만 이동 가능
+  if(!state.isAdmin && !isVisibleToUsers(targetYm)){
+    toast(n>0?'아직 사용자에게 공개된 달이 아닙니다':'더 이전에 공개된 달이 없습니다');
     return;
   }
   if(pickMode){pickMode=null;pickFirst=null;hidePickBanner();}
@@ -3003,12 +3020,14 @@ window.publishMonth=function(){
   if(isPublished(state.ym)){
     if(!confirm(`${y}년 ${m}월 배정표 배포를 취소할까요? 일반 사용자는 이 달을 볼 수 없게 됩니다.`)) return;
     mo.published=false;
+    mo.visibleToUsers=false;
     addAdminLog(`배정표 배포 취소 — ${y}/${m}`);
     save(); renderSchedule(); toast('배포를 취소했습니다');
   } else {
     if(_autoPending){ toast('먼저 자동배정 결과를 저장하세요'); return; }
-    if(!confirm(`${y}년 ${m}월 배정표를 배포할까요? 지금부터 어머니(일반 사용자)들이 이 달을 볼 수 있습니다.`)) return;
+    if(!confirm(`${y}년 ${m}월 배정표를 배포할까요? 지금부터 일반 사용자가 이 달을 볼 수 있습니다.`)) return;
     mo.published=true;
+    mo.visibleToUsers = mo.visibleToUsers !== false;
     mo.publishedAt=Date.now();
     addAdminLog(`배정표 배포 — ${y}/${m}`);
     save(); renderSchedule(); toast('배포했습니다. 일반 사용자에게 공개됩니다');
@@ -3022,6 +3041,12 @@ $('#newMonthBtn').onclick=()=>{
   save(); renderSchedule(); toast('미사 틀을 생성했습니다');
 };
 $('#publishBtn').onclick=()=>publishMonth();
+$('#visibilityChk').onchange=()=>{
+  const mo=getMonth();
+  mo.visibleToUsers=$('#visibilityChk').checked;
+  save(); renderSchedule();
+  toast(mo.visibleToUsers ? '이 달을 일반 사용자에게 표시합니다' : '이 달을 일반 사용자에게 숨깁니다');
+};
 $('#resetSeedBtn').onclick=()=>{
   const k=state.ym;
   const seed=(typeof SEED_MONTHS!=='undefined') && SEED_MONTHS[k];
@@ -3029,7 +3054,8 @@ $('#resetSeedBtn').onclick=()=>{
   const [y,m]=k.split('-').map(Number);
   if(!confirm(`${y}년 ${m}월 배정을 첨부 시드(엑셀) 내용으로 덮어쓸까요? 현재 ${m}월의 변경 내용은 사라지고 동기화에도 반영됩니다.`)) return;
   state.months[k]=JSON.parse(JSON.stringify(seed));
-  if(state.months[k].published===undefined) state.months[k].published=true;
+  state.months[k].published=false;
+  delete state.months[k].publishedAt;
   state.months[k].updated=Date.now();
   _autoPending=false; _autoBackup=null;
   addAdminLog(`시드로 되돌리기 — ${y}/${m} 배정을 엑셀 시드로 교체`);
@@ -3335,10 +3361,10 @@ $('#xlsBtn').onclick=()=>{
 /* 일반 사용자는 공개(배포)된 달만 볼 수 있으므로, 현재 달이 미공개면 가장 최근 공개 달로 이동 */
 function ensureViewableMonth(){
   if(state.isAdmin) return;                 // 관리자는 제한 없음
-  if(isPublished(state.ym)) return;         // 이미 공개된 달이면 그대로
-  const latest=latestPublishedYm();
-  if(latest) state.ym=latest;               // 최신 공개 달로
-  // 공개된 달이 하나도 없으면 그대로 두되, 화면은 '배포 전' 상태로 표시됨
+  if(isVisibleToUsers(state.ym)) return;    // 이미 사용자에게 보이는 달이면 그대로
+  const latest=latestVisibleYm();
+  if(latest) state.ym=latest;               // 최신으로 보이는 달로
+  // 보이는 달이 하나도 없으면 그대로 두되, 화면은 '배포 전' 상태로 표시됨
 }
 initFirebase();
 ensureViewableMonth();
