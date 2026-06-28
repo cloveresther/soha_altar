@@ -53,6 +53,18 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .seg button.on{background:var(--brand);color:#fff}
 .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .toolbar .sp{flex:1}
+.schedule-layout{display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.schedule-main{min-width:0;width:100%}
+.schedule-summary{width:100%;max-width:100%;overflow-wrap:anywhere;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px;box-shadow:var(--shadow);box-sizing:border-box}
+.schedule-summary .summary-head{font-size:14px;font-weight:800;margin-bottom:8px}
+.schedule-summary .summary-list{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow:auto}
+.schedule-summary .summary-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 8px;border:1px solid #eef0f3;border-radius:9px;background:#fbfcfd;min-width:0}
+.schedule-summary .summary-name{font-size:13px;font-weight:700;flex:1;min-width:0;word-break:keep-all;overflow-wrap:anywhere}
+.schedule-summary .summary-name.warnbad{color:#c75a00;text-decoration:underline wavy #e08a1e}
+.schedule-summary .summary-name.warnweek{color:#9a5800;background:#ffe7c2;border-radius:5px;padding:0 3px}
+.schedule-summary .summary-count{font-size:12px;font-weight:700;color:var(--brand-d);white-space:nowrap;flex-shrink:0}
+.schedule-summary .summary-empty{font-size:12.5px;color:var(--sub);padding:8px 2px}
+@media(min-width:980px){.schedule-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,280px);align-items:start}.schedule-summary{width:100%;max-width:280px}}
 .pubbanner{margin:0 0 12px;padding:9px 13px;border-radius:10px;font-size:12.5px;font-weight:700;
   background:#fff4e5;color:#9a5b00;border:1px solid #ffd9a0}
 .laundrybar{margin:0 0 10px;display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:none}
@@ -454,7 +466,9 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
       <button class="tbtn admin-act published" id="publishBtn" style="display:none">✅ 배포됨 (취소)</button>
     </div>
 
-    <div id="calView" style="display: block;"><div class="calscroll"><div class="calinner"><div class="calhead"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div><div class="cal"><div class="cell empty"></div><div class="cell  "><div class="dnum">1</div><div class="mass" onclick="openMass(1,&#39;spc6hxpe&#39;)">
+    <div class="schedule-layout">
+      <div class="schedule-main">
+        <div id="calView" style="display: block;"><div class="calscroll"><div class="calinner"><div class="calhead"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div><div class="cal"><div class="cell empty"></div><div class="cell  "><div class="dnum">1</div><div class="mass" onclick="openMass(1,&#39;spc6hxpe&#39;)">
         <div class="mt"><span class="clbl cl-hong">홍</span>06:30</div>
         <div class="who grid"><span class=""><span class="rolep">대</span>강시우</span><span class="empty"></span><span class=""><span class="rolep">소</span>심다솔</span></div></div></div><div class="cell  "><div class="dnum">2</div><div class="mass" onclick="openMass(2,&#39;tudkfwux&#39;)">
         <div class="mt"><span class="clbl cl-nok">녹</span>19:30</div>
@@ -509,7 +523,10 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
         <div class="who grid"><span class=""><span class="rolep">대</span>탁윤호</span><span class="">성운창</span><span class="">윤성현</span><span class="empty"></span><span class=""><span class="rolep">소</span>박예련</span><span class="">최수인</span><span class="">조환희</span><span class="">이영후</span></div></div></div><div class="cell  "><div class="dnum">30</div><div class="mass" onclick="openMass(30,&#39;9qnlt8y0&#39;)">
         <div class="mt"><span class="clbl cl-nok">녹</span>19:30</div>
         <div class="who grid"><span class=""><span class="rolep">대</span>이시호</span><span class="empty"></span><span class=""><span class="rolep">소</span>이예나</span></div></div></div></div></div></div></div>
-    <div id="listView" class="cards" style="display:none"></div>
+        <div id="listView" class="cards" style="display:none"></div>
+      </div>
+      <aside id="scheduleSummary" class="schedule-summary" style="display:none"></aside>
+    </div>
     <div id="maintBar" class="maintbar" style="display:none">
       <button class="maintlink" id="resetSeedBtn">유지보수: 이 달을 시드로 되돌리기</button>
     </div>
@@ -1363,6 +1380,48 @@ function render(){
 function fmtUpdated(ts){ if(!ts)return'-'; const d=new Date(ts);
   return `${d.getMonth()+1}월 ${d.getDate()}일 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
 
+function buildAdminMonthSummary(mo){
+  const counts={};
+  const badNames=new Set();
+  const warnNames=new Set();
+  const weekWarnSet=buildWeekWarnSet();
+  const consecWarnSet=buildConsecutiveWarnSet();
+  Object.keys(mo.assign||{}).forEach(dayKey=>{
+    const d=Number(dayKey);
+    (mo.assign[d].masses||[]).forEach(ms=>{
+      ['big','small'].forEach(kind=>{
+        (ms[kind]||[]).forEach((name,i)=>{
+          if(!name) return;
+          counts[name]=(counts[name]||0)+1;
+          if(warnSlot(d,ms,kind,i,name)) badNames.add(name);
+          else if(weekWarnSet.has(name) || consecWarnSet.has(name)) warnNames.add(name);
+        });
+      });
+    });
+  });
+  const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+  if(!entries.length) return '<div class="summary-empty">배정된 인원이 없습니다.</div>';
+  const rows=entries.map(([name,count])=>{
+    const cls=badNames.has(name)?'warnbad':warnNames.has(name)?'warnweek':'';
+    let title='';
+    if(badNames.has(name)){
+      title='배정 규칙 위반: 자격, 학년, 또는 배정 제외 규칙에 맞지 않음';
+    } else if(warnNames.has(name)){
+      const isWeek=weekWarnSet.has(name);
+      const isConsec=consecWarnSet.has(name);
+      if(isWeek && isConsec){
+        title='같은 주 2회 이상 배정 또는 연속 배정';
+      } else if(isConsec){
+        title='연속으로 배정됨';
+      } else {
+        title='같은 주에 2회 이상 배정됨';
+      }
+    }
+    const titleAttr=title?` title="${title}"`:' ';
+    return `<div class="summary-row"><span class="summary-name ${cls}"${titleAttr}>${name}</span><span class="summary-count">${count}회</span></div>`;
+  }).join('');
+  return `<div class="summary-head">이번 달 배정 인원</div><div class="summary-list">${rows}</div>`;
+}
 function renderSchedule(){
   invalidateWarnCache();
   const [y,m]=state.ym.split('-').map(Number);
@@ -1402,10 +1461,12 @@ function renderSchedule(){
   // 관리자용 경고 색상 설명(주황) — 실제 경고가 있을 때만 표시
   const legend=document.getElementById('warnLegend');
   if(legend){
-    let hasBad=false, hasWeek=false;
+    let hasBad=false, hasWeek=false, hasConsec=false;
     if(state.isAdmin){
       const weekSet=buildWeekWarnSet();
+      const consecSet=buildConsecutiveWarnSet();
       hasWeek=weekSet.size>0;
+      hasConsec=consecSet.size>0;
       outer:
       for(const d in mo.assign){
         for(const ms of (mo.assign[d].masses||[])){
@@ -1414,10 +1475,11 @@ function renderSchedule(){
         }
       }
     }
-    if(state.isAdmin && (hasBad||hasWeek)){
+    if(state.isAdmin && (hasBad||hasWeek||hasConsec)){
       let parts=[];
       if(hasBad) parts.push('<span class="wl bad">배정 규칙 위반</span>');
       if(hasWeek) parts.push('<span class="wl week">같은 주 2회 이상(3일 이내) 배정</span>');
+      if(hasConsec) parts.push('<span class="wl week">연속 4일 이상 배정</span>');
       legend.style.display='block';
       legend.innerHTML=`<span class="wlhead">주황 표시:</span> ${parts.join(' · ')} 가 있습니다. (관리자에게만 보임)`;
     } else {
@@ -1428,6 +1490,13 @@ function renderSchedule(){
   $('#segList').classList.toggle('on',state.mode==='list');
   if(state.mode==='cal'){ $('#calView').style.display='block'; $('#listView').style.display='none'; renderCal(y,m,mo);}
   else { $('#calView').style.display='none'; $('#listView').style.display='flex'; renderList(y,m,mo);}
+  const summary=document.getElementById('scheduleSummary');
+  if(summary){
+    summary.style.display=state.isAdmin ? 'block' : 'none';
+    summary.style.width='100%';
+    summary.style.maxWidth='100%';
+    if(state.isAdmin) summary.innerHTML=buildAdminMonthSummary(mo);
+  }
   // 미저장 자동배정 배너 유지/숨김
   const pb=document.getElementById('pendingBar');
   if(pb) pb.style.display = _autoPending ? 'flex' : 'none';
@@ -1462,6 +1531,7 @@ function renderCal(y,m,mo){
    - buildWeekWarnSet(): 같은 주에 2회 이상 배정된 학생 이름 집합
 */
 let _warnWeekCache=null, _warnWeekKey=null;
+let _warnConsecCache=null, _warnConsecKey=null;
 function weekKeyFor(y,m,d){ const dt=new Date(y,m-1,d); return d - dt.getDay(); } // 그 주 일요일 기준
 function buildWeekWarnSet(){
   const yk=state.ym;
@@ -1471,10 +1541,13 @@ function buildWeekWarnSet(){
   const set=new Set();
   if(mo&&mo.assign){
     const perWeek={};
-    Object.keys(mo.assign).map(Number).forEach(d=>{
+    Object.keys(mo.assign||{}).map(Number).forEach(d=>{
+      const day=mo.assign[d];
+      if(!day || !day.masses) return;
       const wk=weekKeyFor(y,m,d);
-      (mo.assign[d].masses||[]).forEach(ms=>{
-        [...(ms.big||[]),...(ms.small||[])].forEach(n=>{ if(!n)return;
+      (day.masses||[]).forEach(ms=>{
+        const names=[...(ms.big||[]),...(ms.small||[])];
+        names.forEach(n=>{ if(!n)return;
           (perWeek[wk]=perWeek[wk]||{}); perWeek[wk][n]=(perWeek[wk][n]||0)+1;
         });
       });
@@ -1483,7 +1556,36 @@ function buildWeekWarnSet(){
   }
   _warnWeekCache=set; _warnWeekKey=yk; return set;
 }
-function invalidateWarnCache(){ _warnWeekCache=null; _warnWeekKey=null; }
+function buildConsecutiveWarnSet(){
+  const yk=state.ym;
+  if(_warnConsecKey===yk && _warnConsecCache) return _warnConsecCache;
+  const mo=state.months[yk];
+  const set=new Set();
+  if(mo&&mo.assign){
+    const byName={};
+    Object.keys(mo.assign||{}).map(Number).forEach(d=>{
+      const day=mo.assign[d];
+      if(!day || !day.masses) return;
+      (day.masses||[]).forEach(ms=>{
+        const names=[...(ms.big||[]),...(ms.small||[])];
+        names.forEach(n=>{ if(!n)return;
+          (byName[n]=byName[n]||[]).push(d);
+        });
+      });
+    });
+    Object.entries(byName).forEach(([name,days])=>{
+      const uniq=[...new Set(days)].sort((a,b)=>a-b);
+      let streak=1;
+      for(let i=1;i<uniq.length;i++){
+        if(uniq[i]===uniq[i-1]+1) streak++;
+        else streak=1;
+        if(streak>=2){ set.add(name); break; }
+      }
+    });
+  }
+  _warnConsecCache=set; _warnConsecKey=yk; return set;
+}
+function invalidateWarnCache(){ _warnWeekCache=null; _warnWeekKey=null; _warnConsecCache=null; _warnConsecKey=null; }
 // 그 자리의 학생이 배정 규칙에 어긋나는지
 function warnSlot(d, ms, kind, i, name){
   if(!name) return false;
@@ -1506,17 +1608,28 @@ function nameSpan(n,d,mid,k,i,showRole){
   }
   const first=isPickedFirst(d,mid,k,i);
   // 검붉은(변경): 배포된 달이면 표시(일반 공개차단과 무관). 주황(경고): 관리자에게 항상.
-  let chg=false, warn='';
+  let chg=false, warn='', title='';
   if(isDistributed(state.ym)) chg=isChanged(d,mid,n);
   if(state.isAdmin){
     const mo=getMonth(); const ms=(mo.assign[d]&&mo.assign[d].masses||[]).find(x=>x.id===mid);
-    if(ms){ if(warnSlot(d,ms,k,i,n)) warn='warnbad'; else if(buildWeekWarnSet().has(n)) warn='warnweek'; }
+    if(ms){
+      if(warnSlot(d,ms,k,i,n)){ warn='warnbad'; title='배정 규칙 위반'; }
+      else if(buildWeekWarnSet().has(n) || buildConsecutiveWarnSet().has(n)){ 
+        warn='warnweek';
+        const isWeek=buildWeekWarnSet().has(n);
+        const isConsec=buildConsecutiveWarnSet().has(n);
+        if(isWeek && isConsec) title='같은 주 2회 이상 배정 또는 연속 배정';
+        else if(isConsec) title='연속으로 배정됨';
+        else title='같은 주에 2회 이상 배정됨';
+      }
+    }
   }
   const cls=[chg?'chg':'', first?'pickedfirst':'', pickMode?'tapn':'', warn].filter(Boolean).join(' ');
   const tap = pickMode? `onclick="event.stopPropagation();pickName(${d},'${mid}','${k}',${i})"`:'';
   const role = k==='big'?'대':'소';
   const prefix = showRole? `<span class="rolep">${role}</span>` : '';
-  return `<span class="${cls}" ${tap}>${prefix}${n}</span>`;
+  const titleAttr = title? ` title="${title}"` : '';
+  return `<span class="${cls}" ${tap}${titleAttr}>${prefix}${n}</span>`;
 }
 function slotGrid(ms,d){
   const hasAny=[...ms.big,...ms.small].some(Boolean);
@@ -1562,6 +1675,7 @@ function renderList(y,m,mo){
           <div class="roles">`;
       const distributed=isDistributed(state.ym);
       const weekWarn = state.isAdmin ? buildWeekWarnSet() : null;
+      const consecWarn = state.isAdmin ? buildConsecutiveWarnSet() : null;
       const slot=(n,lbl,k,i)=>{ const chg=distributed && isChanged(d,ms.id,n);
         const first=isPickedFirst(d,ms.id,k,i);
         const tap=pickMode?`onclick="pickName(${d},'${ms.id}','${k}',${i})" style="cursor:pointer"`:'';
@@ -1569,9 +1683,20 @@ function renderList(y,m,mo){
           const tapVac=(pickMode==='swap'&&pickFirst)?`onclick="pickName(${d},'${ms.id}','${k}',${i})" style="cursor:pointer"`:'';
           return `<span class="role empty" ${tapVac}><span class="lbl">${lbl}</span>비어있음</span>`;
         }
-        let warn='';
-        if(state.isAdmin){ if(warnSlot(d,ms,k,i,n)) warn='warnbad'; else if(weekWarn.has(n)) warn='warnweek'; }
-        return `<span class="role ${first?'pickedfirst':''}" ${tap}><span class="lbl">${lbl}</span><span class="nm ${chg?'chg':''} ${warn}">${n}</span></span>`;};
+        let warn='', title='';
+        if(state.isAdmin){
+          if(warnSlot(d,ms,k,i,n)){ warn='warnbad'; title='배정 규칙 위반'; }
+          else if(weekWarn.has(n) || consecWarn.has(n)){ 
+            warn='warnweek';
+            const isWeek=weekWarn.has(n);
+            const isConsec=consecWarn.has(n);
+            if(isWeek && isConsec) title='같은 주 2회 이상 배정 또는 연속 배정';
+            else if(isConsec) title='연속으로 배정됨';
+            else title='같은 주에 2회 이상 배정됨';
+          }
+        }
+        const titleAttr = title? ` title="${title}"` : '';
+        return `<span class="role ${first?'pickedfirst':''}" ${tap}><span class="lbl">${lbl}</span><span class="nm ${chg?'chg':''} ${warn}"${titleAttr}>${n}</span></span>`;};
       ms.big.forEach((n,i)=>h+=slot(n,'대','big',i)); ms.small.forEach((n,i)=>h+=slot(n,'소','small',i));
       h+=`</div></div>`;
     });
@@ -3374,7 +3499,9 @@ function ensureViewableMonth(){
   if(isVisibleToUsers(state.ym)) return;    // 이미 사용자에게 보이는 달이면 그대로
   const latest=latestVisibleYm();
   if(latest) state.ym=latest;               // 최신으로 보이는 달로
-  // 보이는 달이 하나도 없으면 그대로 두되, 화면은 '배포 전' 상태로 표시됨
+  else {
+    state.ym = MIN_VISIBLE_YM;              // 공개된 달이 없으면 6월로 기본화
+  }
 }
 initFirebase();
 ensureViewableMonth();
