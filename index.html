@@ -24,7 +24,6 @@
     }
     return (typeof html2canvas!=='undefined') && !!window.jspdf;
   };
-  // 엑셀: 스타일(테두리·병합·색)을 완전 지원하는 ExcelJS 사용. 없으면 CDN에서 로드.
   window.ensureExcel = async function(){
     if(typeof ExcelJS==='undefined'){
       try{ await loadScript('https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js'); }catch(e){}
@@ -79,16 +78,20 @@ header{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.92);
 .toolbar .sp{flex:1}
 .schedule-layout{display:flex;flex-direction:column;gap:14px;align-items:stretch}
 .schedule-main{min-width:0;width:100%}
-.schedule-summary{width:100%;max-width:100%;overflow-wrap:anywhere;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px;box-shadow:var(--shadow);box-sizing:border-box}
-.schedule-summary .summary-head{font-size:14px;font-weight:800;margin-bottom:8px}
-.schedule-summary .summary-list{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow:auto}
-.schedule-summary .summary-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 8px;border:1px solid #eef0f3;border-radius:9px;background:#fbfcfd;min-width:0}
-.schedule-summary .summary-name{font-size:13px;font-weight:700;flex:1;min-width:0;word-break:keep-all;overflow-wrap:anywhere}
-.schedule-summary .summary-name.warnbad{color:#c75a00;text-decoration:underline wavy #e08a1e}
-.schedule-summary .summary-name.warnweek{color:#9a5800;background:#ffe7c2;border-radius:5px;padding:0 3px}
-.schedule-summary .summary-count{font-size:12px;font-weight:700;color:var(--brand-d);white-space:nowrap;flex-shrink:0}
+.schedule-summary{width:100%;max-width:100%;overflow-wrap:anywhere;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 10px 8px;box-shadow:var(--shadow);box-sizing:border-box}
+.schedule-summary .summary-head{font-size:13px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.schedule-summary .summary-head .summary-total{font-size:11px;font-weight:700;color:var(--sub)}
+/* 미니멀: 엑셀 명단처럼 행 구분선만. 카드·배경·경고색·밑줄 없음 */
+.schedule-summary .summary-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));column-gap:14px;row-gap:0;max-height:none;overflow:visible}
+.schedule-summary .summary-row{display:flex;align-items:baseline;justify-content:space-between;gap:6px;padding:2px 0;border:none;border-bottom:1px solid var(--line);border-radius:0;background:none;min-width:0}
+.schedule-summary .summary-name{font-size:12px;font-weight:500;color:var(--ink);flex:1;min-width:0;word-break:keep-all;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.schedule-summary .summary-count{font-size:12px;font-weight:500;color:var(--sub);white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums}
 .schedule-summary .summary-empty{font-size:12.5px;color:var(--sub);padding:8px 2px}
-@media(min-width:980px){.schedule-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,280px);align-items:start}.schedule-summary{width:100%;max-width:280px}}
+/* 인원이 매우 많을 때 더 촘촘하게(데스크톱 사이드바) */
+.schedule-summary.dense .summary-list{grid-template-columns:repeat(auto-fill,minmax(92px,1fr));column-gap:12px}
+.schedule-summary.dense .summary-name{font-size:11px}
+.schedule-summary.dense .summary-count{font-size:11px}
+@media(min-width:980px){.schedule-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);align-items:start}.schedule-summary{width:100%;max-width:360px}}
 .pubbanner{margin:0 0 12px;padding:9px 13px;border-radius:10px;font-size:12.5px;font-weight:700;
   background:#fff4e5;color:#9a5b00;border:1px solid #ffd9a0}
 .laundrybar{margin:0 0 10px;display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:none}
@@ -449,7 +452,6 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
   .calscroll{padding-bottom:6px}
 }
 @media print{
-  /* 폴백 인쇄 시 한 페이지(A4 가로)에 잘림 없이 들어가도록 */
   @page{ size: A4 landscape; margin: 8mm; }
   header,.bnav,.toolbar,.monthbar .nav,.reqbtn,.editbtn,.laundrybar{display:none!important}
   body{background:#fff}
@@ -461,6 +463,17 @@ th{background:#fbfcfd;font-weight:700;color:var(--sub);position:sticky;top:0}
   .calinner{min-width:0!important;width:100%!important}
   #view-schedule{break-inside:avoid}
 }
+/* PDF 캡처(공지문)용: 칸이 넓어진 만큼 셀 안 글자도 키워 가독성 확보. 화면 UI에는 영향 없음(pdfcap은 PDF 캡처 때만 부여) */
+.pdfcap .cell{padding:8px 9px}
+.pdfcap .cell .dnum{font-size:19px;font-weight:800}
+.pdfcap .mass{margin-top:4px}
+.pdfcap .mass .mt{font-size:17px;gap:6px}
+.pdfcap .mass .mttl{font-size:16px;margin-bottom:2px}
+.pdfcap .mass .time{font-size:17px}
+.pdfcap .clbl{width:21px;height:21px;font-size:13px}
+.pdfcap .mass .who{font-size:16px;margin-top:3px;line-height:1.45}
+.pdfcap .mass .who.grid{column-gap:10px}
+.pdfcap .mass .who.grid .rolep{font-size:14px;margin-right:3px}
 </style>
 </head>
 <body>
@@ -1422,8 +1435,8 @@ function buildAdminMonthSummary(mo){
   const counts={};
   const badNames=new Set();
   const warnNames=new Set();
-  const weekWarnSet=buildWeekWarnSet();
-  const consecWarnSet=buildConsecutiveWarnSet();
+  const weekWarnSet=weekWarnNames();
+  const consecWarnSet=consecWarnNames();
   Object.keys(mo.assign||{}).forEach(dayKey=>{
     const d=Number(dayKey);
     (mo.assign[d].masses||[]).forEach(ms=>{
@@ -1440,7 +1453,6 @@ function buildAdminMonthSummary(mo){
   const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
   if(!entries.length) return '<div class="summary-empty">배정된 인원이 없습니다.</div>';
   const rows=entries.map(([name,count])=>{
-    const cls=badNames.has(name)?'warnbad':warnNames.has(name)?'warnweek':'';
     let title='';
     if(badNames.has(name)){
       title='배정 규칙 위반: 자격, 학년, 또는 배정 제외 규칙에 맞지 않음';
@@ -1456,9 +1468,9 @@ function buildAdminMonthSummary(mo){
       }
     }
     const titleAttr=title?` title="${title}"`:' ';
-    return `<div class="summary-row"><span class="summary-name ${cls}"${titleAttr}>${name}</span><span class="summary-count">${count}회</span></div>`;
+    return `<div class="summary-row"><span class="summary-name"${titleAttr}>${name}</span><span class="summary-count">${count}회</span></div>`;
   }).join('');
-  return `<div class="summary-head">이번 달 배정 인원</div><div class="summary-list">${rows}</div>`;
+  return `<div class="summary-head"><span>이번 달 배정 인원</span><span class="summary-total">${entries.length}명</span></div><div class="summary-list">${rows}</div>`;
 }
 function renderSchedule(){
   invalidateWarnCache();
@@ -1533,7 +1545,12 @@ function renderSchedule(){
     summary.style.display=state.isAdmin ? 'block' : 'none';
     summary.style.width='100%';
     summary.style.maxWidth='100%';
-    if(state.isAdmin) summary.innerHTML=buildAdminMonthSummary(mo);
+    if(state.isAdmin){
+      summary.innerHTML=buildAdminMonthSummary(mo);
+      // 인원이 많으면 더 촘촘한 dense 모드로(스크롤 없이 한눈에)
+      const n=summary.querySelectorAll('.summary-row').length;
+      summary.classList.toggle('dense', n>=24);
+    }
   }
   // 미저장 자동배정 배너 유지/숨김
   const pb=document.getElementById('pendingBar');
@@ -1590,7 +1607,7 @@ function buildWeekWarnSet(){
         });
       });
     });
-    Object.values(perWeek).forEach(cnt=>{ for(const n in cnt){ if(cnt[n]>=2) set.add(n); } });
+    Object.keys(perWeek).forEach(wk=>{ const cnt=perWeek[wk]; for(const n in cnt){ if(cnt[n]>=2) set.add(wk+'|'+n); } });
   }
   _warnWeekCache=set; _warnWeekKey=yk; return set;
 }
@@ -1613,17 +1630,21 @@ function buildConsecutiveWarnSet(){
     });
     Object.entries(byName).forEach(([name,days])=>{
       const uniq=[...new Set(days)].sort((a,b)=>a-b);
-      let streak=1;
-      for(let i=1;i<uniq.length;i++){
-        if(uniq[i]===uniq[i-1]+1) streak++;
-        else streak=1;
-        if(streak>=2){ set.add(name); break; }
+      let i=0;
+      while(i<uniq.length){
+        let j=i;
+        while(j+1<uniq.length && uniq[j+1]===uniq[j]+1) j++;
+        if(j-i>=1){ for(let k=i;k<=j;k++) set.add(uniq[k]+'|'+name); }
+        i=j+1;
       }
     });
   }
   _warnConsecCache=set; _warnConsecKey=yk; return set;
 }
 function invalidateWarnCache(){ _warnWeekCache=null; _warnWeekKey=null; _warnConsecCache=null; _warnConsecKey=null; }
+function warnNameSet(keySet){ const s=new Set(); keySet.forEach(k=>{ const i=k.indexOf('|'); if(i>=0) s.add(k.slice(i+1)); }); return s; }
+function weekWarnNames(){ return warnNameSet(buildWeekWarnSet()); }
+function consecWarnNames(){ return warnNameSet(buildConsecutiveWarnSet()); }
 // 그 자리의 학생이 배정 규칙에 어긋나는지
 function warnSlot(d, ms, kind, i, name){
   if(!name) return false;
@@ -1652,13 +1673,16 @@ function nameSpan(n,d,mid,k,i,showRole){
     const mo=getMonth(); const ms=(mo.assign[d]&&mo.assign[d].masses||[]).find(x=>x.id===mid);
     if(ms){
       if(warnSlot(d,ms,k,i,n)){ warn='warnbad'; title='배정 규칙 위반'; }
-      else if(buildWeekWarnSet().has(n) || buildConsecutiveWarnSet().has(n)){ 
-        warn='warnweek';
-        const isWeek=buildWeekWarnSet().has(n);
-        const isConsec=buildConsecutiveWarnSet().has(n);
-        if(isWeek && isConsec) title='같은 주 2회 이상 배정 또는 연속 배정';
-        else if(isConsec) title='연속으로 배정됨';
-        else title='같은 주에 2회 이상 배정됨';
+      else {
+        const [yy,mm]=state.ym.split('-').map(Number);
+        const isWeek=buildWeekWarnSet().has(weekKeyFor(yy,mm,d)+'|'+n);
+        const isConsec=buildConsecutiveWarnSet().has(d+'|'+n);
+        if(isWeek || isConsec){
+          warn='warnweek';
+          if(isWeek && isConsec) title='같은 주 2회 이상 배정 또는 연속 배정';
+          else if(isConsec) title='연속으로 배정됨';
+          else title='같은 주에 2회 이상 배정됨';
+        }
       }
     }
   }
@@ -1724,13 +1748,15 @@ function renderList(y,m,mo){
         let warn='', title='';
         if(state.isAdmin){
           if(warnSlot(d,ms,k,i,n)){ warn='warnbad'; title='배정 규칙 위반'; }
-          else if(weekWarn.has(n) || consecWarn.has(n)){ 
-            warn='warnweek';
-            const isWeek=weekWarn.has(n);
-            const isConsec=consecWarn.has(n);
-            if(isWeek && isConsec) title='같은 주 2회 이상 배정 또는 연속 배정';
-            else if(isConsec) title='연속으로 배정됨';
-            else title='같은 주에 2회 이상 배정됨';
+          else {
+            const isWeek=weekWarn.has(weekKeyFor(y,m,d)+'|'+n);
+            const isConsec=consecWarn.has(d+'|'+n);
+            if(isWeek || isConsec){
+              warn='warnweek';
+              if(isWeek && isConsec) title='같은 주 2회 이상 배정 또는 연속 배정';
+              else if(isConsec) title='연속으로 배정됨';
+              else title='같은 주에 2회 이상 배정됨';
+            }
           }
         }
         const titleAttr = title? ` title="${title}"` : '';
@@ -3444,29 +3470,41 @@ window.reshuffle=function(){
 };
 /* ===== 배정 현황 이미지/PDF 저장 ===== */
 // 현재 보고 있는 월의 배정 현황(제목 + 달력/목록)을 캡처할 임시 컨테이너를 만든다.
-async function captureSchedule(){
+async function captureSchedule(opts){
+  opts=opts||{};
+  const wide = opts.wide===true;          // true: PDF(가로 넓게), false: 이미지(모바일용 좁게)
   const [y,m]=state.ym.split('-').map(Number);
   const mo=getMonth();
   // 현재 어떤 모드를 보고 있든 항상 '달력' 형태로 저장한다.
   // calView를 달력으로 강제 렌더한 뒤 그 결과를 복제해 캡처(원래 화면 모드는 건드리지 않음).
   renderCal(y,m,mo);
   const view = document.getElementById('calView');
-  // 캡처용 래퍼: 흰 배경 + 제목 + 달력 복제
   const wrap=document.createElement('div');
-  wrap.style.cssText='position:fixed;left:-99999px;top:0;background:#fff;padding:20px;width:'+Math.max(view.scrollWidth,720)+'px';
   const title=document.createElement('div');
-  title.style.cssText='font-size:22px;font-weight:800;margin-bottom:14px;color:#1a1a1a';
+  if(wide){
+    // PDF용: A4 가로 한 페이지를 꽉 채우도록 넓게 캡처(공지문용)
+    const CAP_W=1500;
+    wrap.className='pdfcap';
+    wrap.style.cssText='position:fixed;left:-99999px;top:0;background:#fff;padding:24px 28px;width:'+CAP_W+'px;box-sizing:border-box';
+    title.style.cssText='font-size:34px;font-weight:800;margin-bottom:18px;color:#1a1a1a;text-align:center';
+  } else {
+    // 이미지용: 모바일에서 보기 좋은 좁은 폭(이전 버전 유지)
+    wrap.style.cssText='position:fixed;left:-99999px;top:0;background:#fff;padding:20px;width:'+Math.max(view.scrollWidth,720)+'px';
+    title.style.cssText='font-size:22px;font-weight:800;margin-bottom:14px;color:#1a1a1a';
+  }
   title.textContent=`${y}년 ${m}월 복사 배정표`;
   wrap.appendChild(title);
   const clone=view.cloneNode(true);
   clone.style.display='block';
   // 가로 스크롤 영역을 펼쳐서 전체가 한 화면에 보이도록
   clone.querySelectorAll('.calscroll').forEach(el=>{el.style.overflow='visible';});
-  clone.querySelectorAll('.calinner').forEach(el=>{el.style.minWidth='auto';});
+  clone.querySelectorAll('.calinner').forEach(el=>{el.style.minWidth='auto'; if(wide) el.style.width='100%';});
   // 편집용 버튼류는 캡처에서 제거
   clone.querySelectorAll('.addmass,.addrow,.delrow,button').forEach(el=>el.remove());
   // 오늘 날짜 강조(파란 테두리)는 저장 이미지에서 제거
   clone.querySelectorAll('.today').forEach(el=>el.classList.remove('today'));
+  // PDF(공지문)용일 때만 빈 셀 높이를 줄여 여백 최소화
+  if(wide){ clone.querySelectorAll('.cell').forEach(el=>{el.style.minHeight='84px';}); }
   wrap.appendChild(clone);
   document.body.appendChild(wrap);
   try{
@@ -3496,30 +3534,28 @@ $('#imgBtn').onclick=async ()=>{
 };
 $('#pdfBtn').onclick=async ()=>{
   toast('PDF를 만드는 중…');
-  // 모바일 등에서 로컬 라이브러리 로드가 실패했으면 CDN에서 보강 로드
   const ok = (typeof window.ensureLibs==='function') ? await window.ensureLibs()
            : (typeof html2canvas!=='undefined' && !!window.jspdf);
   if(!ok){
-    // 그래도 실패하면 브라우저 인쇄 대화상자로 폴백(여기서 'PDF로 저장' 선택)
     toast('인쇄 화면에서 «PDF로 저장»을 선택하세요');
     const wasMode=state.mode; state.mode='cal'; renderSchedule();
     setTimeout(()=>{ window.print(); state.mode=wasMode; renderSchedule(); }, 300);
     return;
   }
   try{
-    const canvas=await captureSchedule();
+    const canvas=await captureSchedule({wide:true});
     const img=canvas.toDataURL('image/png');
     const { jsPDF }=window.jspdf;
-    // 달력은 가로로 넓으므로 항상 A4 가로(landscape)에 한 페이지로 맞춘다.
     const pdf=new jsPDF({orientation:'l', unit:'mm', format:'a4'});
-    const pw=pdf.internal.pageSize.getWidth();   // 297
-    const ph=pdf.internal.pageSize.getHeight();  // 210
-    const margin=8;
+    const pw=pdf.internal.pageSize.getWidth();
+    const ph=pdf.internal.pageSize.getHeight();
+    const margin=5;                         // 여백 최소화(공지문용)
     const maxW=pw-margin*2, maxH=ph-margin*2;
-    // 가로/세로 비율을 비교해 한 페이지 안에 '딱' 들어가도록 contain 방식으로 스케일
-    const ratio=Math.min(maxW/canvas.width, maxH/canvas.height);
-    const w=canvas.width*ratio, h=canvas.height*ratio;
-    const x=(pw-w)/2, yPos=(ph-h)/2;   // 가로·세로 모두 가운데 정렬
+    // 폭을 우선 꽉 채우고, 높이가 페이지를 넘을 때만 높이에 맞춤
+    let w=maxW, h=w*canvas.height/canvas.width;
+    if(h>maxH){ h=maxH; w=h*canvas.width/canvas.height; }
+    const x=(pw-w)/2;                       // 가로는 가운데
+    const yPos = (h>=maxH) ? margin : (ph-h)/2;  // 꽉 차면 위 여백, 남으면 세로 가운데
     pdf.addImage(img,'PNG',x,yPos,w,h);
     pdf.save(scheduleFileName('pdf'));
     toast('PDF를 저장했습니다');
@@ -3534,29 +3570,24 @@ $('#xlsBtn').onclick=async ()=>{
   try{
     const [y,m]=state.ym.split('-').map(Number);
     const mo=getMonth();
-    const first=new Date(y,m-1,1).getDay();   // 1일의 요일(0=일)
+    const first=new Date(y,m-1,1).getDay();
     const last=new Date(y,m,0).getDate();
 
     const wb=new ExcelJS.Workbook();
     const ws=wb.addWorksheet(`${m}월`,{views:[{showGridLines:false}]});
 
     const FONT='맑은 고딕';
-    // 전례색 → 글자색(헤더 (홍)/(백) 등 표시용)
     const COLHEX={ '홍':'FFFF0000','녹':'FF2E9E5B','백':'FFB8860B','자':'FF7B51C4','보':'FF7B51C4' };
-    const litLbl=(c)=>{ const o=COLOR_NAME[c]||COLOR_NAME['녹']; return '('+o.lbl+')'; };
 
-    // 요일별 시작 열(1-based): 일=1, 월=4, 화=7, 수=10, 목=13, 금=16, 토=19
     const dowCol=(dow)=> dow*3 + 1;
 
-    // 21열 너비(라벨열 좁게, 이름열 넓게, 우측 여백열 좁게)
     for(let dow=0;dow<7;dow++){
       const c=dowCol(dow);
-      ws.getColumn(c).width=7;     // 시간/대)/소) 라벨 + 날짜
-      ws.getColumn(c+1).width=14;  // 전례색 / 이름들
-      ws.getColumn(c+2).width=3;   // 칸 사이 여백
+      ws.getColumn(c).width=7;
+      ws.getColumn(c+1).width=14;
+      ws.getColumn(c+2).width=3;
     }
 
-    // ── 제목행(1) : G1:O1 병합 + 기준일 T1:U1 ──
     ws.mergeCells('G1:O1');
     const tcell=ws.getCell('G1');
     tcell.value=`${y}년 ${m}월 복사 배정표`;
@@ -3572,7 +3603,6 @@ $('#xlsBtn').onclick=async ()=>{
     dcell.alignment={horizontal:'right',vertical:'middle'};
     ws.getRow(2).height=19;
 
-    // ── 요일 헤더행(3) ──
     const headRow=3;
     for(let dow=0;dow<7;dow++){
       const c=dowCol(dow);
@@ -3580,7 +3610,6 @@ $('#xlsBtn').onclick=async ()=>{
       cell.value=WD[dow];
       cell.font={name:FONT,size:14,color: dow===0?{argb:'FFFF0000'}:(dow===6?{argb:'FF1F4E9E'}:undefined)};
       cell.alignment={horizontal:'center',vertical:'middle'};
-      // 헤더 3열 병합
       ws.mergeCells(headRow,c,headRow,c+2);
     }
     ws.getRow(headRow).height=20;
@@ -3588,17 +3617,13 @@ $('#xlsBtn').onclick=async ()=>{
     const thin={style:'thin'};
     const setBorder=(r,c,b)=>{ const cell=ws.getCell(r,c); cell.border=Object.assign({},cell.border,b); };
 
-    // 한 날짜 칸을 그린다. startRow=칸 첫 행, dow=요일, d=날짜
-    // 반환: 이 칸이 사용한 행 수
     const drawDay=(startRow,dow,d)=>{
       const c0=dowCol(dow), c1=c0+1, c2=c0+2;
       const day=mo.assign[d];
       const masses=(day&&day.masses)||[];
-      // 칸 높이 = 1(날짜행) + 미사수*3, 최소 7행(양식 기본)
       let need=1+masses.length*3;
       if(need<7) need=7;
 
-      // 날짜 + 특별미사명
       const dnum=ws.getCell(startRow,c0);
       dnum.value=d;
       dnum.font={name:FONT,size:14,color: dow===0?{argb:'FFFF0000'}:(dow===6?{argb:'FF1F4E9E'}:undefined)};
@@ -3611,12 +3636,10 @@ $('#xlsBtn').onclick=async ()=>{
         sc.alignment={horizontal:'center',vertical:'middle'};
       }
 
-      // 각 미사 3행
       let r=startRow+1;
       masses.forEach(ms=>{
         const o=COLOR_NAME[ms.color]||COLOR_NAME['녹'];
         const chex=COLHEX[ms.color]||COLHEX['녹'];
-        // 시간 행
         ws.getCell(r,c0).value=ms.time||'';
         ws.getCell(r,c0).font={name:FONT,size:14};
         ws.getCell(r,c0).alignment={horizontal:'center',vertical:'middle'};
@@ -3624,7 +3647,6 @@ $('#xlsBtn').onclick=async ()=>{
         lc.value=`(${o.lbl})`;
         lc.font={name:FONT,size:14,bold:true,color:{argb:chex}};
         lc.alignment={horizontal:'left',vertical:'middle'};
-        // 대) 행
         ws.getCell(r+1,c0).value='대)';
         ws.getCell(r+1,c0).font={name:FONT,size:14};
         ws.getCell(r+1,c0).alignment={horizontal:'center',vertical:'middle'};
@@ -3632,7 +3654,6 @@ $('#xlsBtn').onclick=async ()=>{
         bc.value=(ms.big||[]).filter(Boolean).join(' ');
         bc.font={name:FONT,size:14};
         bc.alignment={horizontal:'center',vertical:'middle'};
-        // 소) 행
         ws.getCell(r+2,c0).value='소)';
         ws.getCell(r+2,c0).font={name:FONT,size:14};
         ws.getCell(r+2,c0).alignment={horizontal:'center',vertical:'middle'};
@@ -3643,16 +3664,12 @@ $('#xlsBtn').onclick=async ()=>{
         r+=3;
       });
 
-      // 칸 테두리: 바깥 thin 박스 + 1열/2열 사이 세로선
       for(let rr=startRow; rr<startRow+need; rr++){
         ws.getRow(rr).height=20;
-        // 좌(c0 왼쪽) / 우(c2 오른쪽)
         setBorder(rr,c0,{left:thin});
         setBorder(rr,c2,{right:thin});
-        // 라벨열과 이름열 사이 세로선(c0 오른쪽)
         setBorder(rr,c0,{right:thin});
       }
-      // 상·하 가로선
       for(let cc=c0; cc<=c2; cc++){
         setBorder(startRow,cc,{top:thin});
         setBorder(startRow+need-1,cc,{bottom:thin});
@@ -3660,14 +3677,11 @@ $('#xlsBtn').onclick=async ()=>{
       return need;
     };
 
-    // 주(week) 단위로 배치. 각 주는 그 주에서 가장 높은 칸 높이에 맞춘다.
-    let curRow=4;            // 헤더(3) 다음부터
-    let dow=first;          // 1일의 요일
+    let curRow=4;
+    let dow=first;
     let d=1;
-    // 첫 주 앞 빈칸도 테두리 없이 비워둠
     while(d<=last){
       const weekStart=curRow;
-      // 이번 주에 들어갈 날짜들의 높이를 먼저 계산
       let maxNeed=7;
       let probeDow=dow, probeD=d;
       const daysThisWeek=[];
@@ -3679,11 +3693,9 @@ $('#xlsBtn').onclick=async ()=>{
         daysThisWeek.push({dow:probeDow,d:probeD});
         probeDow++; probeD++;
       }
-      // 실제 그리기 (모든 칸을 maxNeed 높이로 맞춤)
       daysThisWeek.forEach(({dow:wd,d:wdd})=>{
         const c0=dowCol(wd);
         drawDay(weekStart,wd,wdd);
-        // 칸 높이를 주 최대치로 확장(테두리 보강)
         for(let rr=weekStart; rr<weekStart+maxNeed; rr++){
           setBorder(rr,c0,{left:thin,right:thin});
           setBorder(rr,c0+2,{right:thin});
@@ -3695,7 +3707,7 @@ $('#xlsBtn').onclick=async ()=>{
         }
       });
       curRow=weekStart+maxNeed;
-      d=probeD; dow=0;       // 다음 주는 일요일부터
+      d=probeD; dow=0;
     }
 
     const buf=await wb.xlsx.writeBuffer();
@@ -3708,7 +3720,6 @@ $('#xlsBtn').onclick=async ()=>{
     toast('엑셀을 저장했습니다');
   }catch(e){ console.warn(e); toast('엑셀 저장에 실패했습니다'); }
 };
-
 
 /* ====================== INIT ====================== */
 /* 일반 사용자는 공개(배포)된 달만 볼 수 있으므로, 현재 달이 미공개면 가장 최근 공개 달로 이동 */
